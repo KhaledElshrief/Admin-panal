@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 12, 29;
+  --background-end-rgb: 15, 18, 36;
+}
+
+html,
+body {
+  direction: rtl;
+  font-family: 'Tajawal', sans-serif;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb))
+    )
+    fixed;
+  min-height: 100vh;
+}
+
+@layer components {
+  .stats-card {
+    @apply relative bg-opacity-10 rounded-xl p-4 overflow-hidden transition-all duration-300;
+  }
+  
+  .stats-card:hover {
+    @apply bg-opacity-20 shadow-lg transform -translate-y-1;
+  }
+  
+  .quick-access-item {
+    @apply flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-dark-200 hover:bg-dark-100 transition-all cursor-pointer;
+  }
+  
+  .sidebar-item {
+    @apply flex items-center p-3 rounded-lg gap-3 text-gray-300 hover:bg-dark-200 transition-all;
+  }
+  
+  .sidebar-item.active {
+    @apply bg-primary-600 text-white;
+  }
+}
+
+/* Add smooth transitions for sidebar elements */
+.sidebar-transition {
+  transition: all 0.3s ease-in-out;
+}
