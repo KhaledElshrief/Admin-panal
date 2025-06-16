@@ -9,6 +9,7 @@ import Subscriptions from './pages/Subscriptions';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import Drivers from './pages/Drivers';
+import Notifications from './pages/Notifications';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="subscriptions" element={<Subscriptions />} />
         <Route path="reports" element={<Reports />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="notifications" element={<Notifications />} />
       </Route>
     </Routes>
   );
