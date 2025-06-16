@@ -28,7 +28,7 @@ const navItems = [
   { name: 'إدارة المحتوى', path: '/content', icon: <FileEdit className="w-5 h-5" />, isNew: true },
   { name: 'إدارة الإعلانات', path: '/ads', icon: <FileText className="w-5 h-5" />, isNew: true },
   { name: 'الأدوار والصلاحيات', path: '/roles', icon: <ShieldCheck className="w-5 h-5" />, isNew: true },
-  { name: 'إعدادات النظام', path: '/settings', icon: <Cog className="w-5 h-5" />, isNew: true },
+  { name: 'إعدادات النظام', path: '/system-settings', icon: <Cog className="w-5 h-5" />, isNew: true },
 ];
 
 const Sidebar: React.FC = () => {

@@ -10,10 +10,14 @@ import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import Drivers from './pages/Drivers';
 import Notifications from './pages/Notifications';
+import Ads from './pages/Ads';
+import Login from './pages/Login';
+import SystemSettings from './pages/SystemSettings';
 
 function App() {
   return (
     <Routes>
+      <Route path="/login" element={<Login />} />
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="schools" element={<Schools />} />
@@ -24,6 +28,8 @@ function App() {
         <Route path="reports" element={<Reports />} />
         <Route path="settings" element={<Settings />} />
         <Route path="notifications" element={<Notifications />} />
+        <Route path="ads" element={<Ads />} />
+        <Route path="system-settings" element={<SystemSettings />} />
       </Route>
     </Routes>
   );

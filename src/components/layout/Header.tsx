@@ -1,8 +1,69 @@
-import React from 'react';
-import { Bell, Search, User, Filter } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef, useEffect } from 'react';
+import { Bell, Search, User, Filter, LogOut, Settings, UserCircle, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    console.log('Logging out...');
+    navigate('/login');
+    setIsDropdownOpen(false);
+  };
+
+  const handleProfile = () => {
+    console.log('Navigate to profile...');
+    setIsDropdownOpen(false);
+  };
+
+  const handleSettings = () => {
+    navigate('/settings');
+    setIsDropdownOpen(false);
+  };
+
+  const dropdownVariants = {
+    hidden: {
+      opacity: 0,
+      scale: 0.95,
+      y: -10,
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        duration: 0.2,
+        ease: 'easeOut',
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.95,
+      y: -10,
+      transition: {
+        duration: 0.15,
+        ease: 'easeIn',
+      },
+    },
+  };
+
   return (
     <header className="bg-dark-300 border-b border-dark-200 py-4 px-6">
       <div className="flex items-center justify-between">
@@ -33,11 +94,83 @@ const Header: React.FC = () => {
           
           <Filter className="h-6 w-6 text-gray-400 cursor-pointer hover:text-white transition-colors" />
           
-          <div className="flex items-center gap-3 border-r border-dark-200 pr-4">
-            <span className="text-sm font-medium">م. حسام</span>
-            <div className="h-9 w-9 rounded-full bg-primary-600 flex items-center justify-center">
-              <User className="h-5 w-5" />
-            </div>
+          {/* User Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center gap-3 border-r border-dark-200 pr-4 hover:bg-dark-200 rounded-lg px-3 py-2 transition-colors"
+            >
+              <div className="text-right">
+                <span className="text-sm font-medium block">م. حسام</span>
+                <span className="text-xs text-gray-400">مدير النظام</span>
+              </div>
+              <div className="h-9 w-9 rounded-full bg-primary-600 flex items-center justify-center">
+                <User className="h-5 w-5" />
+              </div>
+              <ChevronDown 
+                className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${
+                  isDropdownOpen ? 'rotate-180' : ''
+                }`} 
+              />
+            </button>
+
+            {/* Dropdown Menu */}
+            <AnimatePresence>
+              {isDropdownOpen && (
+                <motion.div
+                  variants={dropdownVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="absolute left-0 mt-2 w-56 bg-dark-300 border border-dark-200 rounded-lg shadow-xl z-50"
+                >
+                  <div className="py-2">
+                    {/* User Info */}
+                    <div className="px-4 py-3 border-b border-dark-200">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-primary-600 flex items-center justify-center">
+                          <User className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-white">م. حسام</div>
+                          <div className="text-sm text-gray-400">admin@school.com</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Menu Items */}
+                    <div className="py-1">
+                      <button
+                        onClick={handleProfile}
+                        className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-dark-200 hover:text-white transition-colors"
+                      >
+                        <UserCircle className="h-4 w-4" />
+                        الملف الشخصي
+                      </button>
+                      
+                      <button
+                        onClick={handleSettings}
+                        className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-dark-200 hover:text-white transition-colors"
+                      >
+                        <Settings className="h-4 w-4" />
+                        الإعدادات
+                      </button>
+                    </div>
+
+                    {/* Logout */}
+                    <div className="border-t border-dark-200 py-1">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 w-full px-4 py-2 text-sm text-error-400 hover:bg-error-600/10 hover:text-error-300 transition-colors"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        تسجيل الخروج
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
