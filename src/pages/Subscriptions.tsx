@@ -16,7 +16,8 @@ import {
   MoreHorizontal,
   Edit,
   Trash2,
-  Eye
+  Eye,
+  Save
 } from 'lucide-react';
 import {
   LineChart as RechartsLineChart,
@@ -121,6 +122,83 @@ const subscriptionsData = [
   }
 ];
 
+// Sample payments data
+const paymentsData = [
+  {
+    id: 'PAY-2023-001',
+    subscriptionId: 'SUB-2023-001',
+    payer: 'John Doe',
+    amount: '199.99 د.ج',
+    date: '1 يونيو 2023',
+    paymentMethod: 'بطاقة ائتمان',
+    status: 'ناجح'
+  },
+  {
+    id: 'PAY-2023-002',
+    subscriptionId: 'SUB-2023-002',
+    payer: 'Jane Smith',
+    amount: '299.99 د.ج',
+    date: '2 يونيو 2023',
+    paymentMethod: 'تحويل بنكي',
+    status: 'قيد الانتظار'
+  },
+  {
+    id: 'PAY-2023-003',
+    subscriptionId: 'SUB-2023-003',
+    payer: 'Robert Johnson',
+    amount: '499.99 د.ج',
+    date: '3 يونيو 2023',
+    paymentMethod: 'بطاقة ائتمان',
+    status: 'ناجح'
+  },
+  {
+    id: 'PAY-2023-004',
+    subscriptionId: 'SUB-2023-004',
+    payer: 'Emily Davis',
+    amount: '199.99 د.ج',
+    date: '4 يونيو 2023',
+    paymentMethod: 'تحويل بنكي',
+    status: 'ناجح'
+  },
+  {
+    id: 'PAY-2023-005',
+    subscriptionId: 'SUB-2023-005',
+    payer: 'Michael Wilson',
+    amount: '399.99 د.ج',
+    date: '5 يونيو 2023',
+    paymentMethod: 'بطاقة ائتمان',
+    status: 'ناجح'
+  }
+];
+
+// Sample commissions data
+const commissionsData = [
+  {
+    id: 'COM-001',
+    agentName: 'محمد عبد الله',
+    subscriptionId: 'SUB-2023-001',
+    amount: '120 د.ج',
+    date: '20 يناير 2023',
+    status: 'قيد الانتظار'
+  },
+  {
+    id: 'COM-002',
+    agentName: 'أحمد محمود',
+    subscriptionId: 'SUB-2023-003',
+    amount: '95 د.ج',
+    date: '10 مارس 2023',
+    status: 'مدفوع'
+  },
+  {
+    id: 'COM-003',
+    agentName: 'سارة أحمد',
+    subscriptionId: 'SUB-2023-005',
+    amount: '250 د.ج',
+    date: '15 مايو 2023',
+    status: 'قيد الانتظار'
+  }
+];
+
 interface PaymentSetting {
   id: string;
   label: string;
@@ -138,6 +216,19 @@ const Subscriptions: React.FC = () => {
     { id: 'installments', label: 'الاستردادات', enabled: true },
     { id: 'commissions', label: 'العمولات', enabled: true },
     { id: 'advanced_payment', label: 'الدفع المتأخر', enabled: true }
+  ]);
+
+  // Settings state
+  const [generalSettings, setGeneralSettings] = useState<PaymentSetting[]>([
+    { id: 'default_currency', label: 'العملة الافتراضية', enabled: true },
+    { id: 'trial_period', label: 'عدد أيام الفترة التجريبية', enabled: true },
+    { id: 'send_reminders', label: 'إرسال تذكيرات', enabled: true },
+    { id: 'auto_renewal', label: 'التجديد التلقائي', enabled: true }
+  ]);
+
+  const [commissionSettings, setCommissionSettings] = useState<PaymentSetting[]>([
+    { id: 'commission_rate', label: 'معدل صرف العمولات', enabled: true },
+    { id: 'agent_commission', label: 'نسبة عمولة الوكيل', enabled: true }
   ]);
 
   const tabs = [
@@ -189,6 +280,26 @@ const Subscriptions: React.FC = () => {
 
   const handleTogglePaymentSetting = (id: string) => {
     setPaymentSettings(prev => 
+      prev.map(setting => 
+        setting.id === id 
+          ? { ...setting, enabled: !setting.enabled }
+          : setting
+      )
+    );
+  };
+
+  const handleToggleGeneralSetting = (id: string) => {
+    setGeneralSettings(prev => 
+      prev.map(setting => 
+        setting.id === id 
+          ? { ...setting, enabled: !setting.enabled }
+          : setting
+      )
+    );
+  };
+
+  const handleToggleCommissionSetting = (id: string) => {
+    setCommissionSettings(prev => 
       prev.map(setting => 
         setting.id === id 
           ? { ...setting, enabled: !setting.enabled }
@@ -380,74 +491,6 @@ const Subscriptions: React.FC = () => {
     </div>
   );
 
-  const renderPaymentSettings = () => (
-    <div className="space-y-6">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-2">إعدادات المدفوعات</h2>
-        <p className="text-gray-400">إدارة طرق الدفع والإعدادات المالية للنظام</p>
-      </div>
-
-      <div className="bg-dark-200 rounded-xl p-6">
-        <h3 className="text-lg font-semibold mb-6">الميزات العامة</h3>
-        
-        <div className="space-y-6">
-          {paymentSettings.map((setting, index) => (
-            <motion.div
-              key={setting.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-center justify-between py-4 border-b border-dark-300 last:border-b-0"
-            >
-              <div className="flex-1">
-                <label 
-                  htmlFor={setting.id}
-                  className="text-lg font-medium text-white cursor-pointer"
-                >
-                  {setting.label}
-                </label>
-              </div>
-              
-              <div className="flex items-center">
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    id={setting.id}
-                    checked={setting.enabled}
-                    onChange={() => handleTogglePaymentSetting(setting.id)}
-                    className="sr-only peer"
-                  />
-                  <div className={`
-                    relative w-14 h-7 rounded-full transition-colors duration-200 ease-in-out
-                    ${setting.enabled 
-                      ? 'bg-primary-600' 
-                      : 'bg-gray-600'
-                    }
-                    peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300/20
-                  `}>
-                    <div className={`
-                      absolute top-0.5 w-6 h-6 bg-white rounded-full transition-transform duration-200 ease-in-out
-                      ${setting.enabled 
-                        ? 'translate-x-7 rtl:-translate-x-7' 
-                        : 'translate-x-0.5 rtl:-translate-x-0.5'
-                      }
-                    `}></div>
-                  </div>
-                </label>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="pt-6 border-t border-dark-300 mt-6">
-          <button className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors">
-            حفظ الإعدادات
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
   const renderSubscriptions = () => {
     const columns: TableColumn[] = [
       {
@@ -619,19 +662,309 @@ const Subscriptions: React.FC = () => {
     );
   };
 
-  const renderCommissions = () => (
-    <div className="text-center py-12">
-      <DollarSign className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-      <h3 className="text-lg font-medium text-gray-400 mb-2">إدارة العمولات</h3>
-      <p className="text-gray-500">صفحة إدارة العمولات قيد التطوير</p>
-    </div>
-  );
+  const renderCommissions = () => {
+    const columns: TableColumn[] = [
+      {
+        key: 'id',
+        title: 'الرقم التعريفي',
+        sortable: true,
+        render: (value) => (
+          <span className="font-mono text-sm text-blue-400">{value}</span>
+        )
+      },
+      {
+        key: 'agentName',
+        title: 'اسم الوكيل',
+        sortable: true,
+        render: (value) => (
+          <span className="font-medium text-white">{value}</span>
+        )
+      },
+      {
+        key: 'subscriptionId',
+        title: 'رقم الاشتراك',
+        sortable: true,
+        render: (value) => (
+          <span className="text-gray-300 font-mono text-sm">{value}</span>
+        )
+      },
+      {
+        key: 'date',
+        title: 'التاريخ',
+        sortable: true,
+        render: (value) => (
+          <span className="text-gray-400 text-sm">{value}</span>
+        )
+      },
+      {
+        key: 'amount',
+        title: 'المبلغ',
+        sortable: true,
+        render: (value) => (
+          <span className="font-semibold text-green-400">{value}</span>
+        )
+      },
+      {
+        key: 'status',
+        title: 'الحالة',
+        sortable: true,
+        render: (value) => {
+          const variant = value === 'مدفوع' ? 'success' : 'warning';
+          return <StatusBadge status={value} variant={variant as any} />;
+        }
+      }
+    ];
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">قائمة العمولات</h2>
+        </div>
+
+        <Table
+          columns={columns}
+          data={commissionsData}
+          rowKey="id"
+          hoverable={true}
+          emptyText="لا توجد عمولات"
+        />
+
+        <div className="flex items-center justify-between pt-4 border-t border-dark-200">
+          <div className="text-sm text-gray-400">
+            عرض {commissionsData.length} من أصل {commissionsData.length} عمولة
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderPayments = () => {
+    const columns: TableColumn[] = [
+      {
+        key: 'id',
+        title: 'الرقم التعريفي',
+        sortable: true,
+        render: (value) => (
+          <span className="font-mono text-sm text-blue-400">{value}</span>
+        )
+      },
+      {
+        key: 'payer',
+        title: 'الدافع',
+        sortable: true,
+        render: (value) => (
+          <span className="font-medium text-white">{value}</span>
+        )
+      },
+      {
+        key: 'subscriptionId',
+        title: 'رقم الاشتراك',
+        sortable: true,
+        render: (value) => (
+          <span className="text-gray-300 font-mono text-sm">{value}</span>
+        )
+      },
+      {
+        key: 'paymentMethod',
+        title: 'طريقة الدفع',
+        render: (value) => (
+          <span className="text-gray-300 text-sm">{value}</span>
+        )
+      },
+      {
+        key: 'date',
+        title: 'التاريخ',
+        sortable: true,
+        render: (value) => (
+          <span className="text-gray-400 text-sm">{value}</span>
+        )
+      },
+      {
+        key: 'amount',
+        title: 'المبلغ',
+        sortable: true,
+        render: (value) => (
+          <span className="font-semibold text-green-400">{value}</span>
+        )
+      },
+      {
+        key: 'status',
+        title: 'الحالة',
+        sortable: true,
+        render: (value) => {
+          const variant = value === 'ناجح' ? 'success' : 'warning';
+          return <StatusBadge status={value} variant={variant as any} />;
+        }
+      }
+    ];
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">قائمة المدفوعات</h2>
+        </div>
+
+        <Table
+          columns={columns}
+          data={paymentsData}
+          rowKey="id"
+          hoverable={true}
+          emptyText="لا توجد مدفوعات"
+        />
+
+        <div className="flex items-center justify-between pt-4 border-t border-dark-200">
+          <div className="text-sm text-gray-400">
+            عرض {paymentsData.length} من أصل {paymentsData.length} مدفوعة
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderSettings = () => (
-    <div className="text-center py-12">
-      <Settings className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-      <h3 className="text-lg font-medium text-gray-400 mb-2">الإعدادات</h3>
-      <p className="text-gray-500">صفحة الإعدادات قيد التطوير</p>
+    <div className="space-y-8">
+      {/* General Settings */}
+      <div className="bg-dark-200 rounded-xl p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold">الإعدادات العامة</h3>
+          <span className="text-sm text-gray-400">عدد أيام الفترة التجريبية</span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              العملة الافتراضية
+            </label>
+            <select className="w-full bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600">
+              <option value="IQD">IQD (د.ع)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              عدد أيام الفترة التجريبية
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value="14"
+                className="flex-1 bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600"
+              />
+              <button className="p-2 bg-dark-400 border border-dark-200 rounded-lg text-gray-400 hover:text-white">
+                <Settings className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {generalSettings.map((setting, index) => (
+            <div key={setting.id} className="flex items-center justify-between py-3 border-b border-dark-300 last:border-b-0">
+              <div>
+                <span className="text-white font-medium">{setting.label}</span>
+                <div className="text-sm text-gray-400">
+                  {setting.id === 'default_currency' && 'العملة المستخدمة في جميع المعاملات المالية'}
+                  {setting.id === 'trial_period' && 'عدد الأيام التي يحصل عليها المستخدم في التجربة المجانية'}
+                  {setting.id === 'send_reminders' && 'إرسال إشعارات المستخدم من قبل انتهاء اشتراكهم'}
+                  {setting.id === 'auto_renewal' && 'تجديد الاشتراكات تلقائياً عند انتهاء المدة'}
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={setting.enabled}
+                  onChange={() => handleToggleGeneralSetting(setting.id)}
+                  className="sr-only peer"
+                />
+                <div className={`relative w-11 h-6 rounded-full transition-colors ${
+                  setting.enabled ? 'bg-primary-600' : 'bg-gray-600'
+                }`}>
+                  <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                    setting.enabled ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0.5 rtl:-translate-x-0.5'
+                  }`}></div>
+                </div>
+              </label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Commission Settings */}
+      <div className="bg-dark-200 rounded-xl p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold">إعدادات العمولات</h3>
+          <span className="text-sm text-gray-400">نسبة عمولة الوكيل</span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              معدل صرف العمولات
+            </label>
+            <select className="w-full bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600">
+              <option value="monthly">شهري</option>
+              <option value="weekly">أسبوعي</option>
+              <option value="daily">يومي</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              نسبة عمولة الوكيل
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value="7"
+                className="flex-1 bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600"
+              />
+              <span className="text-gray-400">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {commissionSettings.map((setting, index) => (
+            <div key={setting.id} className="flex items-center justify-between py-3 border-b border-dark-300 last:border-b-0">
+              <div>
+                <span className="text-white font-medium">{setting.label}</span>
+                <div className="text-sm text-gray-400">
+                  {setting.id === 'commission_rate' && 'تحديد توقيت صرف العمولات للوكلاء'}
+                  {setting.id === 'agent_commission' && 'نسبة العمولة التي يحصل عليها الوكيل من كل اشتراك'}
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={setting.enabled}
+                  onChange={() => handleToggleCommissionSetting(setting.id)}
+                  className="sr-only peer"
+                />
+                <div className={`relative w-11 h-6 rounded-full transition-colors ${
+                  setting.enabled ? 'bg-primary-600' : 'bg-gray-600'
+                }`}>
+                  <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                    setting.enabled ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0.5 rtl:-translate-x-0.5'
+                  }`}></div>
+                </div>
+              </label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Save Button */}
+      <div className="flex justify-between">
+        <button className="bg-dark-200 hover:bg-dark-100 text-white px-6 py-3 rounded-lg transition-colors">
+          إلغاء
+        </button>
+        <button className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors">
+          <Save className="w-5 h-5" />
+          حفظ التغييرات
+        </button>
+      </div>
     </div>
   );
 
@@ -644,7 +977,7 @@ const Subscriptions: React.FC = () => {
       case 'العمولات':
         return renderCommissions();
       case 'المدفوعات':
-        return renderPaymentSettings();
+        return renderPayments();
       case 'الإعدادات':
         return renderSettings();
       default:
