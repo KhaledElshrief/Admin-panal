@@ -13,6 +13,7 @@ import Notifications from './pages/Notifications';
 import Ads from './pages/Ads';
 import Login from './pages/Login';
 import SystemSettings from './pages/SystemSettings';
+import Content from './pages/Content';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="settings" element={<Settings />} />
         <Route path="notifications" element={<Notifications />} />
         <Route path="ads" element={<Ads />} />
+        <Route path="content" element={<Content />} />
         <Route path="system-settings" element={<SystemSettings />} />
       </Route>
     </Routes>
