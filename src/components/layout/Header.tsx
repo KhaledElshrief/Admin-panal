@@ -2,11 +2,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Search, User, Filter, LogOut, Settings, UserCircle, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks/redux';
+import { logout } from '../../store/slices/authSlice';
 
 const Header: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -23,7 +26,7 @@ const Header: React.FC = () => {
   }, []);
 
   const handleLogout = () => {
-    console.log('Logging out...');
+    dispatch(logout());
     navigate('/login');
     setIsDropdownOpen(false);
   };

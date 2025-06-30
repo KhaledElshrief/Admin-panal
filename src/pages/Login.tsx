@@ -1,27 +1,39 @@
-import React, { useState } from 'react';
-import { Eye, EyeOff, Lock, Mail, School } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Eye, EyeOff, Lock, Smartphone } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { loginUser } from '../store/slices/authSlice';
+import { RootState } from '../store';
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
+    phoneNumber: '',
     password: '',
-    rememberMe: false
   });
 
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { loading, error, token } = useAppSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (token) {
+      navigate('/dashboard');
+    }
+  }, [token, navigate]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt:', formData);
-    // Handle login logic here
+    dispatch(loginUser(formData));
   };
 
   return (
@@ -34,7 +46,7 @@ const Login: React.FC = () => {
           className="text-center mb-8"
         >
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
-            <School className="w-8 h-8 text-white" />
+            <Smartphone className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">منصة المدارس الذكية</h1>
           <p className="text-gray-400">تسجيل الدخول إلى لوحة التحكم</p>
@@ -48,23 +60,23 @@ const Login: React.FC = () => {
           className="bg-dark-300 rounded-xl p-8 shadow-2xl border border-dark-200"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email Field */}
+            {/* phoneNumber Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                البريد الإلكتروني
+              <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-300 mb-2">
+                رقم الهاتف
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <Smartphone className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
+                  type="text"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
                   onChange={handleInputChange}
                   className="block w-full pr-10 pl-4 py-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-colors"
-                  placeholder="أدخل بريدك الإلكتروني"
+                  placeholder="أدخل رقم الهاتف"
                   required
                 />
               </div>
@@ -103,37 +115,17 @@ const Login: React.FC = () => {
               </div>
             </div>
 
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleInputChange}
-                  className="w-4 h-4 text-primary-600 bg-dark-400 border-dark-200 rounded focus:ring-primary-500 focus:ring-2"
-                />
-                <label htmlFor="rememberMe" className="mr-2 text-sm text-gray-300">
-                  تذكرني
-                </label>
-              </div>
-              <button
-                type="button"
-                className="text-sm text-primary-400 hover:text-primary-300 transition-colors"
-              >
-                نسيت كلمة المرور؟
-              </button>
-            </div>
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
             {/* Login Button */}
             <motion.button
               type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-dark-300"
+              disabled={loading}
+              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-dark-300 disabled:bg-gray-500"
             >
-              تسجيل الدخول
+              {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
             </motion.button>
           </form>
 
