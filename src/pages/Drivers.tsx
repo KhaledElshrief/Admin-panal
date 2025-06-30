@@ -1,19 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { Eye, FileCheck, FileX, Check, X, Bell, MessageSquare, Settings, BarChart2, Users, FileText, Edit, Trash2, AlertTriangle, Star, User, Download, Calendar, Search, Filter } from 'lucide-react';
 import Table, { TableColumn } from '../components/ui/Table';
 import { ViewAction, EditAction, DeleteAction, ApproveAction, RejectAction, SuspendAction } from '../components/ui/TableActions';
 import StatusBadge from '../components/ui/StatusBadge';
 import UserAvatar from '../components/ui/UserAvatar';
 import StarRating from '../components/ui/StarRating';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { 
-  fetchDrivers, 
-  setActiveTab, 
-  setSearchTerm, 
-  setFilter, 
-  resetFilters,
-  Driver 
-} from '../store/slices/driversSlice';
+
+interface Driver {
+  id: number;
+  name: string;
+  phone: string;
+  vehicle: string;
+  city: string;
+  date: string;
+  documents: 'complete' | 'incomplete';
+  status: 'active' | 'suspended' | 'pending';
+  trips: number;
+  rating: number;
+  classification: string;
+  email: string;
+  lastStatusUpdate: string;
+  suspensionReason?: string;
+}
 
 interface DriverReport {
   id: string;
@@ -41,6 +49,86 @@ interface Rating {
   rating: number;
   date: string;
 }
+
+const driversData: Driver[] = [
+  {
+    id: 1,
+    name: 'أحمد محمد',
+    phone: '4567 123 750 964+',
+    vehicle: 'تويوتا كامري - 2022 - أبيض',
+    city: 'الرياض',
+    date: '2023-08-10',
+    documents: 'complete',
+    status: 'active',
+    trips: 120,
+    rating: 4.2,
+    classification: 'مجموعة مكتملة',
+    email: 'ahmad@example.com',
+    lastStatusUpdate: '8/15/2023'
+  },
+  {
+    id: 2,
+    name: 'سارة الأحمد',
+    phone: '4321 765 750 964+',
+    vehicle: 'هيونداي سوناتا - 2023 - أسود',
+    city: 'جدة',
+    date: '2023-08-11',
+    documents: 'incomplete',
+    status: 'suspended',
+    trips: 45,
+    rating: 2.8,
+    classification: 'مجموعة مكتملة',
+    email: 'sara@example.com',
+    lastStatusUpdate: '9/5/2023',
+    suspensionReason: 'تأخر متكرر في مواعيد النقل'
+  },
+  {
+    id: 3,
+    name: 'محمد العلي',
+    phone: '2222 111 750 964+',
+    vehicle: 'نيسان التيما - 2021 - فضي',
+    city: 'الدمام',
+    date: '2023-07-20',
+    documents: 'complete',
+    status: 'pending',
+    trips: 78,
+    rating: 1.8,
+    classification: 'مجموعة مكتملة',
+    email: 'mohammed@example.com',
+    lastStatusUpdate: '7/20/2023',
+    suspensionReason: 'مخالفة شروط السلامة'
+  },
+  {
+    id: 4,
+    name: 'خالد السعيد',
+    phone: '4444 333 750 964+',
+    vehicle: 'كيا سيراتو - 2022 - أبيض',
+    city: 'الرياض',
+    date: '2023-08-01',
+    documents: 'complete',
+    status: 'active',
+    trips: 95,
+    rating: 4.6,
+    classification: 'مجموعة مكتملة',
+    email: 'khalid@example.com',
+    lastStatusUpdate: '8/1/2023'
+  },
+  {
+    id: 5,
+    name: 'علي كاظم',
+    phone: '5555 444 750 964+',
+    vehicle: 'هوندا أكورد - 2023 - أزرق',
+    city: 'الرياض',
+    date: '2023-08-05',
+    documents: 'complete',
+    status: 'active',
+    trips: 120,
+    rating: 4.5,
+    classification: 'مجموعة مكتملة',
+    email: 'ali@example.com',
+    lastStatusUpdate: '8/5/2023'
+  }
+];
 
 const reportsData: DriverReport[] = [
   {
@@ -204,20 +292,11 @@ const ratingsData: Rating[] = [
 ];
 
 const Drivers: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { 
-    drivers, 
-    loading, 
-    error, 
-    totalItems, 
-    activeTab, 
-    searchTerm, 
-    filters 
-  } = useAppSelector(state => state.drivers);
-
-  useEffect(() => {
-    dispatch(fetchDrivers());
-  }, [dispatch]);
+  const [activeTab, setActiveTab] = useState('إدارة السائقين');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [cityFilter, setCityFilter] = useState('اختر...');
+  const [statusFilter, setStatusFilter] = useState('اختر...');
+  const [dateRange, setDateRange] = useState('3/30/2025 - 3/1/2025');
 
   const menuItems = [
     { icon: <FileText className="w-5 h-5" />, label: 'الموافقات', count: null },
@@ -230,126 +309,64 @@ const Drivers: React.FC = () => {
   ];
 
   const stats = [
-    { title: 'إجمالي', value: totalItems.toString(), icon: <Users className="w-6 h-6" />, color: 'bg-blue-600' },
-    { title: 'نشط', value: drivers.filter(d => d.isVerified && !d.isPause).length.toString(), icon: <User className="w-6 h-6" />, color: 'bg-green-600' },
-    { title: 'قيد الانتظار', value: drivers.filter(d => !d.isVerified).length.toString(), icon: <FileCheck className="w-6 h-6" />, color: 'bg-yellow-600' },
-    { title: 'موقوف', value: drivers.filter(d => d.isPause).length.toString(), icon: <X className="w-6 h-6" />, color: 'bg-red-600' },
+    { title: 'إجمالي', value: '5', icon: <Users className="w-6 h-6" />, color: 'bg-blue-600' },
+    { title: 'نشط', value: '2', icon: <User className="w-6 h-6" />, color: 'bg-green-600' },
+    { title: 'قيد الانتظار', value: '0', icon: <FileCheck className="w-6 h-6" />, color: 'bg-yellow-600' },
+    { title: 'موقوف', value: '1', icon: <X className="w-6 h-6" />, color: 'bg-red-600' },
   ];
-
-  const handleView = (id: string) => {
-    console.log('View driver:', id);
-  };
-
-  const handleEdit = (id: string) => {
-    console.log('Edit driver:', id);
-  };
-
-  const handleDelete = (id: string) => {
-    console.log('Delete driver:', id);
-  };
-
-  const handleApprove = (id: string) => {
-    console.log('Approve driver:', id);
-  };
-
-  const handleReject = (id: string) => {
-    console.log('Reject driver:', id);
-  };
-
-  const handleSuspend = (id: string) => {
-    console.log('Suspend driver:', id);
-  };
-
-  const getDocumentStatus = (driver: Driver) => {
-    const hasAllDocuments = driver.homePicture.length > 0 && 
-                           driver.drivingLicense.length > 0 && 
-                           driver.personalCard.length > 0;
-    return hasAllDocuments ? 'complete' : 'incomplete';
-  };
-
-  const getDriverStatus = (driver: Driver) => {
-    if (driver.isPause) return 'suspended';
-    if (!driver.isVerified) return 'pending';
-    return 'active';
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ar-SA');
-  };
-
-  const getVehicleInfo = (driver: Driver) => {
-    if (driver.DriverVehicle.length > 0) {
-      const vehicle = driver.DriverVehicle[0];
-      return `${vehicle.carModel} - ${vehicle.modelYear} - ${vehicle.color}`;
-    }
-    return 'غير محدد';
-  };
 
   // Table columns for approvals
   const approvalsColumns: TableColumn<Driver>[] = [
     {
-      key: 'user.userName',
+      key: 'name',
       title: 'الاسم',
-      render: (_, record) => (
-        <UserAvatar 
-          name={record.user.userName} 
-          email={record.user.phone}
-          avatar={record.user.image ? `https://mahfouzapp.com${record.user.image}` : undefined}
-        />
-      )
+      render: (_, record) => <UserAvatar name={record.name} email={record.phone} />
     },
     {
-      key: 'user.phone',
-      title: 'رقم الهاتف',
-      render: (_, record) => record.user.phone
+      key: 'phone',
+      title: 'رقم الهاتف'
     },
     {
       key: 'vehicle',
-      title: 'معلومات المركبة',
-      render: (_, record) => getVehicleInfo(record)
+      title: 'معلومات المركبة'
     },
     {
-      key: 'user.city.name',
-      title: 'المدينة',
-      render: (_, record) => record.user.city.name
+      key: 'city',
+      title: 'المدينة'
     },
     {
-      key: 'createdAt',
-      title: 'تاريخ التقديم',
-      render: (_, record) => formatDate(record.createdAt)
+      key: 'date',
+      title: 'تاريخ التقديم'
     },
     {
       key: 'documents',
       title: 'حالة المستندات',
-      render: (_, record) => {
-        const status = getDocumentStatus(record);
-        return (
-          <span className={`flex items-center gap-2 ${
-            status === 'complete' ? 'text-success-400' : 'text-warning-400'
-          }`}>
-            {status === 'complete' ? (
-              <>
-                <FileCheck className="w-4 h-4" />
-                المستندات مكتملة
-              </>
-            ) : (
-              <>
-                <FileX className="w-4 h-4" />
-                المستندات غير مكتملة
-              </>
-            )}
-          </span>
-        );
-      }
+      render: (value) => (
+        <span className={`flex items-center gap-2 ${
+          value === 'complete' ? 'text-success-400' : 'text-warning-400'
+        }`}>
+          {value === 'complete' ? (
+            <>
+              <FileCheck className="w-4 h-4" />
+              المستندات مكتملة
+            </>
+          ) : (
+            <>
+              <FileX className="w-4 h-4" />
+              المستندات غير مكتملة
+            </>
+          )}
+        </span>
+      )
     },
     {
       key: 'actions',
       title: 'الإجراءات',
       render: (_, record) => (
         <div className="flex items-center gap-2">
-          <ViewAction onClick={() => handleView(record.id)} />
-          <ApproveAction onClick={() => handleApprove(record.id)} />
-          <RejectAction onClick={() => handleReject(record.id)} />
+          <ViewAction onClick={() => console.log('View', record.id)} />
+          <ApproveAction onClick={() => console.log('Approve', record.id)} />
+          <RejectAction onClick={() => console.log('Reject', record.id)} />
         </div>
       )
     }
@@ -358,76 +375,58 @@ const Drivers: React.FC = () => {
   // Table columns for driver management
   const driverManagementColumns: TableColumn<Driver>[] = [
     {
-      key: 'user.userName',
+      key: 'name',
       title: 'الاسم',
       sortable: true,
-      render: (_, record) => (
-        <UserAvatar 
-          name={record.user.userName} 
-          email={record.user.phone}
-          avatar={record.user.image ? `https://mahfouzapp.com${record.user.image}` : undefined}
-        />
-      )
+      render: (_, record) => <UserAvatar name={record.name} email={record.phone} />
     },
     {
       key: 'vehicle',
-      title: 'معلومات المركبة',
-      render: (_, record) => getVehicleInfo(record)
+      title: 'معلومات المركبة'
     },
     {
-      key: 'user.city.name',
+      key: 'city',
       title: 'المدينة',
-      sortable: true,
-      render: (_, record) => record.user.city.name
+      sortable: true
     },
     {
       key: 'classification',
       title: 'التصنيف',
-      render: () => <span className="text-success-400 text-sm">مجموعة مكتملة</span>
+      render: (value) => <span className="text-success-400 text-sm">{value}</span>
     },
     {
       key: 'status',
       title: 'الحالة',
       sortable: true,
-      render: (_, record) => {
-        const status = getDriverStatus(record);
+      render: (value) => {
         const statusMap = {
           active: { text: 'نشط', variant: 'success' as const },
           suspended: { text: 'موقوف', variant: 'warning' as const },
           pending: { text: 'قيد الانتظار', variant: 'info' as const }
         };
-        const statusInfo = statusMap[status];
-        return <StatusBadge status={statusInfo.text} variant={statusInfo.variant} />;
+        const status = statusMap[value as keyof typeof statusMap];
+        return <StatusBadge status={status.text} variant={status.variant} />;
       }
     },
     {
-      key: 'avgRate',
+      key: 'rating',
       title: 'التقييم',
       sortable: true,
-      render: (_, record) => <StarRating rating={record.avgRate || 0} />
+      render: (value) => <StarRating rating={value} />
     },
     {
       key: 'trips',
       title: 'عدد الرحلات',
       sortable: true,
-      render: () => <span className="font-medium">0</span>
+      render: (value) => <span className="font-medium">{value}</span>
     },
     {
       key: 'verification',
       title: 'التحقق',
-      render: (_, record) => (
+      render: () => (
         <div className="flex items-center gap-1">
-          {record.isVerified ? (
-            <>
-              <Check className="w-4 h-4 text-success-400" />
-              <span className="text-success-400 text-sm">تم التحقق</span>
-            </>
-          ) : (
-            <>
-              <X className="w-4 h-4 text-error-400" />
-              <span className="text-error-400 text-sm">غير محقق</span>
-            </>
-          )}
+          <Check className="w-4 h-4 text-success-400" />
+          <span className="text-success-400 text-sm">تم التحقق</span>
         </div>
       )
     },
@@ -436,10 +435,10 @@ const Drivers: React.FC = () => {
       title: 'الإجراءات',
       render: (_, record) => (
         <div className="flex items-center gap-2">
-          <ViewAction onClick={() => handleView(record.id)} />
-          <EditAction onClick={() => handleEdit(record.id)} />
-          <SuspendAction onClick={() => handleSuspend(record.id)} />
-          <DeleteAction onClick={() => handleDelete(record.id)} />
+          <ViewAction onClick={() => console.log('View', record.id)} />
+          <EditAction onClick={() => console.log('Edit', record.id)} />
+          <SuspendAction onClick={() => console.log('Suspend', record.id)} />
+          <DeleteAction onClick={() => console.log('Delete', record.id)} />
         </div>
       )
     }
@@ -448,65 +447,54 @@ const Drivers: React.FC = () => {
   // Table columns for driver control
   const driverControlColumns: TableColumn<Driver>[] = [
     {
-      key: 'user.userName',
+      key: 'name',
       title: 'الاسم',
-      render: (_, record) => (
-        <UserAvatar 
-          name={record.user.userName} 
-          email={record.user.phone}
-          avatar={record.user.image ? `https://mahfouzapp.com${record.user.image}` : undefined}
-        />
-      )
+      render: (_, record) => <UserAvatar name={record.name} email={record.email} />
     },
     {
-      key: 'user.phone',
-      title: 'رقم الهاتف',
-      render: (_, record) => record.user.phone
+      key: 'phone',
+      title: 'رقم الهاتف'
     },
     {
       key: 'status',
       title: 'الحالة',
-      render: (_, record) => {
-        const status = getDriverStatus(record);
+      render: (value) => {
         const statusMap = {
           active: { text: 'نشط', variant: 'success' as const },
           suspended: { text: 'موقوف', variant: 'warning' as const },
           pending: { text: 'محظور', variant: 'error' as const }
         };
-        const statusInfo = statusMap[status];
-        return <StatusBadge status={statusInfo.text} variant={statusInfo.variant} />;
+        const status = statusMap[value as keyof typeof statusMap];
+        return <StatusBadge status={status.text} variant={status.variant} />;
       }
     },
     {
       key: 'suspensionReason',
       title: 'سبب الإيقاف',
-      render: () => (
-        <span className="text-sm text-gray-400">-</span>
+      render: (value) => (
+        <span className="text-sm text-gray-400">{value || '-'}</span>
       )
     },
     {
-      key: 'updatedAt',
+      key: 'lastStatusUpdate',
       title: 'آخر تحديث للحالة',
-      render: (_, record) => (
+      render: (value) => (
         <div className="text-sm">
           <div>آخر تحديث للحالة</div>
-          <div className="text-gray-400">{formatDate(record.updatedAt)}</div>
+          <div className="text-gray-400">{value}</div>
         </div>
       )
     },
     {
-      key: 'avgRate',
+      key: 'rating',
       title: 'التقييمات',
-      render: (_, record) => <StarRating rating={record.avgRate || 0} />
+      render: (value) => <StarRating rating={value} />
     },
     {
       key: 'actions',
       title: 'الإجراءات',
-      render: (_, record) => (
-        <button 
-          onClick={() => handleView(record.id)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors"
-        >
+      render: () => (
+        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
           عرض التفاصيل
         </button>
       )
@@ -680,20 +668,6 @@ const Drivers: React.FC = () => {
     }
   ];
 
-  const filteredDrivers = drivers.filter(driver => {
-    const matchesSearch = driver.user.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         driver.user.phone.includes(searchTerm);
-    
-    const matchesCity = filters.city === 'اختر...' || driver.user.city.name === filters.city;
-    const driverStatus = getDriverStatus(driver);
-    const matchesStatus = filters.status === 'اختر...' || 
-                         (filters.status === 'نشط' && driverStatus === 'active') ||
-                         (filters.status === 'موقوف' && driverStatus === 'suspended') ||
-                         (filters.status === 'قيد الانتظار' && driverStatus === 'pending');
-
-    return matchesSearch && matchesCity && matchesStatus;
-  });
-
   const renderApprovals = () => (
     <div className="space-y-6">
       <div className="mb-6">
@@ -707,12 +681,12 @@ const Drivers: React.FC = () => {
           placeholder="البحث"
           className="flex-1 bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-400"
           value={searchTerm}
-          onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <select
           className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white"
-          value={filters.status}
-          onChange={(e) => dispatch(setFilter({ key: 'status', value: e.target.value }))}
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
         >
           <option>حالة المستندات</option>
           <option>الكل</option>
@@ -721,29 +695,24 @@ const Drivers: React.FC = () => {
         </select>
         <select
           className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white"
-          value={filters.city}
-          onChange={(e) => dispatch(setFilter({ key: 'city', value: e.target.value }))}
+          value={cityFilter}
+          onChange={(e) => setCityFilter(e.target.value)}
         >
           <option>المدينة</option>
           <option>الكل</option>
-          <option>بغداد</option>
-          <option>البصرة</option>
-          <option>أربيل</option>
+          <option>الرياض</option>
+          <option>جدة</option>
+          <option>الدمام</option>
         </select>
-        <button 
-          onClick={() => dispatch(resetFilters())}
-          className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100"
-        >
+        <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
           إعادة تعيين
         </button>
       </div>
 
       <Table
         columns={approvalsColumns}
-        data={filteredDrivers.filter(d => !d.isVerified)}
+        data={driversData}
         rowKey="id"
-        loading={loading}
-        emptyText={error || "لا توجد طلبات موافقة"}
       />
     </div>
   );
@@ -775,54 +744,46 @@ const Drivers: React.FC = () => {
           placeholder="البحث عن سائق..."
           className="flex-1 bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-400"
           value={searchTerm}
-          onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <select
           className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]"
-          value={filters.status}
-          onChange={(e) => dispatch(setFilter({ key: 'status', value: e.target.value }))}
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
         >
           <option>الحالة</option>
-          <option value="اختر...">اختر...</option>
-          <option value="نشط">نشط</option>
-          <option value="موقوف">موقوف</option>
-          <option value="قيد الانتظار">قيد الانتظار</option>
+          <option>اختر...</option>
+          <option>نشط</option>
+          <option>موقوف</option>
+          <option>قيد الانتظار</option>
         </select>
         <select
           className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]"
-          value={filters.city}
-          onChange={(e) => dispatch(setFilter({ key: 'city', value: e.target.value }))}
+          value={cityFilter}
+          onChange={(e) => setCityFilter(e.target.value)}
         >
           <option>المدينة</option>
-          <option value="اختر...">اختر...</option>
-          <option value="بغداد">بغداد</option>
-          <option value="البصرة">البصرة</option>
-          <option value="أربيل">أربيل</option>
+          <option>اختر...</option>
+          <option>الرياض</option>
+          <option>جدة</option>
+          <option>الدمام</option>
         </select>
-        <button 
-          onClick={() => dispatch(resetFilters())}
-          className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100"
-        >
+        <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
           إعادة تعيين
         </button>
         <button className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 flex items-center gap-2">
           <span>+</span>
           إضافة جديد
         </button>
-        <button 
-          onClick={() => dispatch(resetFilters())}
-          className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100"
-        >
+        <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
           إعادة تعيين الفلتر
         </button>
       </div>
 
       <Table
         columns={driverManagementColumns}
-        data={filteredDrivers}
+        data={driversData}
         rowKey="id"
-        loading={loading}
-        emptyText={error || "لا توجد سائقين"}
       />
     </div>
   );
@@ -841,12 +802,12 @@ const Drivers: React.FC = () => {
           placeholder="البحث عن سائق..."
           className="flex-1 bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-400"
           value={searchTerm}
-          onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <select
           className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]"
-          value={filters.status}
-          onChange={(e) => dispatch(setFilter({ key: 'status', value: e.target.value }))}
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
         >
           <option>الحالة</option>
           <option>الكل</option>
@@ -854,20 +815,15 @@ const Drivers: React.FC = () => {
           <option>موقوف</option>
           <option>محظور</option>
         </select>
-        <button 
-          onClick={() => dispatch(resetFilters())}
-          className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100"
-        >
+        <button className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100">
           إعادة تعيين
         </button>
       </div>
 
       <Table
         columns={driverControlColumns}
-        data={filteredDrivers}
+        data={driversData}
         rowKey="id"
-        loading={loading}
-        emptyText={error || "لا توجد سائقين"}
       />
     </div>
   );
@@ -912,15 +868,15 @@ const Drivers: React.FC = () => {
             placeholder="البحث عن السائق..."
             className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600"
             value={searchTerm}
-            onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2">
           <span className="text-gray-400 text-sm">الفترة الزمنية</span>
           <input
             type="text"
-            value={filters.dateRange}
-            onChange={(e) => dispatch(setFilter({ key: 'dateRange', value: e.target.value }))}
+            value={dateRange}
+            onChange={(e) => setDateRange(e.target.value)}
             className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white text-sm w-48"
           />
           <Calendar className="w-5 h-5 text-gray-400" />
@@ -956,7 +912,7 @@ const Drivers: React.FC = () => {
         <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-3xl font-bold">{drivers.filter(d => d.isVerified && !d.isPause).length}</div>
+              <div className="text-3xl font-bold">42</div>
               <div className="text-sm opacity-90">السائقين النشطين</div>
             </div>
             <div className="p-3 bg-white/20 rounded-full">
@@ -1010,7 +966,7 @@ const Drivers: React.FC = () => {
             placeholder="البحث عن إشعار..."
             className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600"
             value={searchTerm}
-            onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         
@@ -1032,10 +988,7 @@ const Drivers: React.FC = () => {
           </select>
         </div>
 
-        <button 
-          onClick={() => dispatch(resetFilters())}
-          className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors"
-        >
+        <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
           إعادة تعيين
         </button>
       </div>
@@ -1082,7 +1035,7 @@ const Drivers: React.FC = () => {
             placeholder="البحث في التقييمات..."
             className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600"
             value={searchTerm}
-            onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         
@@ -1098,10 +1051,7 @@ const Drivers: React.FC = () => {
           </select>
         </div>
 
-        <button 
-          onClick={() => dispatch(resetFilters())}
-          className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors"
-        >
+        <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
           إعادة تعيين
         </button>
       </div>
@@ -1134,19 +1084,6 @@ const Drivers: React.FC = () => {
     </div>
   );
 
-  if (loading) {
-    return (
-      <div className="p-4 space-y-6">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-400">جاري تحميل بيانات السائقين...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="p-4 space-y-6">
       <div className="flex items-center justify-between">
@@ -1161,7 +1098,7 @@ const Drivers: React.FC = () => {
           {menuItems.map((item, index) => (
             <button
               key={index}
-              onClick={() => dispatch(setActiveTab(item.label))}
+              onClick={() => setActiveTab(item.label)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
                 activeTab === item.label 
                   ? 'bg-primary-600 text-white' 
