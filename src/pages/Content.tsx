@@ -1,78 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Save, Upload, Eye, Edit, Trash2, Plus, Image, FileText, Settings, Globe, Monitor, Smartphone } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-interface ContentSection {
-  id: string;
-  title: string;
-  type: 'text' | 'image' | 'banner' | 'form';
-  content: string;
-  isActive: boolean;
-  order: number;
-}
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import {
+  setActiveTab,
+  setSelectedDevice,
+  addSection,
+  updateSection,
+  deleteSection,
+  toggleSection,
+  updateSectionContent
+} from '../store/slices/contentSlice';
 
 const Content: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('إدارة محتوى الصفحة الرئيسية');
-  const [selectedDevice, setSelectedDevice] = useState('desktop');
-
-  const [contentSections, setContentSections] = useState<ContentSection[]>([
-    {
-      id: '1',
-      title: 'إعدادات العنوان الرئيسي',
-      type: 'text',
-      content: 'منصة تعليمية متقدمة تربط المدارس بأولياء الأمور',
-      isActive: true,
-      order: 1
-    },
-    {
-      id: '2',
-      title: 'إدارة محتوى الصفحة الرئيسية',
-      type: 'text',
-      content: 'تعديل وإدارة محتوى الصفحة الرئيسية للموقع',
-      isActive: true,
-      order: 2
-    },
-    {
-      id: '3',
-      title: 'نظام إدارة المدارس المتكامل',
-      type: 'text',
-      content: 'منصة تعليمية متقدمة تربط المدارس بأولياء الأمور',
-      isActive: true,
-      order: 3
-    },
-    {
-      id: '4',
-      title: 'الجدول المرئي',
-      type: 'banner',
-      content: '/images/hero-banner.jpg',
-      isActive: true,
-      order: 4
-    },
-    {
-      id: '5',
-      title: 'نص آخر',
-      type: 'text',
-      content: 'ابدأ الآن',
-      isActive: true,
-      order: 5
-    },
-    {
-      id: '6',
-      title: 'رابط آخر',
-      type: 'text',
-      content: '/register',
-      isActive: true,
-      order: 6
-    },
-    {
-      id: '7',
-      title: 'صورة الخلفية',
-      type: 'image',
-      content: '/images/background.jpg',
-      isActive: true,
-      order: 7
-    }
-  ]);
+  const dispatch = useAppDispatch();
+  const { sections, activeTab, selectedDevice } = useAppSelector(state => state.content);
 
   const tabs = [
     'عن التطبيق',
@@ -82,44 +24,29 @@ const Content: React.FC = () => {
   ];
 
   const handleSaveContent = () => {
-    console.log('Saving content sections:', contentSections);
+    console.log('Saving content sections:', sections);
     // Handle save logic here
   };
 
   const handleToggleSection = (id: string) => {
-    setContentSections(prev =>
-      prev.map(section =>
-        section.id === id
-          ? { ...section, isActive: !section.isActive }
-          : section
-      )
-    );
+    dispatch(toggleSection(id));
   };
 
   const handleUpdateContent = (id: string, newContent: string) => {
-    setContentSections(prev =>
-      prev.map(section =>
-        section.id === id
-          ? { ...section, content: newContent }
-          : section
-      )
-    );
+    dispatch(updateSectionContent({ id, content: newContent }));
   };
 
   const handleAddSection = () => {
-    const newSection: ContentSection = {
-      id: Date.now().toString(),
+    dispatch(addSection({
       title: 'قسم جديد',
       type: 'text',
       content: 'محتوى جديد',
-      isActive: true,
-      order: contentSections.length + 1
-    };
-    setContentSections(prev => [...prev, newSection]);
+      isActive: true
+    }));
   };
 
   const handleDeleteSection = (id: string) => {
-    setContentSections(prev => prev.filter(section => section.id !== id));
+    dispatch(deleteSection(id));
   };
 
   const getTypeIcon = (type: string) => {
@@ -184,7 +111,7 @@ const Content: React.FC = () => {
           <h3 className="text-lg font-semibold">معاينة المحتوى</h3>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setSelectedDevice('desktop')}
+              onClick={() => dispatch(setSelectedDevice('desktop'))}
               className={`p-2 rounded-lg transition-colors ${
                 selectedDevice === 'desktop'
                   ? 'bg-primary-600 text-white'
@@ -194,7 +121,7 @@ const Content: React.FC = () => {
               <Monitor className="w-5 h-5" />
             </button>
             <button
-              onClick={() => setSelectedDevice('mobile')}
+              onClick={() => dispatch(setSelectedDevice('mobile'))}
               className={`p-2 rounded-lg transition-colors ${
                 selectedDevice === 'mobile'
                   ? 'bg-primary-600 text-white'
@@ -218,7 +145,7 @@ const Content: React.FC = () => {
 
       {/* Content Sections */}
       <div className="space-y-4">
-        {contentSections.map((section, index) => (
+        {sections.map((section, index) => (
           <motion.div
             key={section.id}
             initial={{ opacity: 0, y: 20 }}
@@ -338,7 +265,7 @@ const Content: React.FC = () => {
       </div>
 
       {/* Empty State */}
-      {contentSections.length === 0 && (
+      {sections.length === 0 && (
         <div className="text-center py-12">
           <FileText className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-400 mb-2">لا توجد أقسام محتوى</h3>
@@ -406,7 +333,7 @@ const Content: React.FC = () => {
             {tabs.map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => dispatch(setActiveTab(tab))}
                 className={`
                   px-6 py-4 whitespace-nowrap font-medium transition-colors border-b-2
                   ${activeTab === tab
