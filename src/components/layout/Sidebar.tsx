@@ -23,6 +23,7 @@ const navItems = [
   { name: 'إدارة المدارس', path: '/schools', icon: <School className="w-5 h-5" />, isNew: false },
   { name: 'السائقون', path: '/drivers', icon: <Users className="w-5 h-5" />, isNew: true },
   { name: 'إدارة المستخدمين', path: '/users', icon: <UserCog className="w-5 h-5" />, isNew: false },
+  {name: ' خطط الاشتراكات', path: '/plans', icon: <CreditCard className="w-5 h-5" />, isNew: true },
   { name: 'إدارة الاشتراكات', path: '/subscriptions', icon: <CreditCard className="w-5 h-5" />, isNew: true },
   { name: 'الإشعارات', path: '/notifications', icon: <Bell className="w-5 h-5" />, isNew: true },
   { name: 'إدارة المحتوى', path: '/content', icon: <FileEdit className="w-5 h-5" />, isNew: true },

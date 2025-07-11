@@ -14,6 +14,8 @@ import Ads from './pages/Ads';
 import Login from './pages/Login';
 import SystemSettings from './pages/SystemSettings';
 import Content from './pages/Content';
+import SubscriptionPlans from './pages/subscriptionPlans';
+import DriverDetailsPage from './components/drivers/drivers-approvals/DriverDetailsPage';
 
 const ProtectedRoute: React.FC = () => {
   const token = localStorage.getItem('token');
@@ -31,6 +33,7 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="agents" element={<Agents />} />
           <Route path="drivers" element={<Drivers />} />
+          <Route path="plans" element={<SubscriptionPlans />} />
           <Route path="subscriptions" element={<Subscriptions />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
@@ -38,6 +41,7 @@ function App() {
           <Route path="ads" element={<Ads />} />
           <Route path="content" element={<Content />} />
           <Route path="system-settings" element={<SystemSettings />} />
+          <Route path="drivers/:id" element={<DriverDetailsPage />} />
           <Route index element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>

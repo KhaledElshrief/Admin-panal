@@ -58,7 +58,19 @@ const Table = <T extends Record<string, any>>({
       return column.render(value, record, index);
     }
     
-    return value;
+    // Only return value if it's a valid ReactNode (not a plain object/array)
+    if (
+      value === null ||
+      value === undefined ||
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'boolean' ||
+      React.isValidElement(value)
+    ) {
+      return value;
+    }
+    
+    return ''; // fallback for objects/arrays
   };
 
   const getTextAlign = (align?: string) => {
@@ -99,8 +111,8 @@ const Table = <T extends Record<string, any>>({
                   key={index}
                   className={`py-4 px-4 font-medium text-gray-300 ${getTextAlign(column.align)}`}
                   style={{ width: column.width }}
-                >
-                  <div className="flex items-center gap-2 justify-end">
+                > 
+                  <div className="flex items-center gap-2 ">
                     {column.title}
                     {column.sortable && (
                       <button className="text-gray-400 hover:text-white transition-colors">
