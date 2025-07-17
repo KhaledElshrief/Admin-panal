@@ -4,6 +4,7 @@ import uiReducer from './slices/uiSlice';
 import authReducer from './slices/authSlice';
 import driversReducer from './slices/driversSlice';
 import subscriptionReducer from './slices/subscriptionSlice';
+import appsettingsReducer from './slices/appsettingsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     ui: uiReducer,
     drivers: driversReducer,
     subscription: subscriptionReducer,
+    appsettings: appsettingsReducer,
   },
 });
 

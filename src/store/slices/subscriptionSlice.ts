@@ -12,11 +12,58 @@ export interface Subscription {
   updatedAt?: string;
 }
 
+export interface UserSubscription {
+  id: string;
+  userId: string;
+  amount: number | null;
+  subscriptionId: string;
+  paidStatus: string;
+  method: string;
+  driverId: string;
+  paidAt: string | null;
+  isActive: boolean;
+  startDate: string | null;
+  endDate: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    userName: string;
+  };
+  subscription: {
+    type: string;
+  };
+}
+
+export interface UserSubscriptionsDashboardResponse {
+  code: number;
+  message: {
+    arabic: string;
+    english: string;
+  };
+  data: UserSubscription[];
+  totalPages: number;
+  totalItems: number;
+}
+
+export interface UserSubscriptionsStats {
+  total: number;
+  monthlyTotalAmount: number;
+  monthlyPendingAmount: number;
+}
+
 interface SubscriptionState {
   subscriptions: Subscription[];
   loading: boolean;
   error: string | null;
   success: string | null;
+  userSubscriptionsDashboard: UserSubscription[];
+  userSubscriptionsDashboardLoading: boolean;
+  userSubscriptionsDashboardError: string | null;
+  userSubscriptionsDashboardTotalPages: number;
+  userSubscriptionsDashboardTotalItems: number;
+  userSubscriptionsStats: UserSubscriptionsStats | null;
+  userSubscriptionsStatsLoading: boolean;
+  userSubscriptionsStatsError: string | null;
 }
 
 const initialState: SubscriptionState = {
@@ -24,6 +71,14 @@ const initialState: SubscriptionState = {
   loading: false,
   error: null,
   success: null,
+  userSubscriptionsDashboard: [],
+  userSubscriptionsDashboardLoading: false,
+  userSubscriptionsDashboardError: null,
+  userSubscriptionsDashboardTotalPages: 0,
+  userSubscriptionsDashboardTotalItems: 0,
+  userSubscriptionsStats: null,
+  userSubscriptionsStatsLoading: false,
+  userSubscriptionsStatsError: null,
 };
 
 const API_URL = 'https://mahfouzapp.com/subscription';
@@ -69,6 +124,42 @@ export const createSubscription = createAsyncThunk(
   }
 );
 
+export const fetchUserSubscriptionsDashboard = createAsyncThunk(
+  'subscription/fetchUserSubscriptionsDashboard',
+  async ({ page = 1, pageSize = 20 }: { page?: number; pageSize?: number }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found in localStorage');
+      const response = await axios.get(`https://mahfouzapp.com/user-subscriptions/dashboard?page=${page}&pageSize=${pageSize}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch user subscriptions dashboard');
+    }
+  }
+);
+
+export const fetchUserSubscriptionsStats = createAsyncThunk(
+  'subscription/fetchUserSubscriptionsStats',
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found in localStorage');
+      const response = await axios.get('https://mahfouzapp.com/user-subscriptions/stat/dashboard', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      return response.data.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch user subscriptions stats');
+    }
+  }
+);
+
 const subscriptionSlice = createSlice({
   name: 'subscription',
   initialState,
@@ -105,6 +196,34 @@ const subscriptionSlice = createSlice({
       .addCase(createSubscription.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      // User Subscriptions Dashboard
+      .addCase(fetchUserSubscriptionsDashboard.pending, (state) => {
+        state.userSubscriptionsDashboardLoading = true;
+        state.userSubscriptionsDashboardError = null;
+      })
+      .addCase(fetchUserSubscriptionsDashboard.fulfilled, (state, action) => {
+        state.userSubscriptionsDashboardLoading = false;
+        state.userSubscriptionsDashboard = action.payload.data;
+        state.userSubscriptionsDashboardTotalPages = action.payload.totalPages;
+        state.userSubscriptionsDashboardTotalItems = action.payload.totalItems;
+      })
+      .addCase(fetchUserSubscriptionsDashboard.rejected, (state, action) => {
+        state.userSubscriptionsDashboardLoading = false;
+        state.userSubscriptionsDashboardError = action.payload as string;
+      })
+      // User Subscriptions Stats
+      .addCase(fetchUserSubscriptionsStats.pending, (state) => {
+        state.userSubscriptionsStatsLoading = true;
+        state.userSubscriptionsStatsError = null;
+      })
+      .addCase(fetchUserSubscriptionsStats.fulfilled, (state, action) => {
+        state.userSubscriptionsStatsLoading = false;
+        state.userSubscriptionsStats = action.payload;
+      })
+      .addCase(fetchUserSubscriptionsStats.rejected, (state, action) => {
+        state.userSubscriptionsStatsLoading = false;
+        state.userSubscriptionsStatsError = action.payload as string;
       });
   },
 });
