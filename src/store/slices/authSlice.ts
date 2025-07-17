@@ -19,8 +19,8 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials: { phoneNumber: string; password: string }, { rejectWithValue }) => {
     try {
-   const response = await axios.post('https://mahfouzapp.com/api/dashboard-auth/login', credentials);
-           localStorage.setItem('token', response.data.data.token);
+      const response = await axios.post('/api/dashboard-auth/login', credentials);
+        localStorage.setItem('token', response.data.data.token);
         localStorage.setItem('role', response.data.data.role);
         return response.data.data;
     } catch (error: any) {
