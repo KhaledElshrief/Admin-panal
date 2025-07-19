@@ -5,12 +5,18 @@ import axios from 'axios';
 
 export const fetchDrivers = createAsyncThunk(
   'drivers/fetchDrivers',
-  async (params: { isVerified?: string; isPause?: string; userName?: string } = {}) => {
+  async (params: { 
+    isVerified?: string; 
+    isPause?: string; 
+    userName?: string; 
+    page?: number; 
+    pageSize?: number; 
+  } = {}) => {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found in localStorage');
     const response = await axios.get('https://mahfouzapp.com/drivers', {
       headers: { Authorization: `Bearer ${token}` },
-      params, 
+      params,
     });
     return response.data.data;
   }

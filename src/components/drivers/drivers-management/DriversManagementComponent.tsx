@@ -7,6 +7,7 @@ import { TableColumn } from '../../ui/Table';
 import { useNavigate } from 'react-router-dom';
 import DriversManagement from './DriversManagementTap';
 import { Check, AlertTriangle } from 'lucide-react';
+import Pagination from '../../ui/Pagination';
 
 interface City {
   name: string;
@@ -61,15 +62,20 @@ const DriversManagementComponent: React.FC = () => {
   ) as { data: Driver[]; loading: boolean; error: string | null };
   const navigate = useNavigate();
 
+
+
   // Filters (local state)
   const [searchTerm, setSearchTerm] = React.useState('');
   const [statusFilter, setStatusFilter] = React.useState('اختر...');
   const [cityFilter, setCityFilter] = React.useState('اختر...');
   const [filteredDrivers, setFilteredDrivers] = React.useState<Driver[]>([]);
+  const [page, setPage] = React.useState(1);
+  const pageSize = 1; // or any default you want
+  const totalPages = 2; // For demo/testing, or get from backend if available
 
   useEffect(() => {
-    dispatch(fetchDrivers({}));
-  }, [dispatch]);
+    dispatch(fetchDrivers({ page, pageSize }));
+  }, [dispatch, page, pageSize]);
 
   useEffect(() => {
     if (!drivers) {
@@ -93,6 +99,10 @@ const DriversManagementComponent: React.FC = () => {
         )
     );
   }, [drivers, searchTerm, statusFilter, cityFilter]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, statusFilter, cityFilter]);
 
   const handleViewDriver = (id: string) => {
     navigate(`/drivers/${id}`);
@@ -199,16 +209,23 @@ const DriversManagementComponent: React.FC = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <DriversManagement
-      driversData={filteredDrivers}
-      driverManagementColumns={driverManagementColumns}
-      searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-      statusFilter={statusFilter}
-      setStatusFilter={setStatusFilter}
-      cityFilter={cityFilter}
-      setCityFilter={setCityFilter}
-    />
+    <>
+      <DriversManagement
+        driversData={filteredDrivers}
+        driverManagementColumns={driverManagementColumns}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        cityFilter={cityFilter}
+        setCityFilter={setCityFilter}
+      />
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
+    </>
   );
 };
 
