@@ -17,11 +17,29 @@ const SubscriptionsTab: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('الكل');
-  const [dateRange, setDateRange] = useState({ start: '5/2025', end: '6/2025' });
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
 
+  const statusMap = {
+    "نشط": "PAID",
+    "معلق": "PENDING",
+    "منتهي": "EXPIRED"
+  };
+
+  const handleFilterChange = () => {
+    dispatch(fetchUserSubscriptionsDashboard({
+      page: 1,
+      pageSize: 20,
+      userName: searchTerm || undefined,
+      paidStatus: statusFilter !== 'الكل' ? statusMap[statusFilter as keyof typeof statusMap] : undefined,
+      createdAtFrom: dateRange.start || undefined,
+      createdAtTo: dateRange.end || undefined,
+    }));
+  };
+
+  // استدعِ handleFilterChange عند تغيير أي فلتر
   useEffect(() => {
-    dispatch(fetchUserSubscriptionsDashboard({ page: 1, pageSize: 20 }));
-  }, [dispatch]);
+    handleFilterChange();
+  }, [searchTerm, statusFilter, dateRange]);
 
   const subscriptionsData = userSubscriptionsDashboard.map(item => ({
     id: item.id,
@@ -36,12 +54,7 @@ const SubscriptionsTab: React.FC = () => {
   }));
 
   const columns: TableColumn[] = [
-    {
-      key: 'id',
-      title: 'الرقم التعريفي',
-      sortable: true,
-      render: (value) => <span className="font-mono text-sm text-blue-400">{value}</span>
-    },
+
     {
       key: 'subscriber',
       title: 'المشترك',
@@ -64,13 +77,13 @@ const SubscriptionsTab: React.FC = () => {
       key: 'startDate',
       title: 'تاريخ البدء',
       sortable: true,
-      render: (value) => <span className="text-gray-400 text-sm">{value}</span>
+      render: (value) => <span className="text-gray-400 text-sm">{value || '-'}</span>
     },
     {
       key: 'endDate',
       title: 'تاريخ الانتهاء',
       sortable: true,
-      render: (value) => <span className="text-gray-400 text-sm">{value}</span>
+      render: (value) => <span className="text-gray-400 text-sm">{value || '-'}</span>
     },
     {
       key: 'status',
@@ -96,13 +109,6 @@ const SubscriptionsTab: React.FC = () => {
       render: (value) => <span className="text-gray-300 text-sm">{value}</span>
     }
   ];
-
-  const filteredData = subscriptionsData.filter(subscription => {
-    const matchesSearch = subscription.subscriber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      subscription.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'الكل' || subscription.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
 
   if (userSubscriptionsDashboardLoading) {
     return (
@@ -145,17 +151,17 @@ const SubscriptionsTab: React.FC = () => {
           />
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-gray-400 text-sm">النطاق الزمني</span>
+          <span className="text-gray-400 text-sm">تاريخ الإنشاء</span>
           <input
-            type="text"
+            type="date"
             value={dateRange.start}
-            onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+            onChange={e => setDateRange({ ...dateRange, start: e.target.value })}
             className="bg-dark-400 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm w-20 focus:outline-none focus:ring-2 focus:ring-primary-600"
           />
           <input
-            type="text"
+            type="date"
             value={dateRange.end}
-            onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+            onChange={e => setDateRange({ ...dateRange, end: e.target.value })}
             className="bg-dark-400 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm w-20 focus:outline-none focus:ring-2 focus:ring-primary-600"
           />
         </div>
@@ -172,14 +178,21 @@ const SubscriptionsTab: React.FC = () => {
             <option value="معلق">معلق</option>
           </select>
         </div>
-        <button className="bg-dark-200 hover:bg-dark-100 text-white px-4 py-2 rounded-lg transition-colors">
+        <button
+          className="bg-dark-200 hover:bg-dark-100 text-white px-4 py-2 rounded-lg transition-colors"
+          onClick={() => {
+            setSearchTerm('');
+            setStatusFilter('الكل');
+            setDateRange({ start: '', end: '' });
+          }}
+        >
           إعادة تعيين النظام
         </button>
       </div>
       {/* Table */}
       <Table
         columns={columns}
-        data={filteredData}
+        data={subscriptionsData}
         rowKey="id"
         hoverable={true}
         emptyText="لا توجد اشتراكات"
@@ -187,7 +200,7 @@ const SubscriptionsTab: React.FC = () => {
       {/* Results Summary */}
       <div className="flex items-center justify-between pt-4 border-t border-dark-200">
         <div className="text-sm text-gray-400">
-          عرض {filteredData.length} من أصل {typeof userSubscriptionsDashboardTotalItems === 'number' ? userSubscriptionsDashboardTotalItems : subscriptionsData.length} اشتراك
+          عرض {subscriptionsData.length} من أصل {typeof userSubscriptionsDashboardTotalItems === 'number' ? userSubscriptionsDashboardTotalItems : subscriptionsData.length} اشتراك
         </div>
         <div className="flex items-center gap-2">
           <button className="px-3 py-1 bg-dark-200 hover:bg-dark-100 text-white rounded text-sm transition-colors">

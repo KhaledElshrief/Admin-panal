@@ -126,15 +126,50 @@ export const createSubscription = createAsyncThunk(
 
 export const fetchUserSubscriptionsDashboard = createAsyncThunk(
   'subscription/fetchUserSubscriptionsDashboard',
-  async ({ page = 1, pageSize = 20 }: { page?: number; pageSize?: number }, { rejectWithValue }) => {
+  async (
+    {
+      page = 1,
+      pageSize = 20,
+      userName,
+      paidStatus,
+      createdAtFrom,
+      createdAtTo,
+      updatedAtFrom,
+      updatedAtTo
+    }: {
+      page?: number;
+      pageSize?: number;
+      userName?: string;
+      paidStatus?: string;
+      createdAtFrom?: string;
+      createdAtTo?: string;
+      updatedAtFrom?: string;
+      updatedAtTo?: string;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found in localStorage');
-      const response = await axios.get(`https://mahfouzapp.com/user-subscriptions/dashboard?page=${page}&pageSize=${pageSize}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      // بناء رابط الـ API مع الباراميترز
+      const params = new URLSearchParams();
+      params.append('page', page.toString());
+      params.append('pageSize', pageSize.toString());
+      if (userName) params.append('userName', userName);
+      if (paidStatus) params.append('paidStatus', paidStatus);
+      if (createdAtFrom) params.append('createdAtFrom', createdAtFrom);
+      if (createdAtTo) params.append('createdAtTo', createdAtTo);
+      if (updatedAtFrom) params.append('updatedAtFrom', updatedAtFrom);
+      if (updatedAtTo) params.append('updatedAtTo', updatedAtTo);
+
+      const response = await axios.get(
+        `https://mahfouzapp.com/user-subscriptions/dashboard?${params.toString()}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch user subscriptions dashboard');
