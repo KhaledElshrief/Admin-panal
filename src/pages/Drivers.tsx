@@ -452,8 +452,7 @@ const Drivers: React.FC = () => {
 
   useEffect(() => {
     if (activeTab === 'الموافقات') {
-      dispatch(fetchDrivers());
-    }
+      dispatch(fetchDrivers({}));    }
   }, [activeTab, dispatch]);
 
   return (

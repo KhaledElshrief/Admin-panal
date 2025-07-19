@@ -7,20 +7,29 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { fetchAllUsers } from '../store/slices/usersSlices';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import Pagination from '../components/ui/Pagination';
 
 const Users: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { users, loading, error, totalItems } = useAppSelector(state => state.users);
+  const { users, loading, error, totalItems, totalPages } = useAppSelector(state => state.users);
 
   const [roleFilter, setRoleFilter] = useState(''); 
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 10; 
 
   useEffect(() => {
     dispatch(fetchAllUsers({
       role: roleFilter || undefined,
       userName: searchTerm || undefined,
+      page,
+      pageSize,
     }));
-  }, [dispatch, roleFilter, searchTerm]);
+  }, [dispatch, roleFilter, searchTerm, page, pageSize]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [roleFilter, searchTerm]);
 
   const handleViewDetails = (userId: string) => {
     console.log('View details:', userId);
@@ -199,6 +208,11 @@ const Users: React.FC = () => {
           <div className="text-sm text-gray-400">
             عرض {users.length} من أصل {totalItems} مستخدم
           </div>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </div>
       </div>
     </div>

@@ -33,7 +33,13 @@ const initialState: UsersState = {
 export const fetchAllUsers = createAsyncThunk(
   'users/fetchAll',
   async (
-    params: { role?: string; userName?: string; isVerified?: boolean } = {},
+    params: { 
+      role?: string; 
+      userName?: string; 
+      isVerified?: boolean; 
+      page?: number; 
+      pageSize?: number; 
+    } = {},
     { rejectWithValue }
   ) => {
     try {
