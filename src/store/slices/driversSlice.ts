@@ -3,14 +3,18 @@ import axios from 'axios';
 
 
 
-export const fetchDrivers = createAsyncThunk('drivers/fetchDrivers', async () => {
-  const token = localStorage.getItem('token');
-  if (!token) throw new Error('No token found in localStorage');
-  const response = await axios.get('https://mahfouzapp.com/drivers', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data.data;
-});
+export const fetchDrivers = createAsyncThunk(
+  'drivers/fetchDrivers',
+  async (params: { isVerified?: string; isPause?: string; userName?: string } = {}) => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No token found in localStorage');
+    const response = await axios.get('https://mahfouzapp.com/drivers', {
+      headers: { Authorization: `Bearer ${token}` },
+      params, 
+    });
+    return response.data.data;
+  }
+);
 
 export const fetchDriverById = createAsyncThunk(
   'drivers/fetchDriverById',
@@ -26,12 +30,27 @@ export const fetchDriverById = createAsyncThunk(
 
 export const fetchDriverRatings = createAsyncThunk(
   'drivers/fetchDriverRatings',
-  async ({ driverId, page = 1, pageSize = 10 }: { driverId: string, page?: number, pageSize?: number }) => {
+  async ({
+    driverId,
+    page = 1,
+    pageSize = 10,
+    comment,
+    rate,
+  }: {
+    driverId: string;
+    page?: number;
+    pageSize?: number;
+    comment?: string;
+    rate?: string | number;
+  }) => {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found in localStorage');
     const response = await axios.get(
-      `https://mahfouzapp.com/drivers/rates/all?page=${page}&pageSize=${pageSize}&driverId=${driverId}`,
-      { headers: { Authorization: `Bearer ${token}` } }
+      `https://mahfouzapp.com/drivers/rates/all`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { driverId, page, pageSize, comment, rate },
+      }
     );
     return response.data;
   }

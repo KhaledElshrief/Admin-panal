@@ -68,7 +68,7 @@ const DriversManagementComponent: React.FC = () => {
   const [filteredDrivers, setFilteredDrivers] = React.useState<Driver[]>([]);
 
   useEffect(() => {
-    dispatch(fetchDrivers());
+    dispatch(fetchDrivers({}));
   }, [dispatch]);
 
   useEffect(() => {

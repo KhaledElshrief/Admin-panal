@@ -15,34 +15,15 @@ const DriversRatingsComponent: React.FC<DriversRatingsComponentProps> = ({ drive
   const { ratingsData, ratingsLoading, ratingsError } = useSelector((state: RootState) => state.drivers);
   const [searchTerm, setSearchTerm] = useState('');
   const [ratingFilter, setRatingFilter] = useState('الكل');
-  const [filteredRatings, setFilteredRatings] = useState<any[]>([]);
 
   useEffect(() => {
     if (driverId) {
-      dispatch(fetchDriverRatings({ driverId, page: 1, pageSize: 10 }));
+      const params: any = { driverId, page: 1, pageSize: 10 };
+      if (searchTerm) params.comment = searchTerm;
+      if (ratingFilter !== 'الكل') params.rate = ratingFilter;
+      dispatch(fetchDriverRatings(params));
     }
-  }, [dispatch, driverId]);
-
-  // Apply filters using useEffect
-  useEffect(() => {
-    const filtered = ratingsData.filter((item: any) => {
-      // Filter by search term
-      const matchesSearch =
-        !searchTerm ||
-        item.rate?.user?.userName?.includes(searchTerm) ||
-        item.driver?.user?.userName?.includes(searchTerm) ||
-        item.rate?.comment?.includes(searchTerm);
-
-      // Filter by rating
-      const matchesRating =
-        ratingFilter === 'الكل' ||
-        (item.rate?.rating && item.rate.rating.toString() === ratingFilter);
-
-      return matchesSearch && matchesRating;
-    });
-
-    setFilteredRatings(filtered);
-  }, [ratingsData, searchTerm, ratingFilter]);
+  }, [dispatch, driverId, searchTerm, ratingFilter]);
 
   const handleResetFilters = () => {
     setSearchTerm('');
@@ -91,7 +72,7 @@ const DriversRatingsComponent: React.FC<DriversRatingsComponentProps> = ({ drive
 
   return (
     <DriversRatings
-      ratingsData={filteredRatings}
+      ratingsData={ratingsData}
       ratingsColumns={ratingsColumns}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}

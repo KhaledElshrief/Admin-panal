@@ -64,36 +64,16 @@ const DriversApprovalComponent: React.FC = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [statusFilter, setStatusFilter] = React.useState('اختر...');
   const [cityFilter, setCityFilter] = React.useState('اختر...');
-  const [filteredDrivers, setFilteredDrivers] = React.useState<Driver[]>([]);
 
+  // Fetch drivers from backend with filters
   useEffect(() => {
-    dispatch(fetchDrivers());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!drivers) {
-      setFilteredDrivers([]);
-      return;
-    }
-    setFilteredDrivers(
-      drivers
-        .filter((driver) =>
-          searchTerm === '' ||
-          driver.user?.userName?.includes(searchTerm) ||
-          driver.user?.phone?.includes(searchTerm)
-        )
-        .filter((driver) => {
-          if (statusFilter === 'اختر...' || statusFilter === 'حالة المستندات' || statusFilter === 'الكل') return true;
-          if (statusFilter === 'مكتملة') return driver.isVerified;
-          if (statusFilter === 'غير مكتملة') return !driver.isVerified;
-          return true;
-        })
-        .filter((driver) => {
-          if (cityFilter === 'اختر...' || cityFilter === 'المدينة' || cityFilter === 'الكل') return true;
-          return driver.user?.city?.name === cityFilter;
-        })
-    );
-  }, [drivers, searchTerm, statusFilter, cityFilter]);
+    const params: any = {};
+    if (searchTerm) params.userName = searchTerm;
+    if (statusFilter === 'مكتملة') params.isVerified = 'true';
+    if (statusFilter === 'غير مكتملة') params.isVerified = 'false';
+    if (cityFilter && cityFilter !== 'اختر...' && cityFilter !== 'المدينة' && cityFilter !== 'الكل') params.city = cityFilter;
+    dispatch(fetchDrivers(params));
+  }, [dispatch, searchTerm, statusFilter, cityFilter]);
 
   const handleViewDriver = (id: string) => {
     navigate(`/drivers/${id}`);
@@ -185,7 +165,7 @@ const DriversApprovalComponent: React.FC = () => {
 
   return (
     <DriversApprovals
-      driversData={filteredDrivers}
+      driversData={drivers}
       approvalsColumns={approvalsColumns}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
