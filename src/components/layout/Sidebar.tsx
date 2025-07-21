@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  School, 
-  Users, 
-  UserSquare, 
-  CreditCard, 
-  FileText, 
+import {
+  LayoutDashboard,
+  School,
+  Users,
+  UserSquare,
+  CreditCard,
+  FileText,
   Settings,
   Bell,
   Home,
   UserCog,
   FileEdit,
   ShieldCheck,
-  Cog
+  Cog,
+  MapPin,
+  Globe
 } from 'lucide-react';
 
 const navItems = [
@@ -21,6 +23,9 @@ const navItems = [
   { name: 'الرئيسية', path: '/home', icon: <Home className="w-5 h-5" />, isNew: false },
   { name: 'إدارة الوكلاء والمندوبين', path: '/agents', icon: <UserSquare className="w-5 h-5" />, isNew: true },
   { name: 'إدارة المدارس', path: '/schools', icon: <School className="w-5 h-5" />, isNew: false },
+  { name: 'المدرسة', path: '/school', icon: <School className="w-5 h-5" />, isNew: false },
+  { name: 'المدينة', path: '/city', icon: <MapPin className="w-5 h-5" />, isNew: false },
+  { name: 'الدولة', path: '/country', icon: <Globe className="w-5 h-5" />, isNew: false },
   { name: 'السائقون', path: '/drivers', icon: <Users className="w-5 h-5" />, isNew: true },
   { name: 'إدارة المستخدمين', path: '/users', icon: <UserCog className="w-5 h-5" />, isNew: false },
   {name: ' خطط الاشتراكات', path: '/plans', icon: <CreditCard className="w-5 h-5" />, isNew: true },
@@ -36,7 +41,7 @@ const Sidebar: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <aside 
+    <aside
       className={`bg-dark-300 h-full transition-all duration-300 ease-in-out ${
         isExpanded ? 'w-64' : 'w-16'
       } relative`}
@@ -51,14 +56,14 @@ const Sidebar: React.FC = () => {
             <School className="w-6 h-6 text-white" />
           )}
         </div>
-        
+
         <nav className="space-y-2">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               className={({ isActive }) => `
-                relative flex items-center px-3 py-2.5 rounded-lg gap-3 
+                relative flex items-center px-3 py-2.5 rounded-lg gap-3
                 transition-all duration-200 ease-in-out
                 ${isActive ? 'bg-primary-600 text-white' : 'text-gray-300 hover:bg-dark-200'}
                 ${!isExpanded && 'justify-center'}

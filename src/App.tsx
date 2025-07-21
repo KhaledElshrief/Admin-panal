@@ -16,6 +16,10 @@ import SystemSettings from './pages/SystemSettings';
 import Content from './pages/Content';
 import SubscriptionPlans from './pages/subscriptionPlans';
 import DriverDetailsPage from './components/drivers/drivers-approvals/DriverDetailsPage';
+import School from './pages/School';
+import City from './pages/City';
+import Country from './pages/Country';
+import SchoolDetails from './pages/SchoolDetails';
 
 const ProtectedRoute: React.FC = () => {
   const token = localStorage.getItem('token');
@@ -26,10 +30,14 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route element={<ProtectedRoute />}>
-        <Route path="/*" element={<MainLayout />}>
+      <Route element={<ProtectedRoute />}> 
+        <Route path="/*" element={<MainLayout />}> 
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="schools" element={<Schools />} />
+          <Route path="school" element={<School />} />
+          <Route path="school/:id" element={<SchoolDetails />} />
+          <Route path="city" element={<City />} />
+          <Route path="country" element={<Country />} />
           <Route path="users" element={<Users />} />
           <Route path="agents" element={<Agents />} />
           <Route path="drivers" element={<Drivers />} />
