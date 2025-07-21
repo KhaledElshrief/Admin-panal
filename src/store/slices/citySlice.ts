@@ -27,6 +27,15 @@ interface CitiesState {
   error: string | null;
   totalItems: number;
   totalPages: number;
+  selectedCity: City | null;
+  selectedCityLoading: boolean;
+  selectedCityError: string | null;
+  createLoading: boolean;
+  createError: string | null;
+  updateLoading: boolean;
+  updateError: string | null;
+  deleteLoading: boolean;
+  deleteError: string | null;
 }
 
 const initialState: CitiesState = {
@@ -35,6 +44,15 @@ const initialState: CitiesState = {
   error: null,
   totalItems: 0,
   totalPages: 0,
+  selectedCity: null,
+  selectedCityLoading: false,
+  selectedCityError: null,
+  createLoading: false,
+  createError: null,
+  updateLoading: false,
+  updateError: null,
+  deleteLoading: false,
+  deleteError: null,
 };
 
 export const fetchCities = createAsyncThunk(
@@ -50,6 +68,76 @@ export const fetchCities = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch cities');
+    }
+  }
+);
+
+export const fetchCityById = createAsyncThunk(
+  'cities/fetchCityById',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`https://mahfouzapp.com/dashboard/cities/${id}`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
+      });
+      return response.data.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch city');
+    }
+  }
+);
+
+export const createCity = createAsyncThunk(
+  'cities/createCity',
+  async (data: Omit<City, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post('https://mahfouzapp.com/dashboard/cities', data, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to create city');
+    }
+  }
+);
+
+export const updateCity = createAsyncThunk(
+  'cities/updateCity',
+  async ({ id, data }: { id: string; data: Partial<City> }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.patch(`https://mahfouzapp.com/dashboard/cities/${id}`, data, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to update city');
+    }
+  }
+);
+
+export const deleteCity = createAsyncThunk(
+  'cities/deleteCity',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`https://mahfouzapp.com/dashboard/cities/${id}`, {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
+      });
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to delete city');
     }
   }
 );
@@ -73,6 +161,62 @@ const citySlice = createSlice({
       .addCase(fetchCities.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(fetchCityById.pending, (state) => {
+        state.selectedCityLoading = true;
+        state.selectedCityError = null;
+      })
+      .addCase(fetchCityById.fulfilled, (state, action: PayloadAction<City>) => {
+        state.selectedCityLoading = false;
+        state.selectedCity = action.payload;
+      })
+      .addCase(fetchCityById.rejected, (state, action) => {
+        state.selectedCityLoading = false;
+        state.selectedCityError = action.payload as string;
+      })
+      .addCase(createCity.pending, (state) => {
+        state.createLoading = true;
+        state.createError = null;
+      })
+      .addCase(createCity.fulfilled, (state, action: PayloadAction<City>) => {
+        state.createLoading = false;
+        state.cities.unshift(action.payload);
+        state.totalItems += 1;
+      })
+      .addCase(createCity.rejected, (state, action) => {
+        state.createLoading = false;
+        state.createError = action.payload as string;
+      })
+      .addCase(updateCity.pending, (state) => {
+        state.updateLoading = true;
+        state.updateError = null;
+      })
+      .addCase(updateCity.fulfilled, (state, action: PayloadAction<City>) => {
+        state.updateLoading = false;
+        state.selectedCity = action.payload;
+        // Update in cities list if present
+        const idx = state.cities.findIndex(c => c.id === action.payload.id);
+        if (idx !== -1) state.cities[idx] = action.payload;
+      })
+      .addCase(updateCity.rejected, (state, action) => {
+        state.updateLoading = false;
+        state.updateError = action.payload as string;
+      })
+      .addCase(deleteCity.pending, (state) => {
+        state.deleteLoading = true;
+        state.deleteError = null;
+      })
+      .addCase(deleteCity.fulfilled, (state, action: PayloadAction<string>) => {
+        state.deleteLoading = false;
+        state.cities = state.cities.filter(city => city.id !== action.payload);
+        state.totalItems = Math.max(0, state.totalItems - 1);
+        if (state.selectedCity?.id === action.payload) {
+          state.selectedCity = null;
+        }
+      })
+      .addCase(deleteCity.rejected, (state, action) => {
+        state.deleteLoading = false;
+        state.deleteError = action.payload as string;
       });
   },
 });

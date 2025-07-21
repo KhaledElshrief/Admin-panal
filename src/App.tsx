@@ -20,6 +20,7 @@ import School from './pages/School';
 import City from './pages/City';
 import Country from './pages/Country';
 import SchoolDetails from './pages/SchoolDetails';
+import CityDetails from './pages/CityDetails';
 
 const ProtectedRoute: React.FC = () => {
   const token = localStorage.getItem('token');
@@ -37,6 +38,7 @@ function App() {
           <Route path="school" element={<School />} />
           <Route path="school/:id" element={<SchoolDetails />} />
           <Route path="city" element={<City />} />
+          <Route path="city/:id" element={<CityDetails />} />
           <Route path="country" element={<Country />} />
           <Route path="users" element={<Users />} />
           <Route path="agents" element={<Agents />} />
