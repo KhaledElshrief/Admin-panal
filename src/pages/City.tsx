@@ -6,12 +6,15 @@ import type { City as CityType } from '../store/slices/citySlice';
 import { Eye, Plus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AddCityModal from '../components/cities/AddCityModal';
+import DeleteCityModal from '../components/cities/DeleteCityModal';
 
 const City: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { cities, loading, error, createLoading, createError, deleteLoading, deleteError } = useSelector((state: RootState) => state.city);
   const navigate = useNavigate();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedCityForDelete, setSelectedCityForDelete] = useState<CityType | null>(null);
 
   useEffect(() => {
     dispatch(fetchCities({ page: 1, pageSize: 10 }));
@@ -51,7 +54,10 @@ const City: React.FC = () => {
               </button>
               <button
                 className="ml-2 text-red-500 hover:text-red-700"
-                onClick={() => handleDelete(city.id)}
+                onClick={() => {
+                  setSelectedCityForDelete(city);
+                  setIsDeleteModalOpen(true);
+                }}
               >
                 <Trash2 className="w-5 h-5" />
               </button>
@@ -60,6 +66,14 @@ const City: React.FC = () => {
         </ul>
       )}
       <AddCityModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
+      <DeleteCityModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setSelectedCityForDelete(null);
+        }}
+        city={selectedCityForDelete}
+      />
     </div>
   );
 };

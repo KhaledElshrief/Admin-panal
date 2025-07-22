@@ -1,43 +1,35 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteSchool, clearDeleteError } from '../../store/slices/schoolSlices';
+import { deleteCity } from '../../store/slices/citySlice';
 import type { RootState, AppDispatch } from '../../store';
 import { X, Trash2, AlertTriangle } from 'lucide-react';
 import Modal from '../ui/Modal';
 
-interface DeleteSchoolModalProps {
+interface DeleteCityModalProps {
   isOpen: boolean;
   onClose: () => void;
-  school: {
+  city: {
     id: string;
     name: string;
     nameEn: string;
   } | null;
 }
 
-const DeleteSchoolModal: React.FC<DeleteSchoolModalProps> = ({ isOpen, onClose, school }) => {
+const DeleteCityModal: React.FC<DeleteCityModalProps> = ({ isOpen, onClose, city }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { deleteLoading, deleteError } = useSelector((state: RootState) => state.school);
+  const { deleteLoading, deleteError } = useSelector((state: RootState) => state.city);
 
   const handleDelete = async () => {
-    if (school) {
-      await dispatch(deleteSchool(school.id));
-      // Close modal on success
-      if (!deleteError) {
-        onClose();
-      }
+    if (city) {
+      await dispatch(deleteCity(city.id));
+      onClose();
     }
   };
 
-  const handleClose = () => {
-    dispatch(clearDeleteError());
-    onClose();
-  };
-
-  if (!isOpen || !school) return null;
+  if (!isOpen || !city) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="حذف المدرسة" widthClass="max-w-md">
+    <Modal isOpen={isOpen} onClose={onClose} title="حذف المدينة" widthClass="max-w-md">
       {deleteError && (
         <div className="mb-4 bg-red-500/10 border border-red-500/20 rounded-lg p-4">
           <p className="text-red-400">{deleteError}</p>
@@ -50,7 +42,7 @@ const DeleteSchoolModal: React.FC<DeleteSchoolModalProps> = ({ isOpen, onClose, 
         <div>
           <h3 className="text-lg font-semibold text-white mb-2">تأكيد الحذف</h3>
           <p className="text-gray-400">
-            هل أنت متأكد من أنك تريد حذف المدرسة التالية؟ هذا الإجراء لا يمكن التراجع عنه.
+            هل أنت متأكد من أنك تريد حذف المدينة التالية؟ هذا الإجراء لا يمكن التراجع عنه.
           </p>
         </div>
       </div>
@@ -58,11 +50,11 @@ const DeleteSchoolModal: React.FC<DeleteSchoolModalProps> = ({ isOpen, onClose, 
         <div className="space-y-2">
           <div>
             <span className="text-sm text-gray-400">الاسم (عربي):</span>
-            <p className="font-medium text-white">{school.name}</p>
+            <p className="font-medium text-white">{city.name}</p>
           </div>
           <div>
             <span className="text-sm text-gray-400">الاسم (إنجليزي):</span>
-            <p className="font-medium text-white">{school.nameEn}</p>
+            <p className="font-medium text-white">{city.nameEn}</p>
           </div>
         </div>
       </div>
@@ -73,10 +65,10 @@ const DeleteSchoolModal: React.FC<DeleteSchoolModalProps> = ({ isOpen, onClose, 
           className="flex-1 flex items-center justify-center gap-2 bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 disabled:opacity-50 transition-colors"
         >
           <Trash2 className="w-4 h-4" />
-          {deleteLoading ? 'جاري الحذف...' : 'حذف المدرسة'}
+          {deleteLoading ? 'جاري الحذف...' : 'حذف المدينة'}
         </button>
         <button
-          onClick={handleClose}
+          onClick={onClose}
           disabled={deleteLoading}
           className="flex-1 flex items-center justify-center gap-2 bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 disabled:opacity-50 transition-colors"
         >
@@ -88,4 +80,4 @@ const DeleteSchoolModal: React.FC<DeleteSchoolModalProps> = ({ isOpen, onClose, 
   );
 };
 
-export default DeleteSchoolModal; 
+export default DeleteCityModal;
