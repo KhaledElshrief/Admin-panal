@@ -10,7 +10,7 @@ export interface School {
   longitude: number;
   cityId: string;
   countryId: string;
-  placeId: string;
+  placeId?: string;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

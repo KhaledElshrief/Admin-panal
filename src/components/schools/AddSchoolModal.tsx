@@ -22,7 +22,6 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
     longitude: 0,
     cityId: '',
     countryId: '',
-    placeId: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +45,6 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
         longitude: 0,
         cityId: '',
         countryId: '',
-        placeId: '',
       });
       onClose();
     }
@@ -62,7 +60,6 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
       longitude: 0,
       cityId: '',
       countryId: '',
-      placeId: '',
     });
     onClose();
   };
@@ -174,19 +171,6 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
               className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
               placeholder="أدخل معرف الدولة"
               required
-            />
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              معرف المكان
-            </label>
-            <input
-              type="text"
-              name="placeId"
-              value={formData.placeId}
-              onChange={handleInputChange}
-              className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-              placeholder="أدخل معرف المكان (اختياري)"
             />
           </div>
         </div>

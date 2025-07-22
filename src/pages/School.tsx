@@ -8,12 +8,14 @@ import Pagination from '../components/ui/Pagination';
 import AddSchoolModal from '../components/schools/AddSchoolModal';
 import DeleteSchoolModal from '../components/schools/DeleteSchoolModal';
 import { Eye, Plus, Trash2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const School: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { schools, loading, error, totalPages } = useSelector((state: RootState) => state.school);
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPageParam = searchParams.get('page');
+  const page = currentPageParam ? parseInt(currentPageParam, 10) : 1;
   const pageSize = 10;
   const [nameFilter, setNameFilter] = useState('');
   const [cityIdFilter, setCityIdFilter] = useState('');
@@ -138,7 +140,9 @@ const School: React.FC = () => {
           <Pagination
             currentPage={page}
             totalPages={totalPages}
-            onPageChange={setPage}
+            onPageChange={(page: number) => {
+              setSearchParams({ page: page.toString() });
+            }}
           />
         </>
       )}

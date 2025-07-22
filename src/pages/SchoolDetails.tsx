@@ -22,6 +22,8 @@ const SchoolDetails: React.FC = () => {
     address: '',
     latitude: 0,
     longitude: 0,
+    cityId: '',
+    countryId: '',
   });
 
   useEffect(() => {
@@ -36,6 +38,8 @@ const SchoolDetails: React.FC = () => {
         address: selectedSchool.address || '',
         latitude: selectedSchool.latitude || 0,
         longitude: selectedSchool.longitude || 0,
+        cityId: selectedSchool.cityId || '',
+        countryId: selectedSchool.countryId || '',
       });
     }
   }, [selectedSchool]);
@@ -66,6 +70,8 @@ const SchoolDetails: React.FC = () => {
         address: selectedSchool.address || '',
         latitude: selectedSchool.latitude || 0,
         longitude: selectedSchool.longitude || 0,
+        cityId: selectedSchool.cityId || '',
+        countryId: selectedSchool.countryId || '',
       });
     }
   };
@@ -222,6 +228,34 @@ const SchoolDetails: React.FC = () => {
                   onChange={handleInputChange}
                   className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
                   placeholder="أدخل خط الطول"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  معرف المدينة
+                </label>
+                <input
+                  type="text"
+                  name="cityId"
+                  value={formData.cityId}
+                  onChange={handleInputChange}
+                  className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                  placeholder="أدخل معرف المدينة"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  معرف الدولة
+                </label>
+                <input
+                  type="text"
+                  name="countryId"
+                  value={formData.countryId}
+                  onChange={handleInputChange}
+                  className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                  placeholder="أدخل معرف الدولة"
+                  required
                 />
               </div>
             </div>
