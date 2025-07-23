@@ -21,6 +21,8 @@ import City from './pages/City';
 import Country from './pages/Country';
 import SchoolDetails from './pages/SchoolDetails';
 import CityDetails from './pages/CityDetails';
+import Groups from './pages/Groups';
+import GroupsDetails from './pages/GroupsDetails';
 import Trips from './pages/Trips';
 import TripDetails from './pages/TripDetails';
 
@@ -45,6 +47,8 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="agents" element={<Agents />} />
           <Route path="drivers" element={<Drivers />} />
+          <Route path="groups" element={<Groups />} />
+          <Route path="groups/:id" element={<GroupsDetails />} />
           <Route path="trips" element={<Trips />} />
           <Route path="trips/:id" element={<TripDetails />} />
           <Route path="plans" element={<SubscriptionPlans />} />

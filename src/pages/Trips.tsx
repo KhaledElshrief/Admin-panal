@@ -1,37 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTripGroups } from '../store/slices/tripSlice';
+import { fetchTrips } from '../store/slices/tripsSlices';
 import type { RootState, AppDispatch } from '../store';
 import Table, { TableColumn } from '../components/ui/Table';
 import Pagination from '../components/ui/Pagination';
 import { Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+function formatDate(dateString: string) {
+  if (!dateString) return '';
+  const d = new Date(dateString);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+  const ss = String(d.getSeconds()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+}
+
+const PAGE_SIZE = 10;
+
 const Trips: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { tripGroups, loading, error, totalPages } = useSelector((state: RootState) => state.tripGroups);
+  const { trips, loading, error, totalPages } = useSelector((state: RootState) => state.trips);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
-  const PAGE_SIZE = 10;
-
   // Filter states
+  const [groupName, setGroupName] = useState('');
+  const [status, setStatus] = useState('');
+  const [date, setDate] = useState('');
   const [driverName, setDriverName] = useState('');
-  const [groupType, setGroupType] = useState('');
-  const [name, setName] = useState('');
-  const [isCompleted, setIsCompleted] = useState('');
-  const [gender, setGender] = useState('');
 
   const columns: TableColumn[] = [
-    { key: 'name', title: 'الاسم' },
-    { key: 'groupType', title: 'نوع المجموعة' },
-    { key: 'NextTripType', title: 'نوع الرحلة التالية' },
-    { key: 'inComing', title: 'وقت العودة' },
-    { key: 'onGoing', title: 'وقت الذهاب' },
-    { key: 'gender', title: 'الجنس' },
-    { key: 'academicLevel', title: 'المرحلة الدراسية' },
-    { key: 'isCompleted', title: 'مكتملة؟', render: (value) => value ? 'نعم' : 'لا' },
-    { key: 'remainingSeats', title: 'المقاعد المتبقية' },
+    { key: 'driver.user.userName', title: 'اسم السائق' },
+    { key: 'driver.user.phone', title: 'هاتف السائق' },
+    { key: 'tripGroup.name', title: 'اسم المجموعة' },
+    { key: 'status', title: 'الحالة' },
+    { key: 'type', title: 'نوع الرحلة' },
+    { key: 'createdAt', title: 'تاريخ الإنشاء', render: value => formatDate(value) },
     {
       key: 'actions',
       title: '',
@@ -53,62 +61,52 @@ const Trips: React.FC = () => {
   ];
 
   useEffect(() => {
-    dispatch(fetchTripGroups({
+    dispatch(fetchTrips({
       page: currentPage,
       pageSize: PAGE_SIZE,
+      groupName: groupName || undefined,
+      status: status || undefined,
+      date: date || undefined,
       driverName: driverName || undefined,
-      groupType: groupType || undefined,
-      name: name || undefined,
-      isCompleted: isCompleted !== '' ? isCompleted : undefined,
-      gender: gender || undefined,
     }));
-  }, [dispatch, currentPage, driverName, groupType, name, isCompleted, gender]);
+  }, [dispatch, currentPage, groupName, status, date, driverName]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [groupName, status, date, driverName]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // Reset to page 1 when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [driverName, groupType, name, isCompleted, gender]);
-
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">ادارة الرحلات</h1>
+      <h1 className="text-2xl font-bold mb-4">الرحلات</h1>
       <div className="mb-4 flex flex-wrap gap-4 items-end">
         <div>
           <label className="block text-sm mb-1 text-gray-300">اسم السائق</label>
           <input type="text" value={driverName} onChange={e => setDriverName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="اسم السائق" />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-300">نوع المجموعة</label>
-          <input type="text" value={groupType} onChange={e => setGroupType(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="نوع المجموعة" />
-        </div>
-        <div>
           <label className="block text-sm mb-1 text-gray-300">اسم المجموعة</label>
-          <input type="text" value={name} onChange={e => setName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="اسم المجموعة" />
+          <input type="text" value={groupName} onChange={e => setGroupName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="اسم المجموعة" />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-300">مكتملة؟</label>
-          <select value={isCompleted} onChange={e => setIsCompleted(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]">
-            <option value="">الكل</option>
-            <option value="true">نعم</option>
-            <option value="false">لا</option>
-          </select>
+          <label className="block text-sm mb-1 text-gray-300">الحالة</label>
+          <input type="text" value={status} onChange={e => setStatus(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]" placeholder="الحالة" />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-300">الجنس</label>
-          <input type="text" value={gender} onChange={e => setGender(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]" placeholder="الجنس" />
+          <label className="block text-sm mb-1 text-gray-300">تاريخ الرحلة</label>
+          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[150px]" placeholder="تاريخ الرحلة" />
         </div>
         <button
           type="button"
           onClick={() => {
             setDriverName('');
-            setGroupType('');
-            setName('');
-            setIsCompleted('');
-            setGender('');
+            setGroupName('');
+            setStatus('');
+            setDate('');
           }}
           className="bg-dark-100 text-white rounded-lg px-4 py-2 mt-6 transition-colors hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-600"
         >
@@ -117,7 +115,7 @@ const Trips: React.FC = () => {
       </div>
       <Table
         columns={columns}
-        data={tripGroups}
+        data={trips}
         loading={loading}
         emptyText={error || 'لا توجد بيانات'}
         rowKey="id"
@@ -132,4 +130,4 @@ const Trips: React.FC = () => {
   );
 };
 
-export default Trips; 
+export default Trips;
