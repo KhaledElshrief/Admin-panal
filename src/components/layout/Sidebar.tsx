@@ -27,6 +27,7 @@ const navItems = [
   { name: 'المدينة', path: '/city', icon: <MapPin className="w-5 h-5" />, isNew: false },
   { name: 'الدولة', path: '/country', icon: <Globe className="w-5 h-5" />, isNew: false },
   { name: 'السائقون', path: '/drivers', icon: <Users className="w-5 h-5" />, isNew: true },
+  { name: 'ادارة الرحلات', path: '/trips', icon: <MapPin className="w-5 h-5" />, isNew: true },
   { name: 'إدارة المستخدمين', path: '/users', icon: <UserCog className="w-5 h-5" />, isNew: false },
   {name: ' خطط الاشتراكات', path: '/plans', icon: <CreditCard className="w-5 h-5" />, isNew: true },
   { name: 'إدارة الاشتراكات', path: '/subscriptions', icon: <CreditCard className="w-5 h-5" />, isNew: true },

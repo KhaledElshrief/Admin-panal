@@ -10,6 +10,7 @@ import statsReducer from './slices/statsSlice';
 import countriesReducer from './slices/countriesSlice';
 import cityReducer from './slices/citySlice'
 import schoolReducer from './slices/schoolSlices'
+import tripGroupsReducer from './slices/tripSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -23,6 +24,7 @@ export const store = configureStore({
     countries: countriesReducer,
     city:cityReducer,
     school:schoolReducer,
+    tripGroups: tripGroupsReducer,
   },
 });
 
