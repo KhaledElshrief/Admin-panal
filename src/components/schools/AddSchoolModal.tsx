@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSchool, clearCreateError } from '../../store/slices/schoolSlices';
+import { fetchCountries } from '../../store/slices/countriesSlice';
+import { fetchCities } from '../../store/slices/citySlice';
 import type { RootState, AppDispatch } from '../../store';
 import { X, Plus, Save } from 'lucide-react';
 import Modal from '../ui/Modal';
@@ -13,6 +15,17 @@ interface AddSchoolModalProps {
 const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { createLoading, createError } = useSelector((state: RootState) => state.school);
+  const { countries } = useSelector((state: RootState) => state.countries);
+  const { cities } = useSelector((state: RootState) => state.city);
+
+  useEffect(() => {
+    if (isOpen && countries.length === 0) {
+      dispatch(fetchCountries());
+    }
+    if (isOpen && cities.length === 0) {
+      dispatch(fetchCities({ page: 1, pageSize: 100 }));
+    }
+  }, [isOpen, countries.length, dispatch, cities.length]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -24,7 +37,7 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
     countryId: '',
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -146,32 +159,36 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              معرف المدينة *
-            </label>
-            <input
-              type="text"
-              name="cityId"
-              value={formData.cityId}
-              onChange={handleInputChange}
-              className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-              placeholder="أدخل معرف المدينة"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              معرف الدولة *
-            </label>
-            <input
-              type="text"
+            <label className="block text-sm font-medium text-gray-300 mb-2">الدولة *</label>
+            <select
               name="countryId"
               value={formData.countryId}
               onChange={handleInputChange}
-              className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-              placeholder="أدخل معرف الدولة"
+              className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white"
               required
-            />
+            >
+              <option value="">اختر الدولة</option>
+              {countries.map(country => (
+                <option key={country.id} value={country.id}>{country.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">المدينة *</label>
+            <select
+              name="cityId"
+              value={formData.cityId}
+              onChange={handleInputChange}
+              className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white"
+              required
+            >
+              <option value="">اختر المدينة</option>
+              {cities
+                .filter(city => !formData.countryId || city.countryId === formData.countryId)
+                .map(city => (
+                  <option key={city.id} value={city.id}>{city.name}</option>
+                ))}
+            </select>
           </div>
         </div>
 

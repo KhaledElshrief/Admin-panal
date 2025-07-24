@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCity } from '../../store/slices/citySlice';
+import { fetchCountries } from '../../store/slices/countriesSlice';
 import type { RootState, AppDispatch } from '../../store';
 import { X, Plus, Save } from 'lucide-react';
 import Modal from '../ui/Modal';
@@ -10,14 +11,16 @@ interface AddCityModalProps {
   onClose: () => void;
 }
 
-export const countries: { id: string; name: string }[] = [
-  { id: 'd458bf5f-d117-4991-86be-5725b96d3c6b', name: 'العراق' },
-  { id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', name: 'السعودية' },
-];
-
 const AddCityModal: React.FC<AddCityModalProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { createLoading, createError } = useSelector((state: RootState) => state.city);
+  const { countries } = useSelector((state: RootState) => state.countries);
+
+  useEffect(() => {
+    if (isOpen && countries.length === 0) {
+      dispatch(fetchCountries());
+    }
+  }, [isOpen, countries.length, dispatch]);
 
   const [formData, setFormData] = useState({
     name: '',

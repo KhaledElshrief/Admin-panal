@@ -16,15 +16,15 @@ import SystemSettings from './pages/SystemSettings';
 import Content from './pages/Content';
 import SubscriptionPlans from './pages/subscriptionPlans';
 import DriverDetailsPage from './components/drivers/drivers-approvals/DriverDetailsPage';
-import School from './pages/School';
-import City from './pages/City';
+import School from './pages/School/School';
+import City from './pages/City/City';
 import Country from './pages/Country';
-import SchoolDetails from './pages/SchoolDetails';
-import CityDetails from './pages/CityDetails';
-import Groups from './pages/Groups';
-import GroupsDetails from './pages/GroupsDetails';
-import Trips from './pages/Trips';
-import TripDetails from './pages/TripDetails';
+import SchoolDetails from './pages/School/SchoolDetails';
+import CityDetails from './pages/City/CityDetails';
+import Groups from './pages/Groups/Groups';
+import GroupsDetails from './pages/Groups/GroupsDetails';
+import Trips from './pages/Trips/Trips';
+import TripDetails from './pages/Trips/TripDetails';
 
 const ProtectedRoute: React.FC = () => {
   const token = localStorage.getItem('token');
@@ -63,7 +63,7 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
