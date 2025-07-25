@@ -99,7 +99,11 @@ const Groups: React.FC = () => {
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">الجنس</label>
-          <input type="text" value={gender} onChange={e => setGender(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]" placeholder="الجنس" />
+          <select value={gender} onChange={e => setGender(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]">
+            <option value="">الكل</option>
+            <option value="MALE">ذكر</option>
+            <option value="FEMALE">أنثى</option>
+          </select>
         </div>
         <button
           type="button"

@@ -84,7 +84,9 @@ const appsettingsSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(updateAppSetting.fulfilled, (state, action) => {
-        const { id, value } = action.payload;
+        const { id } = action.payload;
+        // Use the intended value from the action meta, not the backend response
+        const value = action.meta.arg.value;
         const setting = state.settings.find(s => s.id === id);
         if (setting) {
           setting.value = value;

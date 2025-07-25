@@ -28,11 +28,6 @@ const GeneralTab: React.FC = () => {
     dispatch(updateAppSetting({ id, value: !currentValue }));
   };
 
-  const handleSaveSettings = () => {
-    // TODO: Save logic for changed settings
-    console.log('Save general settings');
-  };
-
   if (loading) {
     return <div className="flex items-center justify-center h-32">جاري التحميل...</div>;
   }
@@ -88,18 +83,6 @@ const GeneralTab: React.FC = () => {
             </div>
           </motion.div>
         ))}
-      </div>
-      {/* Save Button */}
-      <div className="pt-6 border-t border-dark-200">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={handleSaveSettings}
-          className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
-        >
-          <Save className="w-5 h-5" />
-          حفظ التعديلات
-        </motion.button>
       </div>
     </div>
   );
