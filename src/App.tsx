@@ -25,10 +25,16 @@ import Groups from './pages/Groups/Groups';
 import GroupsDetails from './pages/Groups/GroupsDetails';
 import Trips from './pages/Trips/Trips';
 import TripDetails from './pages/Trips/TripDetails';
+import { isTokenExpired } from './utils/dateUtils';
 
 const ProtectedRoute: React.FC = () => {
   const token = localStorage.getItem('token');
-  return token ? <Outlet /> : <Navigate to="/login" replace />;
+  if (!token || isTokenExpired(token)) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    return <Navigate to="/login" replace />;
+  }
+  return <Outlet />;
 };
 
 function App() {

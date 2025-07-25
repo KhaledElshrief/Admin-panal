@@ -44,3 +44,21 @@ export const formatMonthlySubscriptionsForChart = (monthlySubscriptions: Array<{
     pending: item.pending
   }));
 }; 
+
+// Decode a JWT token and return its payload
+export function decodeJWT(token: string): any {
+  try {
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload));
+  } catch (e) {
+    return null;
+  }
+}
+
+// Check if a JWT token is expired
+export function isTokenExpired(token: string): boolean {
+  const decoded = decodeJWT(token);
+  if (!decoded || !decoded.exp) return true;
+  // exp is in seconds, Date.now() is in ms
+  return Date.now() >= decoded.exp * 1000;
+} 

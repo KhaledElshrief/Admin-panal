@@ -32,6 +32,8 @@ const Trips: React.FC = () => {
   const [status, setStatus] = useState('');
   const [date, setDate] = useState('');
   const [driverName, setDriverName] = useState('');
+  // Get unique status values from trips
+  const statusOptions = Array.from(new Set(trips.map(t => t.status))).filter(Boolean);
 
   const columns: TableColumn[] = [
     { key: 'driver.user.userName', title: 'اسم السائق' },
@@ -94,7 +96,12 @@ const Trips: React.FC = () => {
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">الحالة</label>
-          <input type="text" value={status} onChange={e => setStatus(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]" placeholder="الحالة" />
+          <select value={status} onChange={e => setStatus(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]">
+            <option value="">الكل</option>
+            {statusOptions.map(option => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">تاريخ الرحلة</label>

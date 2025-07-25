@@ -22,12 +22,15 @@ const Groups: React.FC = () => {
   const [isCompleted, setIsCompleted] = useState('');
   const [gender, setGender] = useState('');
 
+  // Get unique groupType values from tripGroups
+  const groupTypeOptions = Array.from(new Set(tripGroups.map(g => g.groupType))).filter(Boolean);
+
   const columns: TableColumn[] = [
     { key: 'name', title: 'الاسم' },
-    { key: 'groupType', title: 'نوع المجموعة' },
-    { key: 'NextTripType', title: 'نوع الرحلة التالية' },
     { key: 'inComing', title: 'وقت العودة' },
     { key: 'onGoing', title: 'وقت الذهاب' },
+    { key: 'groupType', title: 'نوع المجموعة' },
+    { key: 'NextTripType', title: 'نوع الرحلة التالية' },
     { key: 'gender', title: 'الجنس' },
     { key: 'academicLevel', title: 'المرحلة الدراسية' },
     { key: 'isCompleted', title: 'مكتملة؟', render: (value) => value ? 'نعم' : 'لا' },
@@ -82,12 +85,17 @@ const Groups: React.FC = () => {
           <input type="text" value={driverName} onChange={e => setDriverName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="اسم السائق" />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-300">نوع المجموعة</label>
-          <input type="text" value={groupType} onChange={e => setGroupType(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="نوع المجموعة" />
-        </div>
-        <div>
           <label className="block text-sm mb-1 text-gray-300">اسم المجموعة</label>
           <input type="text" value={name} onChange={e => setName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="اسم المجموعة" />
+        </div>
+        <div>
+          <label className="block text-sm mb-1 text-gray-300">نوع المجموعة</label>
+          <select value={groupType} onChange={e => setGroupType(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]">
+            <option value="">الكل</option>
+            {groupTypeOptions.map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">مكتملة؟</label>
