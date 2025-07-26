@@ -14,6 +14,7 @@ import type {
   CreateUserRequest 
 } from '../../store/slices/usersSlices';
 import { showToast } from '../../store/slices/toastSlice';
+import PaginatedDropdown from '../../components/ui/PaginatedDropdown';
 
 const AddUser: React.FC = () => {
   const navigate = useNavigate();
@@ -150,6 +151,16 @@ const AddUser: React.FC = () => {
 
   const handleDriverDataChange = (field: string, value: any) => {
     setDriverData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const fetchPaginatedSchools = async ({ page, search }: { page: number; search: string }) => {
+    const pageSize = 10;
+    const result = await dispatch(fetchSchools({ page, pageSize, name: search })).unwrap();
+    // result.data is the array, result.totalItems is the total count
+    return {
+      data: result.data,
+      hasMore: (page * pageSize) < (result.totalItems || 0)
+    };
   };
 
     return (
@@ -405,19 +416,19 @@ const AddUser: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">المدرسة *</label>
-                  <select
-                    value={studentData.schoolId}
-                    onChange={(e) => handleStudentDataChange('schoolId', e.target.value)}
+                  <PaginatedDropdown
+                    fetchOptions={fetchPaginatedSchools}
+                    value={schools.find(s => s.id === studentData.schoolId) || null}
+                    onSelect={school => handleStudentDataChange('schoolId', school.id)}
+                    getOptionLabel={school => school.name}
+                    getOptionValue={school => school.id}
+                    renderOption={(school, isSelected) => (
+                      <span className={isSelected ? 'font-bold text-primary-600' : ''}>{school.name}</span>
+                    )}
+                    placeholder={schoolsLoading ? 'جاري التحميل...' : 'اختر المدرسة'}
                     disabled={schoolsLoading}
-                    className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
-                      errors.schoolId ? 'border-red-500' : 'border-dark-200'
-                    }`}
-                  >
-                    <option value="">{schoolsLoading ? 'جاري التحميل...' : 'اختر المدرسة'}</option>
-                    {schools.map(school => (
-                      <option key={school.id} value={school.id}>{school.name}</option>
-                    ))}
-                  </select>
+                    className={errors.schoolId ? 'border-red-500' : ''}
+                  />
                   {errors.schoolId && <p className="text-red-400 text-sm mt-1">{errors.schoolId}</p>}
                 </div>
               </div>
