@@ -28,6 +28,7 @@ import TripDetails from './pages/Trips/TripDetails';
 import { isTokenExpired } from './utils/dateUtils';
 import AddUser from './pages/Users/AddUser';
 import UsersDetails from './pages/Users/UsersDetails';
+import ContactUs from './pages/ContactUs';
 
 const ProtectedRoute: React.FC = () => {
   const token = localStorage.getItem('token');
@@ -66,6 +67,7 @@ function App() {
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="contact-us" element={<ContactUs />} />
           <Route path="ads" element={<Ads />} />
           <Route path="content" element={<Content />} />
           <Route path="system-settings" element={<SystemSettings />} />

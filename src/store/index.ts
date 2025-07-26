@@ -14,6 +14,7 @@ import tripGroupsReducer from './slices/groupsSlice';
 import tripsReducer from './slices/tripsSlices';
 import vehicleReducer from './slices/vehicleSlice';
 import toastReducer from './slices/toastSlice';
+import contactUsReducer from './slices/contactUsSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -31,6 +32,7 @@ export const store = configureStore({
     trips: tripsReducer,
     vehicle: vehicleReducer,
     toast: toastReducer,
+    contactUs: contactUsReducer,
   },
 });
 

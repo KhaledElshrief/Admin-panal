@@ -15,7 +15,8 @@ import {
   ShieldCheck,
   Cog,
   MapPin,
-  Globe
+  Globe,
+  MessageCircle
 } from 'lucide-react';
 
 const navItems = [
@@ -33,6 +34,7 @@ const navItems = [
   {name: ' خطط الاشتراكات', path: '/plans', icon: <CreditCard className="w-5 h-5" />, isNew: true },
   { name: 'إدارة الاشتراكات', path: '/subscriptions', icon: <CreditCard className="w-5 h-5" />, isNew: true },
   { name: 'الإشعارات', path: '/notifications', icon: <Bell className="w-5 h-5" />, isNew: true },
+  { name: 'تقارير التواصل', path: '/contact-us', icon: <MessageCircle className="w-5 h-5" />, isNew: true },
   { name: 'إدارة المحتوى', path: '/content', icon: <FileEdit className="w-5 h-5" />, isNew: true },
   { name: 'إدارة الإعلانات', path: '/ads', icon: <FileText className="w-5 h-5" />, isNew: true },
   { name: 'الأدوار والصلاحيات', path: '/roles', icon: <ShieldCheck className="w-5 h-5" />, isNew: true },
