@@ -16,20 +16,21 @@ const Users: React.FC = () => {
   const { users, loading, error, totalItems, totalPages } = useAppSelector(state => state.users);
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPageParam = searchParams.get("page");
+  const currentPage = currentPageParam ? parseInt(currentPageParam) : 1;
 
   const [roleFilter, setRoleFilter] = useState(''); 
   const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(currentPageParam ? parseInt(currentPageParam) : 1);
+  const [page, setPage] = useState(currentPage);
   const pageSize = 10; 
 
   useEffect(() => {
     dispatch(fetchAllUsers({
       role: roleFilter || undefined,
       userName: searchTerm || undefined,
-      page,
+      page: currentPage,
       pageSize,
     }));
-  }, [dispatch, roleFilter, searchTerm, page, pageSize]);
+  }, [dispatch, roleFilter, searchTerm, currentPage, pageSize]);
 
   // Update page when URL search params change
   useEffect(() => {
@@ -44,9 +45,10 @@ const Users: React.FC = () => {
     }
   }, [searchParams, page]);
 
-  useEffect(() => {
-    setSearchParams({ page: "1" });
-  }, [roleFilter, searchTerm]);
+  // Remove this effect:
+  // useEffect(() => {
+  //   setSearchParams({ page: "1" });
+  // }, [roleFilter, searchTerm]);
 
   const handleViewDetails = (userId: string) => {
     navigate(`/users/${userId}`);
@@ -81,6 +83,21 @@ const Users: React.FC = () => {
 
   const handleAddUser = () => {
     navigate('/users/add');
+  };
+
+  // Reset page to 1 when filter changes
+  const handleRoleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRoleFilter(e.target.value);
+    setSearchParams({ page: "1" });
+  };
+
+  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setSearchParams({ page: "1" });
+  };
+
+  const handlePageChange = (page: number) => {
+    setSearchParams({ page: page.toString() });
   };
 
   const columns: TableColumn<typeof users[0]>[] = [
@@ -192,14 +209,14 @@ const Users: React.FC = () => {
               placeholder="البحث بالاسم..."
               className="w-full bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchTermChange}
             />
           </div>
           <div>
             <select
               className="w-full bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
               value={roleFilter}
-              onChange={e => setRoleFilter(e.target.value)}
+              onChange={handleRoleFilterChange}
             >
               <option value="">فلترة حسب الدور</option>
               <option value="STUDENT">طالب</option>
@@ -212,6 +229,7 @@ const Users: React.FC = () => {
             onClick={() => {
               setSearchTerm('');
               setRoleFilter('');
+              setSearchParams({ page: "1" });
             }}
           >
             إعادة تعيين الفلاتر
@@ -233,9 +251,9 @@ const Users: React.FC = () => {
             عرض {users.length} من أصل {totalItems} مستخدم
           </div>
           <Pagination
-            currentPage={page}
+            currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={(newPage) => setSearchParams({ page: newPage.toString() })}
+            onPageChange={handlePageChange}
           />
         </div>
       </div>
