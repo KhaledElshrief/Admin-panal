@@ -2,18 +2,18 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../api/axios';
 
 export interface Vehicle {
-  id: string;
-  vehicleType: string;
-  maxPassengers: number;
-  lessPassengers: number;
-  createdAt: string;
-  updatedAt: string;
+    id: string;
+    vehicleType: string;
+    maxPassengers: number;
+    lessPassengers: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 interface VehicleState {
-  vehicles: Vehicle[];
-  loading: boolean;
-  error: string | null;
+    vehicles: Vehicle[];
+    loading: boolean;
+    error: string | null;
 }
 
 const initialState: VehicleState = {
@@ -23,34 +23,34 @@ const initialState: VehicleState = {
 };
 
 export const fetchVehicles = createAsyncThunk(
-  'vehicles/fetchVehicles',
+    'vehicles/fetchVehicles',
   async (_, { rejectWithValue }) => {
-    try {
+        try {
       const response = await api.get('/dashboard/vehicle');
       return response.data.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch vehicles');
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch vehicles');
+        }
     }
-  }
 );
 
 const vehicleSlice = createSlice({
-  name: 'vehicles',
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchVehicles.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+    name: 'vehicles',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchVehicles.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
       .addCase(fetchVehicles.fulfilled, (state, action) => {
-        state.loading = false;
+            state.loading = false;
         state.vehicles = action.payload;
-      })
-      .addCase(fetchVehicles.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        })
+        .addCase(fetchVehicles.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
       });
   },
 });

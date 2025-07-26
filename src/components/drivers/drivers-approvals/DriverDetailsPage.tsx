@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDriverById } from '../../../store/slices/driversSlice';
 import { RootState } from '../../../store';
 import type { AppDispatch } from '../../../store';
+import { User, Car, BadgeCheck } from 'lucide-react'; // Example icons
 
 // Add the type for the driver by id response
 type DriverByIdResponse = {
@@ -27,9 +28,33 @@ const DriverDetailsPage: React.FC = () => {
     selectedDriverError: string | null;
   };
 
+  const [showStatusMessage, setShowStatusMessage] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalImages, setModalImages] = useState<string[]>([]);
+  const [modalIndex, setModalIndex] = useState(0);
+
+  const openImageModal = (images: string[], idx: number) => {
+    setModalImages(images);
+    setModalIndex(idx);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => setModalOpen(false);
+
+  const showPrev = () => setModalIndex((prev) => (prev === 0 ? modalImages.length - 1 : prev - 1));
+  const showNext = () => setModalIndex((prev) => (prev === modalImages.length - 1 ? 0 : prev + 1));
+
   useEffect(() => {
     if (id) dispatch(fetchDriverById(id));
   }, [id, dispatch]);
+
+  useEffect(() => {
+    if (selectedDriver?.message?.arabic || selectedDriver?.message?.english) {
+      setShowStatusMessage(true);
+      const timer = setTimeout(() => setShowStatusMessage(false), 4000); // 4 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [selectedDriver?.message?.arabic, selectedDriver?.message?.english]);
 
   if (selectedDriverLoading) return <div>Loading...</div>;
   if (selectedDriverError) return <div>Error: {selectedDriverError}</div>;
@@ -39,61 +64,173 @@ const DriverDetailsPage: React.FC = () => {
   const driver = selectedDriver.data;
 
   return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">تفاصيل السائق</h2>
-      <div className="bg-dark-200 p-6 rounded-lg mb-6">
-        <p className="text-lg text-green-500">{selectedDriver?.message?.arabic}</p>
-        <p className="text-gray-400 mt-2">{selectedDriver?.message?.english}</p>
+    <div className="p-8 max-w-4xl mx-auto">
+      <h2 className="text-3xl font-extrabold mb-8 flex items-center gap-2">
+        <User className="w-8 h-8 text-primary-500" /> تفاصيل السائق
+      </h2>
+
+      {/* Status Message */}
+      {showStatusMessage && (
+        <div className="bg-green-100 text-green-800 p-4 rounded-lg mb-6 shadow flex flex-col md:flex-row md:items-center md:gap-4 transition-opacity duration-500">
+          <span className="font-bold">{selectedDriver?.message?.arabic}</span>
+          <span className="text-gray-500 text-sm">{selectedDriver?.message?.english}</span>
+        </div>
+      )}
+
+      {/* Driver Info Card */}
+      <div className="bg-dark-200 p-6 rounded-xl shadow mb-8">
+        <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <User className="w-6 h-6 text-primary-400" /> بيانات السائق
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <div className="mb-2 flex items-center gap-2">
+              {driver.user?.image && (
+                <img
+                  src={driver.user.image.startsWith('/') ? `https://mahfouzapp.com${driver.user.image}` : driver.user.image}
+                  alt="user-avatar"
+                  className="w-10 h-10 rounded-full object-cover border border-gray-400"
+                />
+              )}
+              <span className="font-semibold">اسم المستخدم:</span> {driver.user?.userName || '-'}
+            </div>
+            <div className="mb-2"><span className="font-semibold">الهاتف:</span> {driver.user?.phone || '-'}</div>
+            <div className="mb-2"><span className="font-semibold">المنطقة:</span> {driver.user?.region || '-'}</div>
+            <div className="mb-2"><span className="font-semibold">الجنس:</span> {driver.user?.gender || '-'}</div>
+            <div className="mb-2"><span className="font-semibold">تاريخ الميلاد:</span> {driver.user?.dateOfBirth ? new Date(driver.user.dateOfBirth).toLocaleDateString() : '-'}</div>
+            <div className="mb-2"><span className="font-semibold">المدينة:</span> {driver.user?.city?.name || '-'}</div>
+            <div className="mb-2"><span className="font-semibold">الدولة:</span> {driver.user?.country?.name || '-'}</div>
+          </div>
+          <div>
+            <div className="mb-2 flex items-center gap-2"><span className="font-semibold">تم التحقق من السائق:</span> <span className={`px-2 py-1 rounded text-xs font-bold ${driver.isVerified ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>{driver.isVerified ? 'نعم' : 'لا'}</span></div>
+            <div className="mb-2 flex items-center gap-2"><span className="font-semibold">موقوف:</span> <span className={`px-2 py-1 rounded text-xs font-bold ${driver.isPause ? 'bg-yellow-500 text-black' : 'bg-green-500 text-white'}`}>{driver.isPause ? 'نعم' : 'لا'}</span></div>
+            <div className="mb-2"><span className="font-semibold">متوسط التقييم:</span> {driver.avgRate !== null && driver.avgRate !== undefined ? driver.avgRate : '-'}</div>
+            <div className="mb-2"><span className="font-semibold">اسم المركبة:</span> {Array.isArray(driver.DriverVehicle) && driver.DriverVehicle.length > 0 ? driver.DriverVehicle[0].carModel || '-' : '-'}</div>
+           
+          </div>
+        </div>
       </div>
-      {driver && (
-        <div className="bg-dark-100 p-6 rounded-lg">
-          {driver.name && (
-            <h3 className="text-2xl font-bold mb-4 text-primary-500">{driver.name}</h3>
-          )}
-          <h3 className="text-xl font-semibold mb-4">بيانات السائق</h3>
+
+      {/* Driver Vehicle Details */}
+      {Array.isArray(driver.DriverVehicle) && driver.DriverVehicle.length > 0 && (
+        <div className="bg-dark-200 p-6 rounded-xl shadow mb-8">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Car className="w-6 h-6 text-primary-400" /> تفاصيل المركبة
+          </h3>
           <table className="w-full text-left text-white">
+            <thead>
+              <tr className="bg-dark-300">
+                <th className="py-2 px-3">الموديل</th>
+                <th className="py-2 px-3">سنة الموديل</th>
+                <th className="py-2 px-3">اللون</th>
+                <th className="py-2 px-3">رقم المفتاح</th>
+                <th className="py-2 px-3">تاريخ الإنشاء</th>
+                <th className="py-2 px-3">تاريخ التحديث</th>
+              </tr>
+            </thead>
             <tbody>
-              {driver.user && driver.user.userName && (
-                <tr><td className="py-1 pr-4">اسم المستخدم (من user):</td><td>{driver.user.userName}</td></tr>
-              )}
-              {driver.user && driver.user.phone && (
-                <tr><td className="py-1 pr-4">الهاتف (من user):</td><td>{driver.user.phone}</td></tr>
-              )}
-              {driver.DriverVehicle && (
-                <tr><td className="py-1 pr-4">مركبة السائق:</td><td>{
-                  Array.isArray(driver.DriverVehicle) && driver.DriverVehicle.length > 0
-                    ? [driver.DriverVehicle[0].carModel, driver.DriverVehicle[0].modelYear, driver.DriverVehicle[0].keyNumber].filter(Boolean).join(' - ')
-                    : (typeof driver.DriverVehicle === 'object' && driver.DriverVehicle !== null
-                        ? [driver.DriverVehicle.carModel, driver.DriverVehicle.modelYear, driver.DriverVehicle.keyNumber].filter(Boolean).join(' - ')
-                        : (driver.DriverVehicle ? String(driver.DriverVehicle) : ''))
-                }</td></tr>
-              )}
-              {driver.name && (
-                <tr><td className="py-1 pr-4">الاسم:</td><td>{driver.name}</td></tr>
-              )}
-              {driver.phone && (
-                <tr><td className="py-1 pr-4">الهاتف:</td><td>{driver.phone}</td></tr>
-              )}
-              {driver.email && (
-                <tr><td className="py-1 pr-4">البريد الإلكتروني:</td><td>{driver.email}</td></tr>
-              )}
-              {driver.nationalId && (
-                <tr><td className="py-1 pr-4">رقم الهوية:</td><td>{driver.nationalId}</td></tr>
-              )}
-              {driver.licenseNumber && (
-                <tr><td className="py-1 pr-4">رقم الرخصة:</td><td>{driver.licenseNumber}</td></tr>
-              )}
-              {driver.vehicleType && (
-                <tr><td className="py-1 pr-4">نوع المركبة:</td><td>{driver.vehicleType}</td></tr>
-              )}
-              {driver.createdAt && (
-                <tr><td className="py-1 pr-4">تاريخ الإنشاء:</td><td>{driver.createdAt}</td></tr>
-              )}
-              {driver.updatedAt && (
-                <tr><td className="py-1 pr-4">تاريخ التحديث:</td><td>{driver.updatedAt}</td></tr>
-              )}
+              {driver.DriverVehicle.map((v: any, idx: number) => (
+                <tr key={v.id || idx} className="border-b border-dark-300">
+                  <td className="py-2 px-3">{v.carModel || '-'}</td>
+                  <td className="py-2 px-3">{v.modelYear || '-'}</td>
+                  <td className="py-2 px-3">{v.color || '-'}</td>
+                  <td className="py-2 px-3">{v.keyNumber || '-'}</td>
+                  <td className="py-2 px-3">{v.createdAt ? new Date(v.createdAt).toLocaleString() : '-'}</td>
+                  <td className="py-2 px-3">{v.updatedAt ? new Date(v.updatedAt).toLocaleString() : '-'}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Document Images */}
+      <div className="bg-dark-200 p-6 rounded-xl shadow mb-8">
+        <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <BadgeCheck className="w-6 h-6 text-primary-400" /> مستندات السائق
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Home Pictures */}
+          {Array.isArray(driver.homePicture) && driver.homePicture.length > 0 && (
+            <div>
+              <div className="font-semibold mb-2">صور المنزل</div>
+              <div className="flex flex-wrap gap-2">
+                {driver.homePicture.map((pic: string, idx: number) => (
+                  <img
+                    key={idx}
+                    src={pic.startsWith('/') ? `https://mahfouzapp.com${pic}` : pic}
+                    alt={`home-${idx}`}
+                    className="w-24 h-24 object-cover rounded-lg border-2 border-gray-300 shadow hover:scale-105 transition-transform cursor-pointer"
+                    onClick={() => openImageModal(driver.homePicture, idx)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          {/* Driving License */}
+          {Array.isArray(driver.drivingLicense) && driver.drivingLicense.length > 0 && (
+            <div>
+              <div className="font-semibold mb-2">رخص القيادة</div>
+              <div className="flex flex-wrap gap-2">
+                {driver.drivingLicense.map((pic: string, idx: number) => (
+                  <img
+                    key={idx}
+                    src={pic.startsWith('/') ? `https://mahfouzapp.com${pic}` : pic}
+                    alt={`driving-license-${idx}`}
+                    className="w-24 h-24 object-cover rounded-lg border-2 border-gray-300 shadow hover:scale-105 transition-transform cursor-pointer"
+                    onClick={() => openImageModal(driver.drivingLicense, idx)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          {/* Personal Card */}
+          {Array.isArray(driver.personalCard) && driver.personalCard.length > 0 && (
+            <div>
+              <div className="font-semibold mb-2">بطاقة الهوية الشخصية</div>
+              <div className="flex flex-wrap gap-2">
+                {driver.personalCard.map((pic: string, idx: number) => (
+                  <img
+                    key={idx}
+                    src={pic.startsWith('/') ? `https://mahfouzapp.com${pic}` : pic}
+                    alt={`personal-card-${idx}`}
+                    className="w-24 h-24 object-cover rounded-lg border-2 border-gray-300 shadow hover:scale-105 transition-transform cursor-pointer"
+                    onClick={() => openImageModal(driver.personalCard, idx)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      {modalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80"
+          onClick={e => {
+            if (e.target === e.currentTarget) closeModal();
+          }}
+        >
+          <button
+            className="absolute top-4 right-4 text-white text-3xl"
+            onClick={closeModal}
+            aria-label="Close"
+          >×</button>
+          <button
+            className="absolute left-4 text-white text-3xl"
+            onClick={showPrev}
+            aria-label="Previous"
+          >›</button>
+          <img
+            src={modalImages[modalIndex].startsWith('/') ? `https://mahfouzapp.com${modalImages[modalIndex]}` : modalImages[modalIndex]}
+            alt="عرض الصورة"
+            className="max-h-[80vh] max-w-[90vw] rounded-lg shadow-lg"
+          />
+          <button
+            className="absolute right-4 text-white text-3xl"
+            style={{ top: '50%' }}
+            onClick={showNext}
+            aria-label="Next"
+          >‹</button>
         </div>
       )}
     </div>

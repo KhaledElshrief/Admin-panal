@@ -105,7 +105,7 @@ function PaginatedDropdown<T>({
         disabled={disabled}
       >
         <span>
-          {value ? getOptionLabel(value) : <span className="text-gray-400">{placeholder}</span>}
+        {value ? getOptionLabel(value) : <span className="text-gray-400">{placeholder}</span>}
         </span>
         <ChevronDown className="w-4 h-4 text-gray-400 ml-2" />
       </button>
