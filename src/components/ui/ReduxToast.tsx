@@ -17,17 +17,17 @@ const ReduxToast: React.FC = () => {
   }, [toasts, dispatch]);
 
   return (
-    <div className="fixed top-6 right-6 z-50 flex flex-col gap-2">
+    <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-4 items-end">
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className={`px-4 py-2 rounded shadow text-white ${
+          className={`min-w-[320px] max-w-xs px-6 py-4 rounded-xl shadow-lg text-lg font-bold flex items-center ${
             toast.type === 'success'
               ? 'bg-green-600'
               : toast.type === 'error'
               ? 'bg-red-600'
               : toast.type === 'warning'
-              ? 'bg-yellow-600'
+              ? 'bg-yellow-600 text-black'
               : 'bg-blue-600'
           }`}
         >

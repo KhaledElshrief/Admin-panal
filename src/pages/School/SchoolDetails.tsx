@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSchoolById, updateSchool, clearUpdateError } from '../../store/slices/schoolSlices';
+import { showToast } from '../../store/slices/toastSlice';
 import type { RootState, AppDispatch } from '../../store';
 import DeleteSchoolModal from '../../components/schools/DeleteSchoolModal';
 import { ArrowLeft, Edit, Save, X, Trash2 } from 'lucide-react';
@@ -57,8 +58,11 @@ const SchoolDetails: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (id) {
-      await dispatch(updateSchool({ id, data: formData }));
-      setIsEditing(false);
+      const result = await dispatch(updateSchool({ id, data: formData }));
+      if (updateSchool.fulfilled.match(result)) {
+        dispatch(showToast({ message: 'تم تحديث بيانات المدرسة بنجاح', type: 'success' }));
+        setIsEditing(false);
+      }
     }
   };
 

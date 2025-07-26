@@ -5,6 +5,7 @@ import { fetchCityById, updateCity } from '../../store/slices/citySlice';
 import type { RootState, AppDispatch } from '../../store';
 import { ArrowLeft } from 'lucide-react';
 import DeleteCityModal from '../../components/cities/DeleteCityModal';
+import { showToast } from '../../store/slices/toastSlice';
 
 const CityDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -51,8 +52,11 @@ const CityDetails: React.FC = () => {
           max: formData.lessStudentFee?.max ?? 0,
         },
       };
-      await dispatch(updateCity({ id, data: payload }));
-      setIsEditing(false);
+      const result = await dispatch(updateCity({ id, data: payload }));
+      if (updateCity.fulfilled.match(result)) {
+        dispatch(showToast({ message: 'تم تحديث بيانات المدينة بنجاح', type: 'success' }));
+        setIsEditing(false);
+      }
     }
   };
 
