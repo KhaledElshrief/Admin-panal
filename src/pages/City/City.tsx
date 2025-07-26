@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCities, createCity, deleteCity } from '../../store/slices/citySlice';
+import { fetchCities} from '../../store/slices/citySlice';
 import type { RootState, AppDispatch } from '../../store';
 import type { City as CityType } from '../../store/slices/citySlice';
 import { Eye, Plus, Trash2 } from 'lucide-react';
@@ -10,7 +10,7 @@ import DeleteCityModal from '../../components/cities/DeleteCityModal';
 
 const City: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { cities, loading, error, createLoading, createError, deleteLoading, deleteError } = useSelector((state: RootState) => state.city);
+  const { cities, loading, error } = useSelector((state: RootState) => state.city);
   const navigate = useNavigate();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -20,10 +20,6 @@ const City: React.FC = () => {
     dispatch(fetchCities({ page: 1, pageSize: 10 }));
   }, [dispatch]);
 
-  const handleDelete = async (id: string) => {
-    await dispatch(deleteCity(id));
-    navigate('/city');
-  };
 
   return (
     <div className="p-6">

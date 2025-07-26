@@ -1,6 +1,8 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import Modal from '../ui/Modal';
+import { useDispatch } from 'react-redux';
+import { showToast } from '../../store/slices/toastSlice';
 
 interface AddPlanModalProps {
   show: boolean;
@@ -13,14 +15,26 @@ interface AddPlanModalProps {
     duration: string;
   };
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: React.FormEvent) => Promise<boolean>;
 }
 
 const AddPlanModal: React.FC<AddPlanModalProps> = ({ show, onClose, form, onChange, onSubmit }) => {
+  const dispatch = useDispatch();
+
   if (!show) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    const success = await onSubmit(e);
+    if (success) {
+      dispatch(showToast({ message: "تمت إضافة الخطة بنجاح", type: "success" }));
+    } else {
+      dispatch(showToast({ message: "حدث خطأ أثناء إضافة الخطة", type: "error" }));
+    }
+  };
+
   return (
     <Modal isOpen={show} onClose={onClose} title="إضافة خطة اشتراك جديدة" widthClass="max-w-md">
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-gray-700 mb-1">الوصف</label>
           <input

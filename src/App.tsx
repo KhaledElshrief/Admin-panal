@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Schools from './pages/Schools';
-import Users from './pages/Users';
+import Users from './pages/Users/Users';
 import Agents from './pages/Agents';
 import Subscriptions from './pages/Subscriptions';
 import Reports from './pages/Reports';
@@ -26,6 +26,8 @@ import GroupsDetails from './pages/Groups/GroupsDetails';
 import Trips from './pages/Trips/Trips';
 import TripDetails from './pages/Trips/TripDetails';
 import { isTokenExpired } from './utils/dateUtils';
+import AddUser from './pages/Users/AddUser';
+import UsersDetails from './pages/Users/UsersDetails';
 
 const ProtectedRoute: React.FC = () => {
   const token = localStorage.getItem('token');
@@ -51,6 +53,8 @@ function App() {
           <Route path="city/:id" element={<CityDetails />} />
           <Route path="country" element={<Country />} />
           <Route path="users" element={<Users />} />
+          <Route path="users/add" element={<AddUser />} />
+          <Route path="users/:id" element={<UsersDetails />} />
           <Route path="agents" element={<Agents />} />
           <Route path="drivers" element={<Drivers />} />
           <Route path="groups" element={<Groups />} />

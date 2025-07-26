@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../api/axios';
 
 export interface School {
   id: string;
@@ -68,12 +68,7 @@ export const fetchSchools = createAsyncThunk(
       if (name) params.name = name;
       if (cityId) params.cityId = cityId;
       if (countryId) params.countryId = countryId;
-      const response = await axios.get('https://mahfouzapp.com/dashboard/schools', {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-        },
-        params,
-      });
+      const response = await api.get('/dashboard/schools', { params });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch schools');
@@ -85,12 +80,7 @@ export const fetchSchoolById = createAsyncThunk(
   'schools/fetchSchoolById',
   async (id: string, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`https://mahfouzapp.com/dashboard/schools/${id}`, {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-        },
-      });
+      const response = await api.get(`/dashboard/schools/${id}`);
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch school');
@@ -102,13 +92,7 @@ export const updateSchool = createAsyncThunk(
   'schools/updateSchool',
   async ({ id, data }: { id: string; data: Partial<School> }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.patch(`https://mahfouzapp.com/dashboard/schools/${id}`, data, {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await api.patch(`/dashboard/schools/${id}`, data);
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to update school');
@@ -120,13 +104,7 @@ export const createSchool = createAsyncThunk(
   'schools/createSchool',
   async (data: Omit<School, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('https://mahfouzapp.com/dashboard/schools', data, {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await api.post('/dashboard/schools', data);
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to create school');
@@ -138,12 +116,7 @@ export const deleteSchool = createAsyncThunk(
   'schools/deleteSchool',
   async (id: string, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.delete(`https://mahfouzapp.com/dashboard/schools/${id}`, {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-        },
-      });
+      const response = await api.delete(`/dashboard/schools/${id}`);
       return { id, response: response.data };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to delete school');

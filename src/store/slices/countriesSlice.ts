@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../api/axios';
 
 export interface Country {
   id: string;
@@ -25,12 +25,7 @@ export const fetchCountries = createAsyncThunk(
   'countries/fetchCountries',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('https://mahfouzapp.com/dashboard/countries', {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-        },
-      });
+      const response = await api.get('/dashboard/countries');
       return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message?.english || error.message || 'Failed to fetch countries');

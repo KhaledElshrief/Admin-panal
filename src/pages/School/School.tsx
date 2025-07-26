@@ -95,13 +95,12 @@ const School: React.FC = () => {
     },
   ];
 
-  // Map unique country and city IDs from schools to their names
+  // Map unique country IDs from schools to their names
   const countryOptions = Array.from(new Set(schools.map(s => s.countryId)))
     .map(id => countries.find((c: typeof countries[number]) => c.id === id))
     .filter((country): country is typeof countries[number] => Boolean(country));
-  const cityOptions = Array.from(new Set(schools.map(s => s.cityId)))
-    .map(id => cities.find((city: typeof cities[number]) => city.id === id))
-    .filter((city): city is typeof cities[number] => Boolean(city));
+  // Use all available cities from the backend for the city dropdown
+  const cityOptions = cities;
 
   return (
     <div className="p-6">

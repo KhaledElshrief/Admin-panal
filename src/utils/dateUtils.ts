@@ -57,8 +57,13 @@ export function decodeJWT(token: string): any {
 
 // Check if a JWT token is expired
 export function isTokenExpired(token: string): boolean {
-  const decoded = decodeJWT(token);
-  if (!decoded || !decoded.exp) return true;
-  // exp is in seconds, Date.now() is in ms
-  return Date.now() >= decoded.exp * 1000;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const exp = payload.exp;
+    if (!exp) return true;
+    return Date.now() >= exp * 1000;
+  } catch {
+    // If token is malformed, treat as expired
+    return true;
+  }
 } 

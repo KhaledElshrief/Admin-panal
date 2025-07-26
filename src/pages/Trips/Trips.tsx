@@ -5,7 +5,7 @@ import type { RootState, AppDispatch } from '../../store';
 import Table, { TableColumn } from '../../components/ui/Table';
 import Pagination from '../../components/ui/Pagination';
 import { Eye } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 function formatDate(dateString: string) {
   if (!dateString) return '';
@@ -24,8 +24,10 @@ const PAGE_SIZE = 10;
 const Trips: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { trips, loading, error, totalPages } = useSelector((state: RootState) => state.trips);
-  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPageParam = searchParams.get("page");
+  const [currentPage, setCurrentPage] = useState(currentPageParam ? parseInt(currentPageParam) : 1);
 
   // Filter states
   const [groupName, setGroupName] = useState('');
@@ -73,13 +75,26 @@ const Trips: React.FC = () => {
     }));
   }, [dispatch, currentPage, groupName, status, date, driverName]);
 
+  // Update currentPage when URL search params change
+  useEffect(() => {
+    const pageParam = searchParams.get("page");
+    if (pageParam) {
+      const page = parseInt(pageParam);
+      if (page !== currentPage) {
+        setCurrentPage(page);
+      }
+    } else if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
+  }, [searchParams, currentPage]);
+
   // Reset to page 1 when filters change
   useEffect(() => {
-    setCurrentPage(1);
+    setSearchParams({ page: "1" });
   }, [groupName, status, date, driverName]);
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    setSearchParams({ page: page.toString() });
   };
 
   return (

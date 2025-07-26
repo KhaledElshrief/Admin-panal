@@ -6,6 +6,7 @@ import { fetchCities } from '../../store/slices/citySlice';
 import type { RootState, AppDispatch } from '../../store';
 import { X, Plus, Save } from 'lucide-react';
 import Modal from '../ui/Modal';
+import { showToast } from '../../store/slices/toastSlice';
 
 interface AddSchoolModalProps {
   isOpen: boolean;
@@ -48,8 +49,8 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await dispatch(createSchool(formData));
-    // Reset form and close modal on success
     if (!createError) {
+      dispatch(showToast({ message: "تمت إضافة المدرسة بنجاح", type: "success" }));
       setFormData({
         name: '',
         nameEn: '',
@@ -60,6 +61,8 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
         countryId: '',
       });
       onClose();
+    } else {
+      dispatch(showToast({ message: "حدث خطأ أثناء إضافة المدرسة", type: "error" }));
     }
   };
 

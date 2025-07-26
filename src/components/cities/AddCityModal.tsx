@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createCity } from '../../store/slices/citySlice';
 import { fetchCountries } from '../../store/slices/countriesSlice';
 import type { RootState, AppDispatch } from '../../store';
-import { X, Plus, Save } from 'lucide-react';
+import { X, Save } from 'lucide-react';
 import Modal from '../ui/Modal';
+import { showToast } from '../../store/slices/toastSlice';
 
 interface AddCityModalProps {
   isOpen: boolean;
@@ -62,6 +63,7 @@ const AddCityModal: React.FC<AddCityModalProps> = ({ isOpen, onClose }) => {
     };
     await dispatch(createCity(payload));
     if (!createError) {
+      dispatch(showToast({ message: "تمت إضافة المدينة بنجاح", type: "success" }));
       setFormData({
         name: '',
         nameEn: '',
@@ -70,6 +72,8 @@ const AddCityModal: React.FC<AddCityModalProps> = ({ isOpen, onClose }) => {
         lessStudentFee: { min: 0, max: 0 },
       });
       onClose();
+    } else {
+      dispatch(showToast({ message: "حدث خطأ أثناء الإضافة", type: "error" }));
     }
   };
 

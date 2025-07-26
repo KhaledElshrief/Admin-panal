@@ -12,6 +12,8 @@ import cityReducer from './slices/citySlice'
 import schoolReducer from './slices/schoolSlices'
 import tripGroupsReducer from './slices/groupsSlice';
 import tripsReducer from './slices/tripsSlices';
+import vehicleReducer from './slices/vehicleSlice';
+import toastReducer from './slices/toastSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -27,6 +29,8 @@ export const store = configureStore({
     school:schoolReducer,
     tripGroups: tripGroupsReducer,
     trips: tripsReducer,
+    vehicle: vehicleReducer,
+    toast: toastReducer,
   },
 });
 

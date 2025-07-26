@@ -4,6 +4,7 @@ import { deleteCity } from '../../store/slices/citySlice';
 import type { RootState, AppDispatch } from '../../store';
 import { X, Trash2, AlertTriangle } from 'lucide-react';
 import Modal from '../ui/Modal';
+import { showToast } from '../../store/slices/toastSlice';
 
 interface DeleteCityModalProps {
   isOpen: boolean;
@@ -21,8 +22,13 @@ const DeleteCityModal: React.FC<DeleteCityModalProps> = ({ isOpen, onClose, city
 
   const handleDelete = async () => {
     if (city) {
-      await dispatch(deleteCity(city.id));
-      onClose();
+      const resultAction = await dispatch(deleteCity(city.id));
+      if (deleteCity.fulfilled.match(resultAction)) {
+        dispatch(showToast({ message: "تم حذف المدينة بنجاح", type: "success" }));
+        onClose();
+      } else {
+        dispatch(showToast({ message: "حدث خطأ أثناء الحذف", type: "error" }));
+      }
     }
   };
 

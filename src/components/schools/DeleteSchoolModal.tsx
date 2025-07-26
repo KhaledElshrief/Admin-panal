@@ -4,6 +4,7 @@ import { deleteSchool, clearDeleteError } from '../../store/slices/schoolSlices'
 import type { RootState, AppDispatch } from '../../store';
 import { X, Trash2, AlertTriangle } from 'lucide-react';
 import Modal from '../ui/Modal';
+import { showToast } from '../../store/slices/toastSlice';
 
 interface DeleteSchoolModalProps {
   isOpen: boolean;
@@ -21,10 +22,12 @@ const DeleteSchoolModal: React.FC<DeleteSchoolModalProps> = ({ isOpen, onClose, 
 
   const handleDelete = async () => {
     if (school) {
-      await dispatch(deleteSchool(school.id));
-      // Close modal on success
-      if (!deleteError) {
+      const resultAction = await dispatch(deleteSchool(school.id));
+      if (deleteSchool.fulfilled.match(resultAction)) {
+        dispatch(showToast({ message: "تم حذف المدرسة بنجاح", type: "success" }));
         onClose();
+      } else {
+        dispatch(showToast({ message: "حدث خطأ أثناء حذف المدرسة", type: "error" }));
       }
     }
   };
