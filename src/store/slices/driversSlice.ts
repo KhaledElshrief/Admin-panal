@@ -62,6 +62,47 @@ export const fetchDriverRatings = createAsyncThunk(
   }
 );
 
+export interface DriverVehicle {
+  id: string;
+  driverId: string;
+  modelYear: number;
+  carModel: string;
+  vehicleId: string;
+  color: string;
+  keyNumber: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DriverUser {
+  userName: string;
+  image: string;
+  city: { name: string; nameEn: string };
+  country: { name: string; nameEn: string };
+  region: string;
+  gender: string;
+  isVerified: boolean;
+  dateOfBirth: string | null;
+  phone: string;
+}
+
+export interface Driver {
+  id: string;
+  homePicture: string[];
+  drivingLicense: string[];
+  personalCard: string[];
+  isVerified: boolean;
+  isPause: boolean;
+  avgRate: number;
+  vehicleId: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  DriverVehicle: DriverVehicle[];
+  user: DriverUser;
+}
+
 //try and catch
 const driversSlice = createSlice({
   name: 'drivers',
@@ -69,7 +110,7 @@ const driversSlice = createSlice({
     data: [],
     loading: false,
     error: null as string | null,
-    selectedDriver: null,
+    selectedDriver: null as Driver | null,
     selectedDriverLoading: false,
     selectedDriverError: null as string | null,
     ratingsData: [],

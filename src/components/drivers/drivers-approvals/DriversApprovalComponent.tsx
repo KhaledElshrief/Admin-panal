@@ -119,7 +119,14 @@ const DriversApprovalComponent: React.FC = () => {
       key: 'documents',
       title: 'حالة المستندات',
       render: (_: any, record: Driver) => {
-        const isComplete = record.isVerified;
+        // Calculate the total number of documents
+        const totalDocs =
+          (record.homePicture?.length || 0) +
+          (record.drivingLicense?.length || 0) +
+          (record.personalCard?.length || 0);
+
+        const isComplete = totalDocs > 3;
+
         return (
           <span className={`flex items-center gap-1 text-sm font-medium ${isComplete ? 'text-green-400' : 'text-yellow-400'}`}>
             {isComplete ? (
