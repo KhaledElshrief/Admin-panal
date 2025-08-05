@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Users, School, CreditCard, Award, RefreshCw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import StatsCard from '../components/dashboard/StatsCard';
 import RevenueChart from '../components/dashboard/RevenueChart';
 import QuickAccess from '../components/dashboard/QuickAccess';
@@ -7,7 +8,8 @@ import { motion } from 'framer-motion';
 import { useStats } from '../hooks/useStats';
 
 const Dashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('شهري');
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState(t('dashboard.monthly'));
   const { dashboardStats, loading, error, refreshStats } = useStats();
 
   return (
@@ -18,8 +20,8 @@ const Dashboard: React.FC = () => {
         className="flex flex-col md:flex-row md:items-center md:justify-between"
       >
         <div>
-          <h1 className="text-2xl font-bold">لوحة تحكم المشرف العام</h1>
-          <p className="text-gray-400 mt-1">عرض شامل لنشاط النظام والإحصائيات</p>
+          <h1 className="text-2xl font-bold">{t('dashboard.title')}</h1>
+          <p className="text-gray-400 mt-1">{t('dashboard.subtitle')}</p>
         </div>
         <div className="mt-4 md:mt-0">
           <button 
@@ -32,7 +34,7 @@ const Dashboard: React.FC = () => {
             ) : (
               <RefreshCw className="h-4 w-4" />
             )}
-            تحديث
+            {t('dashboard.refresh')}
           </button>
         </div>
       </motion.div>
@@ -49,28 +51,28 @@ const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
-          title="المستخدمين"
+          title={t('dashboard.totalUsers')}
           value={loading ? "..." : dashboardStats?.totalUsers?.toLocaleString() || "0"}
           icon={<Users className="h-5 w-5 text-white" />}
           percentageChange={8}
           color="primary"
         />
         <StatsCard
-          title="المدارس"
+          title={t('dashboard.totalSchools')}
           value={loading ? "..." : dashboardStats?.totalSchools?.toLocaleString() || "0"}
           icon={<School className="h-5 w-5 text-white" />}
           percentageChange={5}
           color="secondary"
         />
         <StatsCard
-          title="الاشتراكات النشطة"
+          title={t('dashboard.activeSubscriptions')}
           value={loading ? "..." : dashboardStats?.subscriptions?.paid?.toLocaleString() || "0"}
           icon={<CreditCard className="h-5 w-5 text-white" />}
           percentageChange={-3}
           color="accent"
         />
         <StatsCard
-          title="الاشتراكات المعلقة"
+          title={t('dashboard.pendingSubscriptions')}
           value={loading ? "..." : dashboardStats?.subscriptions?.pending?.toLocaleString() || "0"}
           icon={<Award className="h-5 w-5 text-white" />}
           percentageChange={12}

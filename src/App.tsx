@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { useDirection } from './hooks/useDirection';
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Schools from './pages/Schools';
@@ -41,6 +42,8 @@ const ProtectedRoute: React.FC = () => {
 };
 
 function App() {
+  useDirection(); // Initialize direction handling
+  
   return (
     <Routes>
       <Route path="/login" element={<Login />} />

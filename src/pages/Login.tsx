@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Lock, Smartphone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { loginUser } from '../store/slices/authSlice';
 import { RootState } from '../store';
+import { useDirection } from '../hooks/useDirection';
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
+  const { isRTL } = useDirection();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     phoneNumber: '',
@@ -48,8 +52,8 @@ const Login: React.FC = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
             <Smartphone className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">منصة المدارس الذكية</h1>
-          <p className="text-gray-400">تسجيل الدخول إلى لوحة التحكم</p>
+          <h1 className="text-2xl font-bold text-white mb-2">{t('auth.platformTitle')}</h1>
+          <p className="text-gray-400">{t('auth.loginSubtitle')}</p>
         </motion.div>
 
         {/* Login Form */}
@@ -63,10 +67,10 @@ const Login: React.FC = () => {
             {/* phoneNumber Field */}
             <div>
               <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-300 mb-2">
-                رقم الهاتف
+                {t('auth.phoneNumber')}
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <div className={`absolute inset-y-0 ${isRTL ? 'right-0 pr-3' : 'left-0 pl-3'} flex items-center pointer-events-none`}>
                   <Smartphone className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
@@ -75,8 +79,8 @@ const Login: React.FC = () => {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  className="block w-full pr-10 pl-4 py-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-colors"
-                  placeholder="أدخل رقم الهاتف"
+                  className={`block w-full ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'} py-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-colors`}
+                  placeholder={t('auth.enterPhone')}
                   required
                 />
               </div>
@@ -85,10 +89,10 @@ const Login: React.FC = () => {
             {/* Password Field */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-                كلمة المرور
+                {t('auth.password')}
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <div className={`absolute inset-y-0 ${isRTL ? 'right-0 pr-3' : 'left-0 pl-3'} flex items-center pointer-events-none`}>
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
@@ -97,14 +101,14 @@ const Login: React.FC = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="block w-full pr-10 pl-12 py-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-colors"
-                  placeholder="أدخل كلمة المرور"
+                  className={`block w-full ${isRTL ? 'pr-10 pl-12' : 'pl-10 pr-12'} py-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-colors`}
+                  placeholder={t('auth.enterPassword')}
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 hover:text-white transition-colors"
+                  className={`absolute inset-y-0 ${isRTL ? 'left-0 pl-3' : 'right-0 pr-3'} flex items-center text-gray-400 hover:text-white transition-colors`}
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" />
@@ -125,16 +129,16 @@ const Login: React.FC = () => {
               disabled={loading}
               className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-dark-300 disabled:bg-gray-500"
             >
-              {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
+              {loading ? t('auth.loggingIn') : t('auth.login')}
             </motion.button>
           </form>
 
           {/* Additional Links */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-400">
-              لا تملك حساباً؟{' '}
+              {t('auth.noAccount')}{' '}
               <button className="text-primary-400 hover:text-primary-300 transition-colors">
-                تواصل مع الإدارة
+                {t('auth.contactAdmin')}
               </button>
             </p>
           </div>
@@ -147,7 +151,7 @@ const Login: React.FC = () => {
           transition={{ delay: 0.3 }}
           className="text-center mt-8 text-sm text-gray-500"
         >
-          <p>© 2025 منصة المدارس الذكية. جميع الحقوق محفوظة.</p>
+          <p>© 2025 {t('auth.platformTitle')}. {t('common.allRightsReserved', 'جميع الحقوق محفوظة')}.</p>
         </motion.div>
       </div>
     </div>
