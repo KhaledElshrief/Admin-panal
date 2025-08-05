@@ -83,7 +83,6 @@ const Sidebar: React.FC = () => {
               </span>
               {item.isNew && isExpanded && (
                 <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-success-400">
-                  {t('common.new', 'جديد')}
                 </span>
               )}
             </NavLink>
