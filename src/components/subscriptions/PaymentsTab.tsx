@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Table, { TableColumn } from '../ui/Table';
 import StatusBadge from '../ui/StatusBadge';
 
@@ -52,46 +53,47 @@ const mockPaymentsData = [
 ];
 
 const PaymentsTab: React.FC = () => {
+  const { t } = useTranslation();
   const [paymentsData] = useState(mockPaymentsData);
   const columns: TableColumn[] = [
     {
       key: 'id',
-      title: 'الرقم التعريفي',
+      title: 'ID',
       sortable: true,
       render: (value) => <span className="font-mono text-sm text-blue-400">{value}</span>
     },
     {
       key: 'payer',
-      title: 'الدافع',
+      title: t('table.payer'),
       sortable: true,
       render: (value) => <span className="font-medium text-white">{value}</span>
     },
     {
       key: 'subscriptionId',
-      title: 'رقم الاشتراك',
+      title: t('table.subscriptionId'),
       sortable: true,
       render: (value) => <span className="text-gray-300 font-mono text-sm">{value}</span>
     },
     {
       key: 'paymentMethod',
-      title: 'طريقة الدفع',
+      title: t('table.paymentMethod'),
       render: (value) => <span className="text-gray-300 text-sm">{value}</span>
     },
     {
       key: 'date',
-      title: 'التاريخ',
+      title: t('table.date'),
       sortable: true,
       render: (value) => <span className="text-gray-400 text-sm">{value}</span>
     },
     {
       key: 'amount',
-      title: 'المبلغ',
+      title: t('table.amount'),
       sortable: true,
       render: (value) => <span className="font-semibold text-green-400">{value}</span>
     },
     {
       key: 'status',
-      title: 'الحالة',
+      title: t('table.status'),
       sortable: true,
       render: (value) => {
         const variant = value === 'ناجح' ? 'success' : 'warning';
@@ -103,18 +105,18 @@ const PaymentsTab: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">قائمة المدفوعات</h2>
+        <h2 className="text-xl font-semibold">{t('navigation.subscriptions')} - المدفوعات</h2>
       </div>
       <Table
         columns={columns}
         data={paymentsData}
         rowKey="id"
         hoverable={true}
-        emptyText="لا توجد مدفوعات"
+        emptyText={t('pagination.noData')}
       />
       <div className="flex items-center justify-between pt-4 border-t border-dark-200">
         <div className="text-sm text-gray-400">
-          عرض {paymentsData.length} من أصل {paymentsData.length} مدفوعة
+          {t('pagination.showing')} {paymentsData.length} {t('pagination.of')} {paymentsData.length} {t('pagination.results')}
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ import { showToast } from '../../store/slices/toastSlice';
 import PaginatedDropdown from '../../components/ui/PaginatedDropdown';
 
 const AddUser: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { createLoading, createError } = useAppSelector(state => state.users);
@@ -175,7 +176,7 @@ const AddUser: React.FC = () => {
             <ArrowLeft className="w-5 h-5" />
             العودة
           </button>
-          <h1 className="text-2xl font-bold">إضافة مستخدم جديد</h1>
+          <h1 className="text-2xl font-bold">{t('pages.addNewUser')}</h1>
         </div>
       </div>
 

@@ -10,8 +10,29 @@
 
 html,
 body {
-  direction: rtl;
   font-family: 'Tajawal', sans-serif;
+}
+
+/* RTL/LTR support */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+/* Language-specific font families */
+[lang="ar"] {
+  font-family: 'Tajawal', sans-serif;
+}
+
+[lang="en"] {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+}
+
+[lang="ku"] {
+  font-family: 'Tajawal', 'Noto Sans', sans-serif;
 }
 
 body {
@@ -23,6 +44,23 @@ body {
     )
     fixed;
   min-height: 100vh;
+}
+
+/* RTL-specific adjustments */
+[dir="rtl"] .space-x-4 > * + * {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+[dir="rtl"] .space-x-reverse > * + * {
+  margin-left: 1rem;
+  margin-right: 0;
+}
+
+/* LTR-specific adjustments */
+[dir="ltr"] .space-x-4 > * + * {
+  margin-left: 1rem;
+  margin-right: 0;
 }
 
 @layer components {

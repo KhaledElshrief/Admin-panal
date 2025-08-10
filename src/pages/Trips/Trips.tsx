@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { fetchTrips } from '../../store/slices/tripsSlices';
 import type { RootState, AppDispatch } from '../../store';
 import Table, { TableColumn } from '../../components/ui/Table';
@@ -22,6 +23,7 @@ function formatDate(dateString: string) {
 const PAGE_SIZE = 10;
 
 const Trips: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { trips, loading, error, totalPages } = useSelector((state: RootState) => state.trips);
   const navigate = useNavigate();
@@ -38,15 +40,15 @@ const Trips: React.FC = () => {
   const statusOptions = Array.from(new Set(trips.map(t => t.status))).filter(Boolean);
 
   const columns: TableColumn[] = [
-    { key: 'driver.user.userName', title: 'اسم السائق' },
-    { key: 'driver.user.phone', title: 'هاتف السائق' },
-    { key: 'tripGroup.name', title: 'اسم المجموعة' },
-    { key: 'status', title: 'الحالة' },
-    { key: 'type', title: 'نوع الرحلة' },
-    { key: 'createdAt', title: 'تاريخ الإنشاء', render: value => formatDate(value) },
+    { key: 'driver.user.userName', title: t('table.driverName') },
+    { key: 'driver.user.phone', title: t('table.phone') },
+    { key: 'tripGroup.name', title: t('table.groupName') },
+    { key: 'status', title: t('table.status') },
+    { key: 'type', title: t('table.tripType') },
+    { key: 'createdAt', title: t('table.createdAt'), render: value => formatDate(value) },
     {
       key: 'actions',
-      title: '',
+      title: t('table.actions'),
       render: (_, record) => (
         <button
           onClick={e => {
@@ -54,7 +56,7 @@ const Trips: React.FC = () => {
             navigate(`/trips/${record.id}`);
           }}
           className="p-2 rounded-lg bg-dark-100 hover:bg-primary-600 text-gray-400 hover:text-white transition-colors"
-          title="عرض التفاصيل"
+          title={t('common.view')}
         >
           <Eye className="w-5 h-5" />
         </button>
@@ -99,28 +101,28 @@ const Trips: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">الرحلات</h1>
+      <h1 className="text-2xl font-bold mb-4">{t('pages.tripsManagement')}</h1>
       <div className="mb-4 flex flex-wrap gap-4 items-end">
         <div>
-          <label className="block text-sm mb-1 text-gray-300">اسم السائق</label>
-          <input type="text" value={driverName} onChange={e => setDriverName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="اسم السائق" />
+          <label className="block text-sm mb-1 text-gray-300">{t('table.driverName')}</label>
+          <input type="text" value={driverName} onChange={e => setDriverName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder={t('table.driverName')} />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-300">اسم المجموعة</label>
-          <input type="text" value={groupName} onChange={e => setGroupName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder="اسم المجموعة" />
+          <label className="block text-sm mb-1 text-gray-300">{t('table.groupName')}</label>
+          <input type="text" value={groupName} onChange={e => setGroupName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder={t('table.groupName')} />
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-300">الحالة</label>
+          <label className="block text-sm mb-1 text-gray-300">{t('table.status')}</label>
           <select value={status} onChange={e => setStatus(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]">
-            <option value="">الكل</option>
+            <option value="">{t('filters.all')}</option>
             {statusOptions.map(option => (
               <option key={option} value={option}>{option}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="block text-sm mb-1 text-gray-300">تاريخ الرحلة</label>
-          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[150px]" placeholder="تاريخ الرحلة" />
+          <label className="block text-sm mb-1 text-gray-300">{t('table.date')}</label>
+          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[150px]" />
         </div>
         <button
           type="button"
@@ -132,7 +134,7 @@ const Trips: React.FC = () => {
           }}
           className="bg-dark-100 text-white rounded-lg px-4 py-2 mt-6 transition-colors hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-600"
         >
-          إعادة تعيين الفلاتر
+          {t('filters.resetFilters')}
         </button>
       </div>
       <Table

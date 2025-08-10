@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Search, Eye, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import Table, { TableColumn } from '../components/ui/Table';
 import StatusBadge from '../components/ui/StatusBadge';
@@ -69,6 +70,7 @@ const adsData: Ad[] = [
 ];
 
 const Ads: React.FC = () => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('الكل');
 
@@ -109,7 +111,7 @@ const Ads: React.FC = () => {
   const columns: TableColumn<Ad>[] = [
     {
       key: 'title',
-      title: 'العنوان',
+      title: t('table.title'),
       sortable: true,
       render: (value) => (
         <span className="font-medium text-white">{value}</span>
@@ -117,7 +119,7 @@ const Ads: React.FC = () => {
     },
     {
       key: 'targetAudience',
-      title: 'الفئة المستهدفة',
+      title: t('table.targetAudience'),
       sortable: true,
       render: (value) => (
         <span className="text-gray-300">{value}</span>
@@ -125,7 +127,7 @@ const Ads: React.FC = () => {
     },
     {
       key: 'startDate',
-      title: 'تاريخ البدء',
+      title: t('table.startDate'),
       sortable: true,
       render: (value) => (
         <span className="text-gray-400 text-sm">{value}</span>
@@ -133,7 +135,7 @@ const Ads: React.FC = () => {
     },
     {
       key: 'endDate',
-      title: 'تاريخ الانتهاء',
+      title: t('table.endDate'),
       sortable: true,
       render: (value) => (
         <span className="text-gray-400 text-sm">{value}</span>
@@ -141,7 +143,7 @@ const Ads: React.FC = () => {
     },
     {
       key: 'status',
-      title: 'الحالة',
+      title: t('table.status'),
       sortable: true,
       render: (value) => (
         <StatusBadge 
@@ -152,7 +154,7 @@ const Ads: React.FC = () => {
     },
     {
       key: 'actions',
-      title: 'الإجراءات',
+      title: t('table.actions'),
       render: (_, record) => (
         <div className="flex items-center gap-2">
           <button
@@ -191,8 +193,8 @@ const Ads: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">إدارة الإعلانات</h1>
-          <p className="text-gray-400 mt-1">إدارة وتتبع الإعلانات والحملات الترويجية</p>
+          <h1 className="text-2xl font-bold">{t('pages.adsManagement')}</h1>
+          <p className="text-gray-400 mt-1">{t('pages.adsSubtitle')}</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -216,7 +218,7 @@ const Ads: React.FC = () => {
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="البحث هنا..."
+              placeholder={t('filters.searchAds')}
               className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -224,21 +226,21 @@ const Ads: React.FC = () => {
           </div>
           
           <div className="flex items-center gap-2">
-            <span className="text-gray-400 text-sm">الحالة</span>
+            <span className="text-gray-400 text-sm">{t('table.status')}</span>
             <select
               className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent min-w-[120px]"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
-              <option value="الكل">الكل</option>
-              <option value="نشط">نشط</option>
-              <option value="معطل">معطل</option>
-              <option value="منتهي">منتهي</option>
+              <option value="الكل">{t('filters.all')}</option>
+              <option value="نشط">{t('filters.active')}</option>
+              <option value="معطل">{t('filters.inactive')}</option>
+              <option value="منتهي">{t('filters.expired')}</option>
             </select>
           </div>
 
           <button className="bg-dark-200 hover:bg-dark-100 text-white px-4 py-2 rounded-lg transition-colors">
-            إعادة تعيين
+            {t('filters.reset')}
           </button>
         </div>
 
@@ -276,21 +278,21 @@ const Ads: React.FC = () => {
           data={filteredAds}
           rowKey="id"
           hoverable={true}
-          emptyText="لا توجد إعلانات"
+          emptyText={t('pagination.noData')}
         />
 
         {/* Results Summary */}
         <div className="flex items-center justify-between pt-4 border-t border-dark-200">
           <div className="text-sm text-gray-400">
-            عرض {filteredAds.length} من أصل {adsData.length} إعلان
+            {t('pagination.showing')} {filteredAds.length} {t('pagination.of')} {adsData.length} {t('pagination.results')}
           </div>
           <div className="flex items-center gap-2">
             <button className="px-3 py-1 bg-dark-200 hover:bg-dark-100 text-white rounded text-sm transition-colors">
-              السابق
+              {t('pagination.previous')}
             </button>
             <span className="px-3 py-1 bg-primary-600 text-white rounded text-sm">1</span>
             <button className="px-3 py-1 bg-dark-200 hover:bg-dark-100 text-white rounded text-sm transition-colors">
-              التالي
+              {t('pagination.next')}
             </button>
           </div>
         </div>

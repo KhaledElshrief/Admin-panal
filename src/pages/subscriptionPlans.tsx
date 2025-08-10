@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Plus } from 'lucide-react';
 import { fetchSubscriptions, createSubscription, clearError, clearSuccess } from '../store/slices/subscriptionSlice';
 import type { RootState, AppDispatch } from '../store';
@@ -7,6 +8,7 @@ import PlanCard from '../components/plan/PlanCard';
 import AddPlanModal from '../components/plan/AddPlanModal';
 
 const SubscriptionPlans = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { subscriptions, loading, error, success } = useSelector((state: RootState) => state.subscription);
 
@@ -78,8 +80,8 @@ const SubscriptionPlans = () => {
     <div className="space-y-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">خطط الاشتراكات</h1>
-          <p className="text-gray-400">إدارة خطط الاشتراكات المتاحة</p>
+          <h1 className="text-2xl font-bold text-white mb-2">{t('pages.subscriptionPlans')}</h1>
+          <p className="text-gray-400">{t('pages.subscriptionPlansSubtitle')}</p>
         </div>
         <button
           className="flex items-center bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors"

@@ -1,9 +1,11 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
 import { verifyUser } from '../../store/slices/usersSlices';
 
 const UsersDetails: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -39,7 +41,7 @@ const UsersDetails: React.FC = () => {
   return (
     <div className="p-6">
       <button onClick={() => navigate(-1)} className="mb-4 text-primary-600">عودة</button>
-      <h1 className="text-2xl font-bold mb-4">تفاصيل المستخدم</h1>
+      <h1 className="text-2xl font-bold mb-4">{t('pages.userDetails')}</h1>
       <div className="space-y-2">
         <div><strong>الاسم:</strong> {user.userName}</div>
         <div><strong>رقم الهاتف:</strong> {user.phone}</div>

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { GeneralTab, PaymentTab, SecurityTab, BackupTab } from '../components/system-setting';
 
 const SystemSettings: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('العامة');
 
   const tabs = [
@@ -31,8 +33,8 @@ const SystemSettings: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">إعدادات النظام</h1>
-          <p className="text-gray-400 mt-1">إدارة إعدادات النظام والتحكم في الميزات</p>
+          <h1 className="text-2xl font-bold">{t('pages.systemSettings')}</h1>
+          <p className="text-gray-400 mt-1">{t('pages.systemSettingsSubtitle')}</p>
         </div>
       </div>
 

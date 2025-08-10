@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Bell, Trash2, Edit, Eye, Calendar, User, AlertCircle, CheckCircle, Clock, Settings } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 
 interface Notification {
@@ -51,6 +52,7 @@ const notificationsData: Notification[] = [
 ];
 
 const Notifications: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('كل الإشعارات');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNotifications, setSelectedNotifications] = useState<string[]>([]);
@@ -371,8 +373,8 @@ const Notifications: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">إدارة الإشعارات</h1>
-          <p className="text-gray-400 mt-1">إدارة وإرسال الإشعارات للمستخدمين</p>
+         <h1 className="text-2xl font-bold">{t('pages.notificationsManagement')}</h1>
+         <p className="text-gray-400 mt-1">{t('pages.notificationsSubtitle')}</p>
         </div>
       </div>
 

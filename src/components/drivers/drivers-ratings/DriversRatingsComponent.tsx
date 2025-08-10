@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDriverRatings } from '../../../store/slices/driversSlice';
 import { RootState } from '../../../store';
@@ -11,6 +12,7 @@ interface DriversRatingsComponentProps {
 }
 
 const DriversRatingsComponent: React.FC<DriversRatingsComponentProps> = ({ driverId }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { ratingsData, ratingsLoading, ratingsError } = useSelector((state: RootState) => state.drivers);
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,17 +35,17 @@ const DriversRatingsComponent: React.FC<DriversRatingsComponentProps> = ({ drive
   const ratingsColumns: TableColumn<any>[] = [
     {
       key: 'userName',
-      title: 'اسم ولي الأمر',
+      title: t('table.parentName'),
       render: (_: any, record: any) => record.rate?.user?.userName || '-',
     },
     {
       key: 'driverName',
-      title: 'اسم السائق',
+      title: t('table.driverName'),
       render: (_: any, record: any) => record.driver?.user?.userName || '-',
     },
     {
       key: 'rating',
-      title: 'التقييم',
+      title: t('table.rating'),
       render: (_: any, record: any) => (
         <span className="text-yellow-400">
           {'★'.repeat(record.rate?.rating || 0)}
@@ -53,12 +55,12 @@ const DriversRatingsComponent: React.FC<DriversRatingsComponentProps> = ({ drive
     },
     {
       key: 'comment',
-      title: 'التعليق',
+      title: t('table.comment'),
       render: (_: any, record: any) => record.rate?.comment || '-',
     },
     {
       key: 'date',
-      title: 'التاريخ',
+      title: t('table.date'),
       render: (_: any, record: any) =>
         record.rate?.createdAt ? new Date(record.rate.createdAt).toLocaleDateString('ar-EG') : '-',
     },

@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export interface TableColumn<T = any> {
   key: string;
@@ -33,6 +34,8 @@ const Table = <T extends Record<string, any>>({
   hoverable = true,
   striped = false,
 }: TableProps<T>) => {
+  const { t } = useTranslation();
+  
   const getRowKey = (record: T, index: number): string => {
     if (typeof rowKey === 'function') {
       return rowKey(record);
@@ -130,7 +133,7 @@ const Table = <T extends Record<string, any>>({
             {data.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className="py-12 text-center text-gray-400">
-                  {emptyText}
+                  {emptyText || t('pagination.noData')}
                 </td>
               </tr>
             ) : (

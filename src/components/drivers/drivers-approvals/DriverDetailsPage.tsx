@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDriverById } from '../../../store/slices/driversSlice';
 import { RootState } from '../../../store';
@@ -17,6 +18,7 @@ type DriverByIdResponse = {
 };
 
 const DriverDetailsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   // Use a type assertion for the selector
@@ -66,7 +68,7 @@ const DriverDetailsPage: React.FC = () => {
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h2 className="text-3xl font-extrabold mb-8 flex items-center gap-2">
-        <User className="w-8 h-8 text-primary-500" /> تفاصيل السائق
+        <User className="w-8 h-8 text-primary-500" /> {t('drivers.driverDetails', 'تفاصيل السائق')}
       </h2>
 
       {/* Status Message */}

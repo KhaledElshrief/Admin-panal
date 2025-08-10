@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Table, { TableColumn } from '../ui/Table';
 import StatusBadge from '../ui/StatusBadge';
 
@@ -31,41 +32,42 @@ const mockCommissionsData = [
 ];
 
 const CommissionsTab: React.FC = () => {
+  const { t } = useTranslation();
   const [commissionsData] = useState(mockCommissionsData);
   const columns: TableColumn[] = [
     {
       key: 'id',
-      title: 'الرقم التعريفي',
+      title: 'ID',
       sortable: true,
       render: (value) => <span className="font-mono text-sm text-blue-400">{value}</span>
     },
     {
       key: 'agentName',
-      title: 'اسم الوكيل',
+      title: t('table.agentName'),
       sortable: true,
       render: (value) => <span className="font-medium text-white">{value}</span>
     },
     {
       key: 'subscriptionId',
-      title: 'رقم الاشتراك',
+      title: t('table.subscriptionId'),
       sortable: true,
       render: (value) => <span className="text-gray-300 font-mono text-sm">{value}</span>
     },
     {
       key: 'date',
-      title: 'التاريخ',
+      title: t('table.date'),
       sortable: true,
       render: (value) => <span className="text-gray-400 text-sm">{value}</span>
     },
     {
       key: 'amount',
-      title: 'المبلغ',
+      title: t('table.amount'),
       sortable: true,
       render: (value) => <span className="font-semibold text-green-400">{value}</span>
     },
     {
       key: 'status',
-      title: 'الحالة',
+      title: t('table.status'),
       sortable: true,
       render: (value) => {
         const variant = value === 'مدفوع' ? 'success' : 'warning';
@@ -77,18 +79,18 @@ const CommissionsTab: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">قائمة العمولات</h2>
+        <h2 className="text-xl font-semibold">العمولات</h2>
       </div>
       <Table
         columns={columns}
         data={commissionsData}
         rowKey="id"
         hoverable={true}
-        emptyText="لا توجد عمولات"
+        emptyText={t('pagination.noData')}
       />
       <div className="flex items-center justify-between pt-4 border-t border-dark-200">
         <div className="text-sm text-gray-400">
-          عرض {commissionsData.length} من أصل {commissionsData.length} عمولة
+          {t('pagination.showing')} {commissionsData.length} {t('pagination.of')} {commissionsData.length} {t('pagination.results')}
         </div>
       </div>
     </div>

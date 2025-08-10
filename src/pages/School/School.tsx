@@ -10,9 +10,11 @@ import Pagination from '../../components/ui/Pagination';
 import AddSchoolModal from '../../components/schools/AddSchoolModal';
 import DeleteSchoolModal from '../../components/schools/DeleteSchoolModal';
 import { Eye, Plus, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const School: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { schools, loading, error, totalPages } = useSelector((state: RootState) => state.school);
   const countries = useSelector((state: RootState) => state.countries.countries);
@@ -58,22 +60,22 @@ const School: React.FC = () => {
   const columns: TableColumn<SchoolType>[] = [
     {
       key: 'name',
-      title: 'اسم المدرسة',
+      title: t('table.schoolName'),
       render: (value) => <span className="font-bold">{value}</span>,
     },
     {
       key: 'nameEn',
-      title: 'الاسم بالإنجليزية',
+      title: t('table.schoolNameEn'),
       render: (value) => <span className="text-gray-400">{value}</span>,
     },
     {
       key: 'address',
-      title: 'العنوان',
+      title: t('table.address'),
       render: (value) => <span className="text-gray-400 text-xs">{value}</span>,
     },
     {
       key: 'actions',
-      title: 'الإجراءات',
+      title: t('table.actions'),
       render: (_: any, record: SchoolType) => (
         <div className="flex items-center gap-2">
           <button
@@ -105,7 +107,7 @@ const School: React.FC = () => {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">صفحة المدرسة</h1>
+        <h1 className="text-2xl font-bold text-white">{t('pages.schoolPage')}</h1>
         <button
           onClick={() => setIsAddModalOpen(true)}
           className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
@@ -118,7 +120,7 @@ const School: React.FC = () => {
       <div className="flex gap-4 mb-6">
         <input
           type="text"
-          placeholder="بحث بالاسم"
+          placeholder={t('filters.searchByName')}
           value={nameFilter}
           onChange={e => setNameFilter(e.target.value)}
           className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
@@ -128,7 +130,7 @@ const School: React.FC = () => {
           onChange={e => setCountryIdFilter(e.target.value)}
           className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white"
         >
-          <option value="">كل الدول</option>
+          <option value="">{t('schools.allCountries')}</option>
           {countryOptions.map((country) => (
             <option key={country.id} value={country.id}>{country.name}</option>
           ))}
@@ -138,7 +140,7 @@ const School: React.FC = () => {
           onChange={e => setCityIdFilter(e.target.value)}
           className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white"
         >
-          <option value="">كل المدن</option>
+          <option value="">{t('schools.allCities')}</option>
           {cityOptions.map((city) => (
             <option key={city.id} value={city.id}>{city.name}</option>
           ))}

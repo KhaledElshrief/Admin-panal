@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Table, { TableColumn } from '../../components/ui/Table';
 import { ViewAction } from '../../components/ui/TableActions';
 import UserAvatar from '../../components/ui/UserAvatar';
@@ -11,6 +12,7 @@ import { saveAs } from 'file-saver';
 import Pagination from '../../components/ui/Pagination';
 
 const Users: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { users, loading, error, totalItems, totalPages } = useAppSelector(state => state.users);
@@ -103,7 +105,7 @@ const Users: React.FC = () => {
   const columns: TableColumn<typeof users[0]>[] = [
     {
       key: 'userName',
-      title: 'اسم المستخدم',
+      title: t('users.userName'),
       sortable: true,
       render: (_, record) => (
         <UserAvatar name={record.userName} email={record.userName} size="md" />
@@ -111,7 +113,7 @@ const Users: React.FC = () => {
     },
     {
       key: 'phone',
-      title: 'رقم الهاتف',
+      title: t('users.phoneNumber'),
       sortable: true,
       render: (value) => (
         <span className="font-mono text-sm">{value}</span>
@@ -119,7 +121,7 @@ const Users: React.FC = () => {
     },
     {
       key: 'role',
-      title: 'الدور',
+      title: t('users.role'),
       sortable: true,
       render: (value) => (
         <span className="text-gray-300">{value}</span>
@@ -127,32 +129,32 @@ const Users: React.FC = () => {
     },
     {
       key: 'city',
-      title: 'المدينة',
+      title: t('users.city'),
       render: (value) => <span className="text-gray-300">{value?.name || '-'}</span>
     },
     {
       key: 'country',
-      title: 'الدولة',
+      title: t('users.country'),
       render: (value) => <span className="text-gray-300">{value?.name || '-'}</span>
     },
     {
       key: 'region',
-      title: 'المنطقة',
+      title: t('users.region'),
       render: (value) => <span className="text-gray-300">{value || '-'}</span>
     },
     {
       key: 'dateOfBirth',
-      title: 'تاريخ الميلاد',
+      title: t('users.dateOfBirth'),
       render: (value) => <span className="text-gray-400 text-sm">{value ? new Date(value).toLocaleDateString('ar-EG') : '-'}</span>
     },
     {
       key: 'gender',
-      title: 'الجنس',
-      render: (value) => <span className="text-gray-300">{value === 'MALE' ? 'ذكر' : value === 'FEMALE' ? 'أنثى' : '-'}</span>
+      title: t('users.gender'),
+      render: (value) => <span className="text-gray-300">{value === 'MALE' ? t('users.male') : value === 'FEMALE' ? t('users.female') : '-'}</span>
     },
     {
       key: 'actions',
-      title: 'الإجراءات',
+      title: t('users.actions'),
       render: (_, record) => (
         <div className="flex items-center gap-2">
           <ViewAction onClick={() => handleViewDetails(record.id)} />
@@ -169,14 +171,14 @@ const Users: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">إدارة المستخدمين</h1>
+          <h1 className="text-2xl font-bold">{t('users.title')}</h1>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-gray-400 text-sm">
-            قائمة المستخدمين
+            {t('users.usersList')}
           </span>
           <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm">
-            إجمالي المستخدمين: {totalItems}
+            {t('users.totalUsers')}: {totalItems}
           </span>
         </div>
       </div>
@@ -190,13 +192,13 @@ const Users: React.FC = () => {
               onClick={handleAddUser}
             >
               <Plus className="w-4 h-4" />
-              إضافة مستخدم جديد
+              {t('users.addNew')}
             </button>
             <button
               className="bg-success-600 hover:bg-success-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
               onClick={handleExportExcel}
             >
-              تصدير إلى Excel
+              {t('users.exportExcel')}
             </button>
           </div>
         </div>
@@ -206,7 +208,7 @@ const Users: React.FC = () => {
           <div>
             <input
               type="text"
-              placeholder="البحث بالاسم..."
+              placeholder={t('users.searchByName')}
               className="w-full bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
               value={searchTerm}
               onChange={handleSearchTermChange}
@@ -218,10 +220,10 @@ const Users: React.FC = () => {
               value={roleFilter}
               onChange={handleRoleFilterChange}
             >
-              <option value="">فلترة حسب الدور</option>
-              <option value="STUDENT">طالب</option>
-              <option value="PARENT">ولي أمر</option>
-              <option value="DRIVER">سائق</option>
+              <option value="">{t('users.filterByRole')}</option>
+              <option value="STUDENT">{t('users.student')}</option>
+              <option value="PARENT">{t('users.parent')}</option>
+              <option value="DRIVER">{t('users.driver')}</option>
             </select>
           </div>
           <button
@@ -232,7 +234,7 @@ const Users: React.FC = () => {
               setSearchParams({ page: "1" });
             }}
           >
-            إعادة تعيين الفلاتر
+            {t('users.resetFilters')}
           </button>
         </div>
 
@@ -248,7 +250,7 @@ const Users: React.FC = () => {
         {/* Results Summary */}
         <div className="flex items-center justify-between pt-4 border-t border-dark-200">
           <div className="text-sm text-gray-400">
-            عرض {users.length} من أصل {totalItems} مستخدم
+            {t('users.showing')} {users.length} {t('users.of')} {totalItems} {t('users.user')}
           </div>
           <Pagination
             currentPage={currentPage}

@@ -2,15 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Settings, FileText, CreditCard, Users, School, User } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const quickAccessItems = [
-  { name: 'الإعدادات', path: '/settings', icon: <Settings className="h-6 w-6 text-white" />, bg: 'bg-primary-700' },
-  { name: 'التقارير', path: '/reports', icon: <FileText className="h-6 w-6 text-white" />, bg: 'bg-error-700' },
-  { name: 'الاشتراكات', path: '/subscriptions', icon: <CreditCard className="h-6 w-6 text-white" />, bg: 'bg-accent-700' },
-  { name: 'الوكلاء', path: '/agents', icon: <User className="h-6 w-6 text-white" />, bg: 'bg-secondary-700' },
-  { name: 'المستخدمين', path: '/users', icon: <Users className="h-6 w-6 text-white" />, bg: 'bg-success-700' },
-  { name: 'المدارس', path: '/schools', icon: <School className="h-6 w-6 text-white" />, bg: 'bg-primary-700' },
-];
+import { useTranslation } from 'react-i18next';
 
 const container = {
   hidden: { opacity: 0 },
@@ -28,11 +20,22 @@ const item = {
 };
 
 const QuickAccess: React.FC = () => {
+  const { t } = useTranslation();
+  
+  const quickAccessItems = [
+    { name: t('header.settings'), path: '/settings', icon: <Settings className="h-6 w-6 text-white" />, bg: 'bg-primary-700' },
+    { name: t('navigation.reports', 'التقارير'), path: '/reports', icon: <FileText className="h-6 w-6 text-white" />, bg: 'bg-error-700' },
+    { name: t('navigation.subscriptions'), path: '/subscriptions', icon: <CreditCard className="h-6 w-6 text-white" />, bg: 'bg-accent-700' },
+    { name: t('navigation.agents'), path: '/agents', icon: <User className="h-6 w-6 text-white" />, bg: 'bg-secondary-700' },
+    { name: t('navigation.users'), path: '/users', icon: <Users className="h-6 w-6 text-white" />, bg: 'bg-success-700' },
+    { name: t('navigation.schools'), path: '/schools', icon: <School className="h-6 w-6 text-white" />, bg: 'bg-primary-700' },
+  ];
+
   return (
     <div className="bg-dark-300 rounded-xl p-5">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-medium flex items-center">
-          الوصول السريع
+          {t('dashboard.quickAccess')}
           <svg
             className="h-5 w-5 mr-2 text-primary-500"
             fill="none"

@@ -6,6 +6,7 @@ import type { AppDispatch } from '../../../store';
 import DriversApprovals from './DriversApprovalsTab';
 import { TableColumn } from '../../ui/Table';
 import { useNavigate } from 'react-router-dom';
+import { t } from 'i18next';
 
 interface City {
   name: string;
@@ -89,17 +90,17 @@ const DriversApprovalComponent: React.FC = () => {
   const approvalsColumns: TableColumn<Driver>[] = [
     {
       key: 'userName',
-      title: 'الاسم',
+      title: t('table.name'),
       render: (_: any, record: Driver) => record.user?.userName || '-',
     },
     {
       key: 'phone',
-      title: 'رقم الهاتف',
+      title: t('table.phone'),
       render: (_: any, record: Driver) => record.user?.phone || '-',
     },
     {
       key: 'DriverVehicle',
-      title: 'معلومات المركبة',
+      title: t('table.vehicleInfo'),
       render: (_: any, record: Driver) =>
         record.DriverVehicle && record.DriverVehicle.length > 0
           ? `${record.DriverVehicle[0].carModel} - ${record.DriverVehicle[0].modelYear} - ${record.DriverVehicle[0].keyNumber}`
@@ -107,17 +108,17 @@ const DriversApprovalComponent: React.FC = () => {
     },
     {
       key: 'city',
-      title: 'المدينة',
+      title: t('table.city'),
       render: (_: any, record: Driver) => record.user?.city?.name || '-',
     },
     {
       key: 'createdAt',
-      title: 'تاريخ التقديم',
+      title: t('table.applicationDate'),
       render: (_: any, record: Driver) => new Date(record.createdAt).toLocaleDateString('ar-EG'),
     },
     {
       key: 'documents',
-      title: 'حالة المستندات',
+      title: t('table.documentsStatus'),
       render: (_: any, record: Driver) => {
         // Calculate the total number of documents
         const totalDocs =
@@ -132,12 +133,12 @@ const DriversApprovalComponent: React.FC = () => {
             {isComplete ? (
               <>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2l4-4" /></svg>
-                المستندات مكتملة
+                {t('drivers.documentsComplete')}
               </>
             ) : (
               <>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a5 5 0 00-10 0v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2z" /></svg>
-                المستندات غير مكتملة
+                {t('drivers.documentsIncomplete')}
               </>
             )}
           </span>
@@ -146,7 +147,7 @@ const DriversApprovalComponent: React.FC = () => {
     },
     {
       key: 'actions',
-      title: 'الإجراءات',
+      title: t('table.actions'),
       render: (_: any, record: Driver) => (
         <div className="flex items-center gap-2">
           <button title="رفض" className="text-red-500 hover:text-red-700">

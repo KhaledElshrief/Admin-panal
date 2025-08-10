@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import DriversManagement from './DriversManagementTap';
 import { Check, AlertTriangle } from 'lucide-react';
 import Pagination from '../../ui/Pagination';
+import { t } from 'i18next';
 
 interface City {
   name: string;
@@ -112,17 +113,17 @@ const DriversManagementComponent: React.FC = () => {
   const driverManagementColumns: TableColumn<Driver>[] = [
     {
       key: 'userName',
-      title: 'الاسم',
+      title: t('table.name'),
       render: (_: any, record: Driver) => record.user?.userName || '-',
     },
     {
       key: 'phone',
-      title: 'رقم الهاتف',
+      title: t('table.phone'),
       render: (_: any, record: Driver) => record.user?.phone || '-',
     },
     {
       key: 'DriverVehicle',
-      title: 'معلومات المركبة',
+      title: t('table.vehicleInfo'),
       render: (_: any, record: Driver) =>
         record.DriverVehicle && record.DriverVehicle.length > 0
           ? `${record.DriverVehicle[0].carModel} - ${record.DriverVehicle[0].modelYear} - ${record.DriverVehicle[0].keyNumber}`
@@ -130,61 +131,61 @@ const DriversManagementComponent: React.FC = () => {
     },
     {
       key: 'city',
-      title: 'المدينة',
+      title: t('table.city'),
       render: (_: any, record: Driver) => record.user?.city?.name || '-',
     },
     {
       key: 'classification',
-      title: 'التصنيف',
+      title: t('table.classification'),
       render: () => <span className="text-green-400">مجموعة مكتملة</span>,
     },
     {
       key: 'isPause',
-      title: 'الحالة',
+      title: t('table.status'),
       render: ( _: any, record: Driver) =>
         record.isPause ? (
           <div className="flex items-center gap-1 text-yellow-400">
             <AlertTriangle className="w-4 h-4" />
-            موقوف
+            {t('filters.suspended')}
           </div>
         ) : (
           <div className="flex items-center gap-1 text-green-400">
             <Check className="w-4 h-4" />
-            نشط
+            {t('filters.active')}
           </div>
         ),
     },
     {
       key: 'rating',
-      title: 'التقييم',
+      title: t('table.rating'),
       render: () => (
         <span className="text-yellow-400 font-bold">★★★★☆ (4.2)</span>
       ),
     },
     {
       key: 'trips',
-      title: 'عدد الرحلات',
+      title: t('table.tripsCount'),
       render: () => <span className="font-medium">120</span>,
     },
     {
       key: "isVerified",
-      title: 'التحقق',
+      title: t('table.verification'),
       render: (_: any, record: Driver) =>
         record.isVerified ? (
           <div className="flex items-center gap-1 text-green-400">
             <Check className="w-4 h-4" />
-            تم التحقق
+            {t('filters.verified')}
           </div>
         ) : (
           <div className="flex items-center gap-1 text-yellow-400">
             <AlertTriangle className="w-4 h-4" />
-            غير مفعل
+            {t('filters.notVerified')}
           </div>
         ),
     },
     {
       key: 'actions',
-      title: 'الإجراءات',
+      title: t('table.actions'),
       render: (_: any, record: Driver) => (
         <div className="flex items-center gap-2">
           <button title="رفض" className="text-red-500 hover:text-red-700">

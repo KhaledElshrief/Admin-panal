@@ -2,10 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Search, User, Filter, LogOut, Settings, UserCircle, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '../../hooks/redux';
 import { logout } from '../../store/slices/authSlice';
+import LanguageSwitcher from '../ui/LanguageSwitcher';
 
 const Header: React.FC = () => {
+  const { t } = useTranslation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -78,12 +81,14 @@ const Header: React.FC = () => {
             <input
               type="text"
               className="block w-full p-2 pr-10 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
-              placeholder="بحث"
+              placeholder={t('header.search')}
             />
           </div>
         </div>
         
-        <div className="flex items-center space-x-4 space-x-reverse">
+        <div className="flex items-center gap-4">
+          <LanguageSwitcher />
+          
           <button className="relative p-2 text-gray-400 hover:text-white transition-colors">
             <Bell className="h-6 w-6" />
             <motion.span
@@ -104,8 +109,8 @@ const Header: React.FC = () => {
               className="flex items-center gap-3 border-r border-dark-200 pr-4 hover:bg-dark-200 rounded-lg px-3 py-2 transition-colors"
             >
               <div className="text-right">
-                <span className="text-sm font-medium block">م. حسام</span>
-                <span className="text-xs text-gray-400">مدير النظام</span>
+                <span className="text-sm font-medium block">{t('header.adminName')}</span>
+                <span className="text-xs text-gray-400">{t('header.adminRole')}</span>
               </div>
               <div className="h-9 w-9 rounded-full bg-primary-600 flex items-center justify-center">
                 <User className="h-5 w-5" />
@@ -135,8 +140,8 @@ const Header: React.FC = () => {
                           <User className="h-5 w-5 text-white" />
                         </div>
                         <div>
-                          <div className="font-medium text-white">م. حسام</div>
-                          <div className="text-sm text-gray-400">admin@school.com</div>
+                          <div className="font-medium text-white">{t('header.adminName')}</div>
+                          <div className="text-sm text-gray-400">{t('header.adminEmail')}</div>
                         </div>
                       </div>
                     </div>
@@ -148,7 +153,7 @@ const Header: React.FC = () => {
                         className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-dark-200 hover:text-white transition-colors"
                       >
                         <UserCircle className="h-4 w-4" />
-                        الملف الشخصي
+                        {t('header.profile')}
                       </button>
                       
                       <button
@@ -156,7 +161,7 @@ const Header: React.FC = () => {
                         className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-dark-200 hover:text-white transition-colors"
                       >
                         <Settings className="h-4 w-4" />
-                        الإعدادات
+                        {t('header.settings')}
                       </button>
                     </div>
 
@@ -167,7 +172,7 @@ const Header: React.FC = () => {
                         className="flex items-center gap-3 w-full px-4 py-2 text-sm text-error-400 hover:bg-error-600/10 hover:text-error-300 transition-colors"
                       >
                         <LogOut className="h-4 w-4" />
-                        تسجيل الخروج
+                        {t('header.logout')}
                       </button>
                     </div>
                   </div>

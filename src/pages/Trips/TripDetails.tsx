@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { fetchTripById } from '../../store/slices/tripsSlices';
 import type { RootState, AppDispatch } from '../../store';
@@ -18,6 +19,7 @@ function formatDate(dateString: string) {
 }
 
 const TripDetails: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const { selectedTrip, selectedTripLoading, selectedTripError } = useSelector((state: RootState) => state.trips);
@@ -60,7 +62,7 @@ const TripDetails: React.FC = () => {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <div className="bg-dark-300 rounded-2xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-6 text-primary-400">تفاصيل الرحلة</h1>
+        <h1 className="text-3xl font-bold mb-6 text-primary-400">{t('pages.tripDetails')}</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
             <div className="mb-2 text-gray-400">اسم السائق</div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import Table, { TableColumn } from '../../ui/Table';
 
 interface DriversManagementProps {
@@ -22,6 +23,8 @@ const DriversManagement: React.FC<DriversManagementProps> = ({
   cityFilter,
   setCityFilter,
 }) => {
+  const { t } = useTranslation();
+  
   const handleResetFilters = () => {
     setSearchTerm('');
     setStatusFilter('اختر...');
@@ -51,7 +54,7 @@ const DriversManagement: React.FC<DriversManagementProps> = ({
       <div className="flex gap-4 mb-6">
         <input
           type="text"
-          placeholder="البحث عن سائق..."
+          placeholder={t('filters.searchDriver')}
           className="flex-1 bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white placeholder-gray-400"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -61,17 +64,17 @@ const DriversManagement: React.FC<DriversManagementProps> = ({
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
-          <option>الحالة</option>
+          <option>{t('table.status')}</option>
           <option>اختر...</option>
-          <option>نشط</option>
-          <option>موقوف</option>
+          <option>{t('filters.active')}</option>
+          <option>{t('filters.suspended')}</option>
         </select>
         <select
           className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white min-w-[120px]"
           value={cityFilter}
           onChange={(e) => setCityFilter(e.target.value)}
         >
-          <option>المدينة</option>
+          <option>{t('table.city')}</option>
           <option>اختر...</option>
           <option>الرياض</option>
           <option>جدة</option>
@@ -82,11 +85,11 @@ const DriversManagement: React.FC<DriversManagementProps> = ({
           className="bg-dark-200 text-white px-4 py-2 rounded-lg hover:bg-dark-100"
           onClick={handleResetFilters}
         >
-          إعادة تعيين
+          {t('filters.reset')}
         </button>
         <button className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 flex items-center gap-2">
           <span>+</span>
-          إضافة جديد
+          {t('common.add')}
         </button>
       </div>
       <Table

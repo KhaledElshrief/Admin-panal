@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Plus, Search } from 'lucide-react';
 import Table, { TableColumn } from '../ui/Table';
 import StatusBadge from '../ui/StatusBadge';
@@ -7,6 +8,7 @@ import { fetchUserSubscriptionsDashboard } from '../../store/slices/subscription
 import { useEffect } from 'react';
 
 const SubscriptionsTab: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const {
     userSubscriptionsDashboard,
@@ -57,37 +59,37 @@ const SubscriptionsTab: React.FC = () => {
 
     {
       key: 'subscriber',
-      title: 'المشترك',
+      title: t('table.subscriber'),
       sortable: true,
       render: (value) => <span className="font-medium text-white">{value}</span>
     },
     {
       key: 'plan',
-      title: 'الخطة',
+      title: t('table.plan'),
       sortable: true,
       render: (value) => <span className="text-gray-300">{value}</span>
     },
     {
       key: 'price',
-      title: 'السعر',
+      title: t('table.price'),
       sortable: true,
       render: (value) => <span className="font-semibold text-green-400">{value}</span>
     },
     {
       key: 'startDate',
-      title: 'تاريخ البدء',
+      title: t('table.startDate'),
       sortable: true,
       render: (value) => <span className="text-gray-400 text-sm">{value || '-'}</span>
     },
     {
       key: 'endDate',
-      title: 'تاريخ الانتهاء',
+      title: t('table.endDate'),
       sortable: true,
       render: (value) => <span className="text-gray-400 text-sm">{value || '-'}</span>
     },
     {
       key: 'status',
-      title: 'الحالة',
+      title: t('table.status'),
       sortable: true,
       render: (value) => {
         const variant = value === 'نشط' ? 'success' : value === 'منتهي' ? 'error' : 'warning';
@@ -96,7 +98,7 @@ const SubscriptionsTab: React.FC = () => {
     },
     {
       key: 'autoRenewal',
-      title: 'تجديد تلقائي',
+      title: t('table.autoRenewal'),
       render: (value) => (
         <div className="flex items-center justify-center">
           <div className={`w-3 h-3 rounded-full ${value ? 'bg-green-500' : 'bg-gray-500'}`}></div>
@@ -105,7 +107,7 @@ const SubscriptionsTab: React.FC = () => {
     },
     {
       key: 'paymentMethod',
-      title: 'طريقة الدفع',
+      title: t('table.paymentMethod'),
       render: (value) => <span className="text-gray-300 text-sm">{value}</span>
     }
   ];
@@ -132,10 +134,10 @@ const SubscriptionsTab: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">قائمة الاشتراكات</h2>
+        <h2 className="text-xl font-semibold">{t('navigation.subscriptions')}</h2>
         <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" />
-          إضافة
+          {t('common.add')}
         </button>
       </div>
       {/* Filters */}
@@ -144,14 +146,14 @@ const SubscriptionsTab: React.FC = () => {
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="بحث في الاشتراكات..."
+            placeholder={t('filters.searchPlaceholder')}
             className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-gray-400 text-sm">تاريخ الإنشاء</span>
+          <span className="text-gray-400 text-sm">{t('filters.creationDate')}</span>
           <input
             type="date"
             value={dateRange.start}
@@ -166,16 +168,16 @@ const SubscriptionsTab: React.FC = () => {
           />
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-gray-400 text-sm">الحالة</span>
+          <span className="text-gray-400 text-sm">{t('table.status')}</span>
           <select
             className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent min-w-[100px]"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            <option value="الكل">الكل</option>
-            <option value="نشط">نشط</option>
-            <option value="منتهي">منتهي</option>
-            <option value="معلق">معلق</option>
+            <option value="الكل">{t('filters.all')}</option>
+            <option value="نشط">{t('filters.active')}</option>
+            <option value="منتهي">{t('filters.expired')}</option>
+            <option value="معلق">{t('filters.pending')}</option>
           </select>
         </div>
         <button
@@ -186,7 +188,7 @@ const SubscriptionsTab: React.FC = () => {
             setDateRange({ start: '', end: '' });
           }}
         >
-          إعادة تعيين النظام
+          {t('filters.reset')}
         </button>
       </div>
       {/* Table */}
@@ -195,20 +197,20 @@ const SubscriptionsTab: React.FC = () => {
         data={subscriptionsData}
         rowKey="id"
         hoverable={true}
-        emptyText="لا توجد اشتراكات"
+        emptyText={t('pagination.noData')}
       />
       {/* Results Summary */}
       <div className="flex items-center justify-between pt-4 border-t border-dark-200">
         <div className="text-sm text-gray-400">
-          عرض {subscriptionsData.length} من أصل {typeof userSubscriptionsDashboardTotalItems === 'number' ? userSubscriptionsDashboardTotalItems : subscriptionsData.length} اشتراك
+          {t('pagination.showing')} {subscriptionsData.length} {t('pagination.of')} {typeof userSubscriptionsDashboardTotalItems === 'number' ? userSubscriptionsDashboardTotalItems : subscriptionsData.length} {t('pagination.results')}
         </div>
         <div className="flex items-center gap-2">
           <button className="px-3 py-1 bg-dark-200 hover:bg-dark-100 text-white rounded text-sm transition-colors">
-            السابق
+            {t('pagination.previous')}
           </button>
           <span className="px-3 py-1 bg-primary-600 text-white rounded text-sm">1</span>
           <button className="px-3 py-1 bg-dark-200 hover:bg-dark-100 text-white rounded text-sm transition-colors">
-            التالي
+            {t('pagination.next')}
           </button>
         </div>
       </div>

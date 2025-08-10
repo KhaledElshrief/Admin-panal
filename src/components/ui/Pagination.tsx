@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface PaginationProps {
   currentPage: number;
@@ -7,6 +8,8 @@ interface PaginationProps {
 }
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+  const { t } = useTranslation();
+  
   if (totalPages <= 1) return null;
 
   const handleClick = (page: number) => {
@@ -22,7 +25,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         onClick={() => handleClick(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
-        التالي
+        {t('pagination.next')}
       </button>
       {totalPages <= 3 ? (
         [...Array(totalPages)].map((_, idx) => {
@@ -59,7 +62,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           </button>
           {/* Ellipsis before current page if needed */}
           {currentPage > 3 && (
-            <span key="start-ellipsis" className="px-2 text-white">...</span>
+            <span key="start-ellipsis" className="px-2 text-white">…</span>
           )}
           {/* Current page (if not first or last) */}
           {currentPage !== 1 && currentPage !== totalPages && (
@@ -74,7 +77,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           )}
           {/* Ellipsis after current page if needed */}
           {currentPage < totalPages - 2 && (
-            <span key="end-ellipsis" className="px-2 text-white">...</span>
+            <span key="end-ellipsis" className="px-2 text-white">…</span>
           )}
           {/* Last page */}
           <button
@@ -96,7 +99,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         onClick={() => handleClick(currentPage - 1)}
         disabled={currentPage === 1}
       >
-        السابق
+        {t('pagination.previous')}
       </button>
     </div>
   );
