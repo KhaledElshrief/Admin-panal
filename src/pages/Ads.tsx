@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Search, Eye, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import Table, { TableColumn } from '../components/ui/Table';
 import StatusBadge from '../components/ui/StatusBadge';
@@ -69,6 +70,7 @@ const adsData: Ad[] = [
 ];
 
 const Ads: React.FC = () => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('الكل');
 
@@ -191,8 +193,8 @@ const Ads: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">إدارة الإعلانات</h1>
-          <p className="text-gray-400 mt-1">إدارة وتتبع الإعلانات والحملات الترويجية</p>
+          <h1 className="text-2xl font-bold">{t('pages.adsManagement')}</h1>
+          <p className="text-gray-400 mt-1">{t('pages.adsSubtitle')}</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.02 }}

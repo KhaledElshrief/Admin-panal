@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { fetchTripGroups } from '../../store/slices/groupsSlice';
 import type { RootState, AppDispatch } from '../../store';
 import Table, { TableColumn } from '../../components/ui/Table';
@@ -8,6 +9,7 @@ import { Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Groups: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { tripGroups, loading, error, totalPages } = useSelector((state: RootState) => state.tripGroups);
   const [currentPage, setCurrentPage] = useState(1);
@@ -78,7 +80,7 @@ const Groups: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">ادارة المجموعات</h1>
+      <h1 className="text-2xl font-bold mb-4">{t('pages.groupsManagement')}</h1>
       <div className="mb-4 flex flex-wrap gap-4 items-end">
         <div>
           <label className="block text-sm mb-1 text-gray-300">اسم السائق</label>

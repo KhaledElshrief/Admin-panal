@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { fetchCountries } from '../store/slices/countriesSlice';
 import type { RootState, AppDispatch } from '../store';
 
 const Country: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { countries, loading, error } = useSelector((state: RootState) => state.countries);
 
@@ -13,7 +15,7 @@ const Country: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">صفحة الدولة</h1>
+      <h1 className="text-2xl font-bold mb-4">{t('pages.countryPage')}</h1>
       {loading && <p className="text-gray-400">جاري التحميل...</p>}
       {error && <p className="text-red-500">{error}</p>}
       {!loading && !error && (

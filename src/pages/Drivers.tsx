@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {  Check, Bell, MessageSquare, Settings, BarChart2, Users, FileText,  User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import  { TableColumn } from '../components/ui/Table';
 import { ViewAction } from '../components/ui/TableActions';
 import StatusBadge from '../components/ui/StatusBadge';
@@ -258,6 +259,7 @@ export const store = configureStore({
 });
 
 const Drivers: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('الموافقات');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('اختر...');
@@ -459,8 +461,8 @@ const Drivers: React.FC = () => {
     <div className="p-4 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">إدارة السائقين</h1>
-          <p className="text-gray-400 mt-1">إدارة وتتبع ومراقبة السائقين والرحلات المدرسية</p>
+          <h1 className="text-2xl font-bold">{t('pages.driversManagement')}</h1>
+          <p className="text-gray-400 mt-1">{t('pages.driversSubtitle')}</p>
         </div>
       </div>
 

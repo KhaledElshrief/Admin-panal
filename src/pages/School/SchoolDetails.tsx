@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSchoolById, updateSchool, clearUpdateError } from '../../store/slices/schoolSlices';
 import { showToast } from '../../store/slices/toastSlice';
@@ -8,6 +9,7 @@ import DeleteSchoolModal from '../../components/schools/DeleteSchoolModal';
 import { ArrowLeft, Edit, Save, X, Trash2 } from 'lucide-react';
 
 const SchoolDetails: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();

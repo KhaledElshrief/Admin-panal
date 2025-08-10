@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { fetchTrips } from '../../store/slices/tripsSlices';
 import type { RootState, AppDispatch } from '../../store';
 import Table, { TableColumn } from '../../components/ui/Table';
@@ -22,6 +23,7 @@ function formatDate(dateString: string) {
 const PAGE_SIZE = 10;
 
 const Trips: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { trips, loading, error, totalPages } = useSelector((state: RootState) => state.trips);
   const navigate = useNavigate();
@@ -99,7 +101,7 @@ const Trips: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">الرحلات</h1>
+      <h1 className="text-2xl font-bold mb-4">{t('pages.tripsManagement')}</h1>
       <div className="mb-4 flex flex-wrap gap-4 items-end">
         <div>
           <label className="block text-sm mb-1 text-gray-300">اسم السائق</label>

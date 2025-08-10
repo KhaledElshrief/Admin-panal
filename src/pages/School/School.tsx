@@ -10,9 +10,11 @@ import Pagination from '../../components/ui/Pagination';
 import AddSchoolModal from '../../components/schools/AddSchoolModal';
 import DeleteSchoolModal from '../../components/schools/DeleteSchoolModal';
 import { Eye, Plus, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const School: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { schools, loading, error, totalPages } = useSelector((state: RootState) => state.school);
   const countries = useSelector((state: RootState) => state.countries.countries);
@@ -105,7 +107,7 @@ const School: React.FC = () => {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">صفحة المدرسة</h1>
+        <h1 className="text-2xl font-bold text-white">{t('pages.schoolPage')}</h1>
         <button
           onClick={() => setIsAddModalOpen(true)}
           className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"

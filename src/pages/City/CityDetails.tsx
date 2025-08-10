@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCityById, updateCity } from '../../store/slices/citySlice';
 import type { RootState, AppDispatch } from '../../store';
@@ -8,6 +9,7 @@ import DeleteCityModal from '../../components/cities/DeleteCityModal';
 import { showToast } from '../../store/slices/toastSlice';
 
 const CityDetails: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();

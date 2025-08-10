@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { fetchContactUs, deleteContactUs } from '../store/slices/contactUsSlice';
 import type { RootState, AppDispatch } from '../store';
 import { MessageCircle, User, Calendar, Phone, MapPin, Trash2 } from 'lucide-react';
@@ -9,6 +10,7 @@ import Pagination from '../components/ui/Pagination';
 import type { ContactUsItem } from '../store/slices/contactUsSlice';
 
 const ContactUs: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { contacts, loading, deleteLoading, error, totalItems, totalPages, message } = useSelector(
     (state: RootState) => state.contactUs
@@ -153,7 +155,7 @@ const ContactUs: React.FC = () => {
     <div className="p-8 max-w-8xl mx-auto">
       <div className="flex items-center gap-3 mb-8">
         <MessageCircle className="w-8 h-8 text-primary-500" />
-        <h1 className="text-3xl font-bold text-white">تقارير التواصل</h1>
+        <h1 className="text-3xl font-bold text-white">{t('pages.contactReports')}</h1>
         <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-bold">
           {totalItems}
         </span>

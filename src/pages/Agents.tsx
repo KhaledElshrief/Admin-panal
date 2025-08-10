@@ -1,11 +1,13 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Agents: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">إدارة الوكلاء</h1>
+      <h1 className="text-2xl font-bold mb-4">{t('pages.agentsManagement')}</h1>
       <div className="bg-dark-300 rounded-lg p-6">
-        <p className="text-gray-400">صفحة إدارة الوكلاء قيد التطوير</p>
+        <p className="text-gray-400">{t('pages.agentsSubtitle')}</p>
       </div>
     </div>
   );

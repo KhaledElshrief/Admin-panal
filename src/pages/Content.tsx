@@ -1,5 +1,6 @@
 import React from 'react';
 import { Save, Upload, Eye, Edit, Trash2, Plus, Image, FileText, Settings, Globe, Monitor, Smartphone } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import {
@@ -13,6 +14,7 @@ import {
 } from '../store/slices/contentSlice';
 
 const Content: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { sections, activeTab, selectedDevice } = useAppSelector(state => state.content);
 
@@ -321,8 +323,8 @@ const Content: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">إدارة المحتوى</h1>
-          <p className="text-gray-400 mt-1">إدارة وتحرير محتوى الموقع والصفحات</p>
+          <h1 className="text-2xl font-bold">{t('pages.contentManagement')}</h1>
+          <p className="text-gray-400 mt-1">{t('pages.contentSubtitle')}</p>
         </div>
       </div>
 
