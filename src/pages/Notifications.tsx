@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Search, Bell, Trash2, Edit, Eye, Calendar, User, AlertCircle, CheckCircle, Clock, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { useNotifications } from '../hooks/useNotifications';
+import { showToast } from '../store/slices/toastSlice';
+import { useAppDispatch } from '../hooks/redux';
+import type { CreateNotificationRequest } from '../store/slices/notificationsSlice';
 
 interface Notification {
   id: string;
@@ -53,9 +57,110 @@ const notificationsData: Notification[] = [
 
 const Notifications: React.FC = () => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const { 
+    createNewNotification, 
+    createLoading, 
+    createError, 
+    createSuccess,
+    clearErrors,
+    clearSuccess 
+  } = useNotifications();
+  
   const [activeTab, setActiveTab] = useState('كل الإشعارات');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNotifications, setSelectedNotifications] = useState<string[]>([]);
+  
+  // Form state for creating notifications
+  const [notificationForm, setNotificationForm] = useState({
+    titleAr: '',
+    titleEn: '',
+    titleKu: '',
+    descriptionAr: '',
+    descriptionEn: '',
+    descriptionKu: '',
+    type: 'APP_NOTIFICATION' as 'APP_NOTIFICATION' | 'APP_ADS',
+    image: '',
+    startDate: '',
+    endDate: ''
+  });
+
+  // Handle form input changes
+  const handleFormChange = (field: string, value: string) => {
+    setNotificationForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  // Handle form submission
+  const handleCreateNotification = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const requestData: CreateNotificationRequest = {
+      title: {
+        ar: notificationForm.titleAr,
+        en: notificationForm.titleEn,
+        ku: notificationForm.titleKu
+      },
+      description: {
+        ar: notificationForm.descriptionAr,
+        en: notificationForm.descriptionEn,
+        ku: notificationForm.descriptionKu
+      },
+      type: notificationForm.type
+    };
+
+    // Add optional fields
+    if (notificationForm.image.trim()) {
+      requestData.image = notificationForm.image;
+    }
+    
+    if (notificationForm.type === 'APP_ADS') {
+      if (notificationForm.startDate) {
+        requestData.startDate = notificationForm.startDate;
+      }
+      if (notificationForm.endDate) {
+        requestData.endDate = notificationForm.endDate;
+      }
+    }
+
+    try {
+      await createNewNotification(requestData);
+      dispatch(showToast({ message: "تم إنشاء الإشعار بنجاح", type: "success" }));
+      // Reset form
+      setNotificationForm({
+        titleAr: '',
+        titleEn: '',
+        titleKu: '',
+        descriptionAr: '',
+        descriptionEn: '',
+        descriptionKu: '',
+        type: 'APP_NOTIFICATION',
+        image: '',
+        startDate: '',
+        endDate: ''
+      });
+      setActiveTab('كل الإشعارات');
+    } catch (error) {
+      dispatch(showToast({ message: "حدث خطأ أثناء إنشاء الإشعار", type: "error" }));
+    }
+  };
+
+  // Clear errors when component unmounts or tab changes
+  React.useEffect(() => {
+    if (createError) {
+      const timer = setTimeout(() => clearErrors(), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [createError, clearErrors]);
+
+  React.useEffect(() => {
+    if (createSuccess) {
+      const timer = setTimeout(() => clearSuccess(), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [createSuccess, clearSuccess]);
 
   const tabs = [
     { name: 'كل الإشعارات', count: notificationsData.length },
@@ -289,18 +394,498 @@ const Notifications: React.FC = () => {
       <div className="bg-dark-200 rounded-xl p-6">
         <h2 className="text-xl font-bold mb-6">إضافة إشعار جديد</h2>
         
-        <form className="space-y-6">
+        {/* Display errors */}
+        {createError && (
+          <div className="mb-4 bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+            <p className="text-red-400">{createError}</p>
+          </div>
+        )}
+        
+        <form onSubmit={handleCreateNotification} className="space-y-6">
+          {/* Notification Type */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              عنوان الإشعار
+              نوع الإشعار
+            </label>
+            <select 
+              value={notificationForm.type}
+              onChange={(e) => handleFormChange('type', e.target.value)}
+              className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+            >
+              <option value="APP_NOTIFICATION">إشعار التطبيق</option>
+              <option value="APP_ADS">إعلان التطبيق</option>
+            </select>
+          </div>
+
+          {/* Title Fields */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">العنوان</h3>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  العنوان (عربي) *
+                </label>
+                <input
+                  type="text"
+                  value={notificationForm.titleAr}
+                  onChange={(e) => handleFormChange('titleAr', e.target.value)}
+                  className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+                  placeholder="أدخل العنوان بالعربية"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  العنوان (إنجليزي) *
+                </label>
+                <input
+                  type="text"
+                  value={notificationForm.titleEn}
+                  onChange={(e) => handleFormChange('titleEn', e.target.value)}
+                  className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+                  placeholder="Enter title in English"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  العنوان (كردي) *
+                </label>
+                <input
+                  type="text"
+                  value={notificationForm.titleKu}
+                  onChange={(e) => handleFormChange('titleKu', e.target.value)}
+                  className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+                  placeholder="ناونیشان بە کوردی بنووسە"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Description Fields */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">الوصف</h3>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  الوصف (عربي) *
+                </label>
+                <textarea
+                  rows={3}
+                  value={notificationForm.descriptionAr}
+                  onChange={(e) => handleFormChange('descriptionAr', e.target.value)}
+                  className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent resize-none"
+                  placeholder="أدخل الوصف بالعربية"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  الوصف (إنجليزي) *
+                </label>
+                <textarea
+                  rows={3}
+                  value={notificationForm.descriptionEn}
+                  onChange={(e) => handleFormChange('descriptionEn', e.target.value)}
+                  className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent resize-none"
+                  placeholder="Enter description in English"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  الوصف (كردي) *
+                </label>
+                <textarea
+                  rows={3}
+                  value={notificationForm.descriptionKu}
+                  onChange={(e) => handleFormChange('descriptionKu', e.target.value)}
+                  className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent resize-none"
+                  placeholder="وەسف بە کوردی بنووسە"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Optional Image */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              رابط الصورة (اختياري)
             </label>
             <input
               type="text"
+              value={notificationForm.image}
+              onChange={(e) => handleFormChange('image', e.target.value)}
               className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
-              placeholder="أدخل عنوان الإشعار"
+              placeholder="https://example.com/image.jpg"
             />
           </div>
 
+          {/* Date fields for APP_ADS */}
+          {notificationForm.type === 'APP_ADS' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  تاريخ البدء
+                </label>
+                <input
+                  type="datetime-local"
+                  value={notificationForm.startDate}
+                  onChange={(e) => handleFormChange('startDate', e.target.value)}
+                  className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  تاريخ الانتهاء
+                </label>
+                <input
+                  type="datetime-local"
+                  value={notificationForm.endDate}
+                  onChange={(e) => handleFormChange('endDate', e.target.value)}
+                  className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center gap-4 pt-4">
+            <button
+              type="submit"
+              disabled={createLoading}
+              className="bg-primary-600 hover:bg-primary-700 disabled:bg-primary-600/50 text-white px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
+            >
+              {createLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  جاري الإرسال...
+                </>
+              ) : (
+                'إرسال الإشعار'
+              )}
+            </button>
+            <button
+              type="button"
+              className="bg-dark-400 hover:bg-dark-300 text-white px-6 py-2 rounded-lg transition-colors"
+              onClick={() => {
+                setNotificationForm({
+                  titleAr: '',
+                  titleEn: '',
+                  titleKu: '',
+                  descriptionAr: '',
+                  descriptionEn: '',
+                  descriptionKu: '',
+                  type: 'APP_NOTIFICATION',
+                  image: '',
+                  startDate: '',
+                  endDate: ''
+                });
+              }}
+            >
+              مسح النموذج
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+
+  const renderNotificationsList = () => (
+    <div className="space-y-4">
+      {/* Search and Actions */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="البحث في الإشعارات..."
+            className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleSelectAll}
+            className="px-4 py-2 bg-dark-200 hover:bg-dark-100 text-white rounded-lg text-sm transition-colors"
+          >
+            {selectedNotifications.length === notificationsData.length ? 'إلغاء تحديد الكل' : 'تحديد الكل'}
+          </button>
+          
+          {selectedNotifications.length > 0 && (
+            <button
+              onClick={handleDeleteSelected}
+              className="px-4 py-2 bg-error-600 hover:bg-error-700 text-white rounded-lg text-sm transition-colors flex items-center gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              حذف المحدد ({selectedNotifications.length})
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Notifications List */}
+      <div className="space-y-4">
+        {filteredNotifications.map((notification, index) => (
+          <motion.div
+            key={notification.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className={`bg-dark-200 rounded-xl p-6 border-r-4 ${
+              notification.status === 'unread' ? 'border-primary-500' : 'border-gray-600'
+            } hover:bg-dark-100 transition-colors`}
+          >
+            <div className="flex items-start gap-4">
+              {/* Checkbox */}
+              <input
+                type="checkbox"
+                checked={selectedNotifications.includes(notification.id)}
+                onChange={() => handleSelectNotification(notification.id)}
+                className="w-4 h-4 text-primary-600 bg-dark-400 border-dark-300 rounded focus:ring-primary-500 mt-1"
+              />
+
+              {/* Notification Icon */}
+              <div className="flex-shrink-0 mt-1">
+                {getNotificationIcon(notification.type)}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <h3 className={`font-semibold ${notification.status === 'unread' ? 'text-white' : 'text-gray-300'}`}>
+                      {notification.title}
+                    </h3>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(notification.priority)}`}>
+                      {notification.priority === 'high' ? 'عالي' : notification.priority === 'medium' ? 'متوسط' : 'منخفض'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <Calendar className="w-4 h-4" />
+                    <span>{notification.date}</span>
+                  </div>
+                </div>
+
+                <p className="text-gray-400 text-sm mb-3 leading-relaxed">
+                  {notification.content}
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-sm">
+                    <span className={`flex items-center gap-1 ${getTypeColor(notification.type)}`}>
+                      <span className="w-2 h-2 rounded-full bg-current"></span>
+                      {notification.category}
+                    </span>
+                    <span className="flex items-center gap-1 text-gray-400">
+                      <User className="w-4 h-4" />
+                      {notification.recipient}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleView(notification.id)}
+                      className="p-2 text-gray-400 hover:text-white hover:bg-dark-300 rounded-lg transition-colors"
+                      title="عرض"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleEdit(notification.id)}
+                      className="p-2 text-blue-400 hover:text-blue-300 hover:bg-dark-300 rounded-lg transition-colors"
+                      title="تعديل"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    {notification.status === 'unread' && (
+                      <button
+                        onClick={() => handleMarkAsRead(notification.id)}
+                        className="p-2 text-green-400 hover:text-green-300 hover:bg-dark-300 rounded-lg transition-colors"
+                        title="تحديد كمقروء"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => console.log('Delete', notification.id)}
+                      className="p-2 text-error-400 hover:text-error-300 hover:bg-dark-300 rounded-lg transition-colors"
+                      title="حذف"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {filteredNotifications.length === 0 && (
+        <div className="text-center py-12">
+          <Bell className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-400 mb-2">لا توجد إشعارات</h3>
+          <p className="text-gray-500">لم يتم العثور على إشعارات تطابق البحث</p>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderNotificationsList_old = () => (
+    <div className="space-y-4">
+      {/* Search and Actions */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="البحث في الإشعارات..."
+            className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleSelectAll}
+            className="px-4 py-2 bg-dark-200 hover:bg-dark-100 text-white rounded-lg text-sm transition-colors"
+          >
+            {selectedNotifications.length === notificationsData.length ? 'إلغاء تحديد الكل' : 'تحديد الكل'}
+          </button>
+          
+          {selectedNotifications.length > 0 && (
+            <button
+              onClick={handleDeleteSelected}
+              className="px-4 py-2 bg-error-600 hover:bg-error-700 text-white rounded-lg text-sm transition-colors flex items-center gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              حذف المحدد ({selectedNotifications.length})
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Notifications List */}
+      <div className="space-y-4">
+        {filteredNotifications.map((notification, index) => (
+          <motion.div
+            key={notification.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className={`bg-dark-200 rounded-xl p-6 border-r-4 ${
+              notification.status === 'unread' ? 'border-primary-500' : 'border-gray-600'
+            } hover:bg-dark-100 transition-colors`}
+          >
+            <div className="flex items-start gap-4">
+              {/* Checkbox */}
+              <input
+                type="checkbox"
+                checked={selectedNotifications.includes(notification.id)}
+                onChange={() => handleSelectNotification(notification.id)}
+                className="w-4 h-4 text-primary-600 bg-dark-400 border-dark-300 rounded focus:ring-primary-500 mt-1"
+              />
+
+              {/* Notification Icon */}
+              <div className="flex-shrink-0 mt-1">
+                {getNotificationIcon(notification.type)}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <h3 className={`font-semibold ${notification.status === 'unread' ? 'text-white' : 'text-gray-300'}`}>
+                      {notification.title}
+                    </h3>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(notification.priority)}`}>
+                      {notification.priority === 'high' ? 'عالي' : notification.priority === 'medium' ? 'متوسط' : 'منخفض'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <Calendar className="w-4 h-4" />
+                    <span>{notification.date}</span>
+                  </div>
+                </div>
+
+                <p className="text-gray-400 text-sm mb-3 leading-relaxed">
+                  {notification.content}
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-sm">
+                    <span className={`flex items-center gap-1 ${getTypeColor(notification.type)}`}>
+                      <span className="w-2 h-2 rounded-full bg-current"></span>
+                      {notification.category}
+                    </span>
+                    <span className="flex items-center gap-1 text-gray-400">
+                      <User className="w-4 h-4" />
+                      {notification.recipient}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleView(notification.id)}
+                      className="p-2 text-gray-400 hover:text-white hover:bg-dark-300 rounded-lg transition-colors"
+                      title="عرض"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleEdit(notification.id)}
+                      className="p-2 text-blue-400 hover:text-blue-300 hover:bg-dark-300 rounded-lg transition-colors"
+                      title="تعديل"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    {notification.status === 'unread' && (
+                      <button
+                        onClick={() => handleMarkAsRead(notification.id)}
+                        className="p-2 text-green-400 hover:text-green-300 hover:bg-dark-300 rounded-lg transition-colors"
+                        title="تحديد كمقروء"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => console.log('Delete', notification.id)}
+                      className="p-2 text-error-400 hover:text-error-300 hover:bg-dark-300 rounded-lg transition-colors"
+                      title="حذف"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {filteredNotifications.length === 0 && (
+        <div className="text-center py-12">
+          <Bell className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-400 mb-2">لا توجد إشعارات</h3>
+          <p className="text-gray-500">لم يتم العثور على إشعارات تطابق البحث</p>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderAddNotification_old = () => (
+    <div className="max-w-2xl mx-auto">
+      <div className="bg-dark-200 rounded-xl p-6">
+        <h2 className="text-xl font-bold mb-6">إضافة إشعار جديد</h2>
+        
+        <form className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               محتوى الإشعار
@@ -402,8 +987,8 @@ const Notifications: React.FC = () => {
         </div>
 
         {/* Content */}
-        {activeTab === 'كل الإشعارات' && renderNotificationsList()}
-        {activeTab === 'الإشعارات المحدودة' && renderNotificationsList()}
+        {activeTab === 'كل الإشعارات' && renderNotificationsList_old()}
+        {activeTab === 'الإشعارات المحدودة' && renderNotificationsList_old()}
         {activeTab === 'إضافة إشعار' && renderAddNotification()}
       </div>
     </div>

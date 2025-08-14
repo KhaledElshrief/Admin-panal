@@ -16,6 +16,7 @@ import vehicleReducer from './slices/vehicleSlice';
 import toastReducer from './slices/toastSlice';
 import contactUsReducer from './slices/contactUsSlice';
 import languageReducer from './slices/languageSlice';
+import notificationsReducer from './slices/notificationsSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -35,6 +36,7 @@ export const store = configureStore({
     toast: toastReducer,
     contactUs: contactUsReducer,
     language: languageReducer,
+    notifications: notificationsReducer,
   },
 });
 
