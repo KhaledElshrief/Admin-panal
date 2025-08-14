@@ -385,5 +385,56 @@
     "deleteError": "Error occurred while deleting",
     "updateSuccess": "Updated successfully",
     "updateError": "Error occurred while updating"
+  },
+  "notifications": {
+    "title": "Notifications Management",
+    "subtitle": "Manage and send notifications to users",
+    "addNew": "Add New Notification",
+    "allNotifications": "All Notifications",
+    "limitedNotifications": "Limited Notifications",
+    "searchPlaceholder": "Search notifications...",
+    "selectAll": "Select All",
+    "unselectAll": "Unselect All",
+    "deleteSelected": "Delete Selected",
+    "markAsRead": "Mark as Read",
+    "noNotifications": "No notifications",
+    "noNotificationsFound": "No notifications found matching the search",
+    "type": "Notification Type",
+    "title": "Title",
+    "description": "Description",
+    "titleArabic": "Title (Arabic)",
+    "titleEnglish": "Title (English)",
+    "titleKurdish": "Title (Kurdish)",
+    "descriptionArabic": "Description (Arabic)",
+    "descriptionEnglish": "Description (English)",
+    "descriptionKurdish": "Description (Kurdish)",
+    "titleArabicPlaceholder": "Enter title in Arabic",
+    "titleEnglishPlaceholder": "Enter title in English",
+    "titleKurdishPlaceholder": "Enter title in Kurdish",
+    "descriptionArabicPlaceholder": "Enter description in Arabic",
+    "descriptionEnglishPlaceholder": "Enter description in English",
+    "descriptionKurdishPlaceholder": "Enter description in Kurdish",
+    "imageUrl": "Image URL",
+    "imageUrlPlaceholder": "https://example.com/image.jpg",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "send": "Send Notification",
+    "sending": "Sending...",
+    "clearForm": "Clear Form",
+    "types": {
+      "appNotification": "App Notification",
+      "appAds": "App Advertisement"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "stats": {
+      "total": "Total Notifications",
+      "unread": "Unread",
+      "highPriority": "High Priority",
+      "system": "System Notifications"
+    }
   }
 }

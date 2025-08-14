@@ -387,5 +387,56 @@
     "deleteError": "حدث خطأ أثناء الحذف",
     "updateSuccess": "تم التحديث بنجاح",
     "updateError": "حدث خطأ أثناء التحديث"
+  },
+  "notifications": {
+    "title": "إدارة الإشعارات",
+    "subtitle": "إدارة وإرسال الإشعارات للمستخدمين",
+    "addNew": "إضافة إشعار جديد",
+    "allNotifications": "كل الإشعارات",
+    "limitedNotifications": "الإشعارات المحدودة",
+    "searchPlaceholder": "البحث في الإشعارات...",
+    "selectAll": "تحديد الكل",
+    "unselectAll": "إلغاء تحديد الكل",
+    "deleteSelected": "حذف المحدد",
+    "markAsRead": "تحديد كمقروء",
+    "noNotifications": "لا توجد إشعارات",
+    "noNotificationsFound": "لم يتم العثور على إشعارات تطابق البحث",
+    "type": "نوع الإشعار",
+    "title": "العنوان",
+    "description": "الوصف",
+    "titleArabic": "العنوان (عربي)",
+    "titleEnglish": "العنوان (إنجليزي)",
+    "titleKurdish": "العنوان (كردي)",
+    "descriptionArabic": "الوصف (عربي)",
+    "descriptionEnglish": "الوصف (إنجليزي)",
+    "descriptionKurdish": "الوصف (كردي)",
+    "titleArabicPlaceholder": "أدخل العنوان بالعربية",
+    "titleEnglishPlaceholder": "Enter title in English",
+    "titleKurdishPlaceholder": "ناونیشان بە کوردی بنووسە",
+    "descriptionArabicPlaceholder": "أدخل الوصف بالعربية",
+    "descriptionEnglishPlaceholder": "Enter description in English",
+    "descriptionKurdishPlaceholder": "وەسف بە کوردی بنووسە",
+    "imageUrl": "رابط الصورة",
+    "imageUrlPlaceholder": "https://example.com/image.jpg",
+    "startDate": "تاريخ البدء",
+    "endDate": "تاريخ الانتهاء",
+    "send": "إرسال الإشعار",
+    "sending": "جاري الإرسال...",
+    "clearForm": "مسح النموذج",
+    "types": {
+      "appNotification": "إشعار التطبيق",
+      "appAds": "إعلان التطبيق"
+    },
+    "priority": {
+      "high": "عالي",
+      "medium": "متوسط",
+      "low": "منخفض"
+    },
+    "stats": {
+      "total": "إجمالي الإشعارات",
+      "unread": "غير مقروءة",
+      "highPriority": "عالية الأولوية",
+      "system": "إشعارات النظام"
+    }
   }
 }

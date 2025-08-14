@@ -385,5 +385,56 @@
     "deleteError": "هەڵەیەک ڕوویدا لە کاتی سڕینەوە",
     "updateSuccess": "بە سەرکەوتوویی نوێکرایەوە",
     "updateError": "هەڵەیەک ڕوویدا لە کاتی نوێکردنەوە"
+  },
+  "notifications": {
+    "title": "بەڕێوەبردنی ئاگادارکردنەوەکان",
+    "subtitle": "بەڕێوەبردن و ناردنی ئاگادارکردنەوەکان بۆ بەکارهێنەران",
+    "addNew": "زیادکردنی ئاگادارکردنەوەی نوێ",
+    "allNotifications": "هەموو ئاگادارکردنەوەکان",
+    "limitedNotifications": "ئاگادارکردنەوە سنووردارەکان",
+    "searchPlaceholder": "گەڕان لە ئاگادارکردنەوەکان...",
+    "selectAll": "هەموو هەڵبژێرە",
+    "unselectAll": "هەڵبژاردن هەڵوەشێنەوە",
+    "deleteSelected": "سڕینەوەی هەڵبژێردراوەکان",
+    "markAsRead": "وەک خوێندراوە نیشانبکە",
+    "noNotifications": "هیچ ئاگادارکردنەوەیەک نییە",
+    "noNotificationsFound": "هیچ ئاگادارکردنەوەیەک نەدۆزرایەوە کە لەگەڵ گەڕانەکە بگونجێت",
+    "type": "جۆری ئاگادارکردنەوە",
+    "title": "سەردێڕ",
+    "description": "وەسف",
+    "titleArabic": "سەردێڕ (عەرەبی)",
+    "titleEnglish": "سەردێڕ (ئینگلیزی)",
+    "titleKurdish": "سەردێڕ (کوردی)",
+    "descriptionArabic": "وەسف (عەرەبی)",
+    "descriptionEnglish": "وەسف (ئینگلیزی)",
+    "descriptionKurdish": "وەسف (کوردی)",
+    "titleArabicPlaceholder": "سەردێڕ بە عەرەبی بنووسە",
+    "titleEnglishPlaceholder": "سەردێڕ بە ئینگلیزی بنووسە",
+    "titleKurdishPlaceholder": "سەردێڕ بە کوردی بنووسە",
+    "descriptionArabicPlaceholder": "وەسف بە عەرەبی بنووسە",
+    "descriptionEnglishPlaceholder": "وەسف بە ئینگلیزی بنووسە",
+    "descriptionKurdishPlaceholder": "وەسف بە کوردی بنووسە",
+    "imageUrl": "بەستەری وێنە",
+    "imageUrlPlaceholder": "https://example.com/image.jpg",
+    "startDate": "ڕێکەوتی دەستپێکردن",
+    "endDate": "ڕێکەوتی کۆتایی",
+    "send": "ناردنی ئاگادارکردنەوە",
+    "sending": "ناردن...",
+    "clearForm": "پاککردنەوەی فۆرم",
+    "types": {
+      "appNotification": "ئاگادارکردنەوەی ئەپ",
+      "appAds": "ڕیکلامی ئەپ"
+    },
+    "priority": {
+      "high": "بەرز",
+      "medium": "ناوەند",
+      "low": "نزم"
+    },
+    "stats": {
+      "total": "کۆی ئاگادارکردنەوەکان",
+      "unread": "نەخوێندراوە",
+      "highPriority": "گرنگی بەرز",
+      "system": "ئاگادارکردنەوەکانی سیستەم"
+    }
   }
 }
