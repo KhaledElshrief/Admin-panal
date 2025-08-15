@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { fetchContactUs, deleteContactUs } from '../store/slices/contactUsSlice';
 import type { RootState, AppDispatch } from '../store';
+import { getLocalizedRole } from '../utils/i18nUtils';
 import { MessageCircle, User, Calendar, Phone, MapPin, Trash2 } from 'lucide-react';
 import { showToast } from '../store/slices/toastSlice';
 import Table, { TableColumn } from '../components/ui/Table';
@@ -76,7 +77,7 @@ const ContactUs: React.FC = () => {
               {record.User.region}
             </div>
             <div className="text-xs text-primary-400 font-medium">
-              {record.User.role}
+              {getLocalizedRole(record.User.role, t)}
             </div>
           </div>
         </div>

@@ -81,7 +81,7 @@ const Header: React.FC = () => {
             <input
               type="text"
               className="block w-full p-2 pr-10 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
-              placeholder={t('header.search')}
+              placeholder={t('header.searchPlaceholder')}
             />
           </div>
         </div>

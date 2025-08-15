@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useDirection } from '../../hooks/useDirection';
 import {
   LayoutDashboard,
   School,
@@ -22,6 +23,7 @@ import {
 
 const Sidebar: React.FC = () => {
   const { t } = useTranslation();
+  const { isRTL } = useDirection();
   const [isExpanded, setIsExpanded] = useState(false);
   
   const navItems = [
@@ -50,7 +52,7 @@ const Sidebar: React.FC = () => {
     <aside
       className={`bg-dark-300 h-full transition-all duration-300 ease-in-out ${
         isExpanded ? 'w-64' : 'w-16'
-      } relative`}
+      } relative ${isRTL ? 'border-l border-dark-200' : 'border-r border-dark-200'}`}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
@@ -69,7 +71,9 @@ const Sidebar: React.FC = () => {
               key={item.path}
               to={item.path}
               className={({ isActive }) => `
-                relative flex items-center px-3 py-2.5 rounded-lg gap-3
+                relative flex items-center px-3 py-2.5 rounded-lg gap-3 ${
+                  isRTL ? 'text-right' : 'text-left'
+                }
                 transition-all duration-200 ease-in-out
                 ${isActive ? 'bg-primary-600 text-white' : 'text-gray-300 hover:bg-dark-200'}
                 ${!isExpanded && 'justify-center'}

@@ -22,6 +22,30 @@ body {
   direction: ltr;
 }
 
+/* Table direction fixes */
+[dir="rtl"] table {
+  text-align: right;
+}
+
+[dir="ltr"] table {
+  text-align: left;
+}
+
+[dir="rtl"] th,
+[dir="rtl"] td {
+  text-align: right;
+}
+
+[dir="ltr"] th,
+[dir="ltr"] td {
+  text-align: left;
+}
+
+/* Center aligned cells should remain centered regardless of direction */
+.text-center {
+  text-align: center !important;
+}
+
 /* Language-specific font families */
 [lang="ar"] {
   font-family: 'Tajawal', sans-serif;
@@ -57,10 +81,27 @@ body {
   margin-right: 0;
 }
 
+[dir="rtl"] .flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
 /* LTR-specific adjustments */
 [dir="ltr"] .space-x-4 > * + * {
   margin-left: 1rem;
   margin-right: 0;
+}
+
+[dir="ltr"] .flex-row {
+  flex-direction: row;
+}
+
+/* Pagination direction fixes */
+[dir="rtl"] .pagination {
+  flex-direction: row-reverse;
+}
+
+[dir="ltr"] .pagination {
+  flex-direction: row;
 }
 
 @layer components {

@@ -70,8 +70,8 @@ const CommissionsTab: React.FC = () => {
       title: t('table.status'),
       sortable: true,
       render: (value) => {
-        const variant = value === 'مدفوع' ? 'success' : 'warning';
-        return <StatusBadge status={value} variant={variant as any} />;
+        const variant = value === 'مدفوع' || value === 'Paid' ? 'success' : 'warning';
+        return <StatusBadge status={value} variant={variant as any} localize={true} />;
       }
     }
   ];

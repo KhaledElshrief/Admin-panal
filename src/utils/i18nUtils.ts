@@ -5,19 +5,22 @@ import { TFunction } from 'react-i18next';
  */
 export const getLocalizedStatus = (status: string, t: TFunction): string => {
   const statusMap: Record<string, string> = {
-    'active': t('drivers.active'),
-    'suspended': t('drivers.suspended'),
-    'banned': t('drivers.banned'),
-    'pending': t('common.pending', 'معلق'),
-    'complete': t('drivers.complete'),
-    'incomplete': t('drivers.incomplete'),
-    'verified': t('drivers.verified'),
-    'not_activated': t('drivers.notActivated'),
-    'male': t('users.male'),
-    'female': t('users.female'),
-    'student': t('users.student'),
-    'parent': t('users.parent'),
-    'driver': t('users.driver')
+    'active': t('common.active'),
+    'suspended': t('common.suspended'),
+    'banned': t('common.banned'),
+    'pending': t('common.pending'),
+    'complete': t('common.complete'),
+    'incomplete': t('common.incomplete'),
+    'verified': t('common.verified'),
+    'not_activated': t('common.notVerified'),
+    'male': t('common.male'),
+    'female': t('common.female'),
+    'student': t('common.student'),
+    'parent': t('common.parent'),
+    'driver': t('common.driver'),
+    'paid': t('common.paid'),
+    'expired': t('common.expired'),
+    'inactive': t('common.inactive')
   };
   
   return statusMap[status.toLowerCase()] || status;
@@ -51,7 +54,7 @@ export const formatLocalizedDate = (date: string | Date, language: string): stri
 };
 
 /**
- * Get RTL/LTR class names based on language
+ * Get RTL/LTR class names based on language direction
  */
 export const getDirectionClasses = (isRTL: boolean) => {
   return {
@@ -63,6 +66,67 @@ export const getDirectionClasses = (isRTL: boolean) => {
     borderStart: isRTL ? 'border-r' : 'border-l',
     borderEnd: isRTL ? 'border-l' : 'border-r',
     roundedStart: isRTL ? 'rounded-r' : 'rounded-l',
-    roundedEnd: isRTL ? 'rounded-l' : 'rounded-r'
+    roundedEnd: isRTL ? 'rounded-l' : 'rounded-r',
+    spaceX: isRTL ? 'space-x-reverse' : '',
+    flexRow: isRTL ? 'flex-row-reverse' : 'flex-row'
   };
+};
+
+/**
+ * Get localized number format
+ */
+export const formatLocalizedNumber = (number: number, language: string): string => {
+  const locale = getLocalizedDateFormat(language);
+  return new Intl.NumberFormat(locale).format(number);
+};
+
+/**
+ * Get localized currency format
+ */
+export const formatLocalizedCurrency = (amount: number, currency: string, language: string): string => {
+  const locale = getLocalizedDateFormat(language);
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency || 'USD'
+  }).format(amount);
+};
+
+/**
+ * Get localized role text
+ */
+export const getLocalizedRole = (role: string, t: TFunction): string => {
+  const roleMap: Record<string, string> = {
+    'STUDENT': t('common.student'),
+    'PARENT': t('common.parent'),
+    'DRIVER': t('common.driver'),
+    'ADMIN': t('header.adminRole'),
+    'AGENT': t('table.agentName')
+  };
+  
+  return roleMap[role.toUpperCase()] || role;
+};
+
+/**
+ * Get localized gender text
+ */
+export const getLocalizedGender = (gender: string, t: TFunction): string => {
+  const genderMap: Record<string, string> = {
+    'MALE': t('common.male'),
+    'FEMALE': t('common.female')
+  };
+  
+  return genderMap[gender.toUpperCase()] || gender;
+};
+
+/**
+ * Get localized academic level text
+ */
+export const getLocalizedAcademicLevel = (level: string, t: TFunction): string => {
+  const levelMap: Record<string, string> = {
+    'PRIMARY': t('users.primary'),
+    'SECONDARY': t('users.secondary'),
+    'UNIVERSITY': t('users.university')
+  };
+  
+  return levelMap[level.toUpperCase()] || level;
 };

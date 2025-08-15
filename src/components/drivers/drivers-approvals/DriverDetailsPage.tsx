@@ -68,7 +68,7 @@ const DriverDetailsPage: React.FC = () => {
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h2 className="text-3xl font-extrabold mb-8 flex items-center gap-2">
-        <User className="w-8 h-8 text-primary-500" /> {t('drivers.driverDetails', 'تفاصيل السائق')}
+        <User className="w-8 h-8 text-primary-500" /> {t('drivers.driverDetails')}
       </h2>
 
       {/* Status Message */}
@@ -82,7 +82,7 @@ const DriverDetailsPage: React.FC = () => {
       {/* Driver Info Card */}
       <div className="bg-dark-200 p-6 rounded-xl shadow mb-8">
         <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <User className="w-6 h-6 text-primary-400" /> بيانات السائق
+          <User className="w-6 h-6 text-primary-400" /> {t('drivers.driverData')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -94,20 +94,20 @@ const DriverDetailsPage: React.FC = () => {
                   className="w-10 h-10 rounded-full object-cover border border-gray-400"
                 />
               )}
-              <span className="font-semibold">اسم المستخدم:</span> {driver.user?.userName || '-'}
+              <span className="font-semibold">{t('table.userName')}:</span> {driver.user?.userName || '-'}
             </div>
-            <div className="mb-2"><span className="font-semibold">الهاتف:</span> {driver.user?.phone || '-'}</div>
-            <div className="mb-2"><span className="font-semibold">المنطقة:</span> {driver.user?.region || '-'}</div>
-            <div className="mb-2"><span className="font-semibold">الجنس:</span> {driver.user?.gender || '-'}</div>
-            <div className="mb-2"><span className="font-semibold">تاريخ الميلاد:</span> {driver.user?.dateOfBirth ? new Date(driver.user.dateOfBirth).toLocaleDateString() : '-'}</div>
-            <div className="mb-2"><span className="font-semibold">المدينة:</span> {driver.user?.city?.name || '-'}</div>
-            <div className="mb-2"><span className="font-semibold">الدولة:</span> {driver.user?.country?.name || '-'}</div>
+            <div className="mb-2"><span className="font-semibold">{t('table.phone')}:</span> {driver.user?.phone || '-'}</div>
+            <div className="mb-2"><span className="font-semibold">{t('table.region')}:</span> {driver.user?.region || '-'}</div>
+            <div className="mb-2"><span className="font-semibold">{t('table.gender')}:</span> {driver.user?.gender || '-'}</div>
+            <div className="mb-2"><span className="font-semibold">{t('table.dateOfBirth')}:</span> {driver.user?.dateOfBirth ? new Date(driver.user.dateOfBirth).toLocaleDateString() : '-'}</div>
+            <div className="mb-2"><span className="font-semibold">{t('table.city')}:</span> {driver.user?.city?.name || '-'}</div>
+            <div className="mb-2"><span className="font-semibold">{t('table.country')}:</span> {driver.user?.country?.name || '-'}</div>
           </div>
           <div>
-            <div className="mb-2 flex items-center gap-2"><span className="font-semibold">تم التحقق من السائق:</span> <span className={`px-2 py-1 rounded text-xs font-bold ${driver.isVerified ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>{driver.isVerified ? 'نعم' : 'لا'}</span></div>
-            <div className="mb-2 flex items-center gap-2"><span className="font-semibold">موقوف:</span> <span className={`px-2 py-1 rounded text-xs font-bold ${driver.isPause ? 'bg-yellow-500 text-black' : 'bg-green-500 text-white'}`}>{driver.isPause ? 'نعم' : 'لا'}</span></div>
-            <div className="mb-2"><span className="font-semibold">متوسط التقييم:</span> {driver.avgRate !== null && driver.avgRate !== undefined ? driver.avgRate : '-'}</div>
-            <div className="mb-2"><span className="font-semibold">اسم المركبة:</span> {Array.isArray(driver.DriverVehicle) && driver.DriverVehicle.length > 0 ? driver.DriverVehicle[0].carModel || '-' : '-'}</div>
+            <div className="mb-2 flex items-center gap-2"><span className="font-semibold">{t('drivers.verifiedDriver')}:</span> <span className={`px-2 py-1 rounded text-xs font-bold ${driver.isVerified ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>{driver.isVerified ? t('common.yes') : t('common.no')}</span></div>
+            <div className="mb-2 flex items-center gap-2"><span className="font-semibold">{t('drivers.pausedDriver')}:</span> <span className={`px-2 py-1 rounded text-xs font-bold ${driver.isPause ? 'bg-yellow-500 text-black' : 'bg-green-500 text-white'}`}>{driver.isPause ? t('common.yes') : t('common.no')}</span></div>
+            <div className="mb-2"><span className="font-semibold">{t('drivers.averageRating')}:</span> {driver.avgRate !== null && driver.avgRate !== undefined ? driver.avgRate : '-'}</div>
+            <div className="mb-2"><span className="font-semibold">{t('drivers.vehicleName')}:</span> {Array.isArray(driver.DriverVehicle) && driver.DriverVehicle.length > 0 ? driver.DriverVehicle[0].carModel || '-' : '-'}</div>
            
           </div>
         </div>
@@ -117,17 +117,17 @@ const DriverDetailsPage: React.FC = () => {
       {Array.isArray(driver.DriverVehicle) && driver.DriverVehicle.length > 0 && (
         <div className="bg-dark-200 p-6 rounded-xl shadow mb-8">
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Car className="w-6 h-6 text-primary-400" /> تفاصيل المركبة
+            <Car className="w-6 h-6 text-primary-400" /> {t('drivers.vehicleDetails')}
           </h3>
           <table className="w-full text-left text-white">
             <thead>
               <tr className="bg-dark-300">
-                <th className="py-2 px-3">الموديل</th>
-                <th className="py-2 px-3">سنة الموديل</th>
-                <th className="py-2 px-3">اللون</th>
-                <th className="py-2 px-3">رقم المفتاح</th>
-                <th className="py-2 px-3">تاريخ الإنشاء</th>
-                <th className="py-2 px-3">تاريخ التحديث</th>
+                <th className="py-2 px-3">{t('users.vehicleModel')}</th>
+                <th className="py-2 px-3">{t('table.date')}</th>
+                <th className="py-2 px-3">{t('users.vehicleColor')}</th>
+                <th className="py-2 px-3">{t('users.keyNumber')}</th>
+                <th className="py-2 px-3">{t('table.createdAt')}</th>
+                <th className="py-2 px-3">{t('table.updatedAt')}</th>
               </tr>
             </thead>
             <tbody>
@@ -149,13 +149,13 @@ const DriverDetailsPage: React.FC = () => {
       {/* Document Images */}
       <div className="bg-dark-200 p-6 rounded-xl shadow mb-8">
         <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <BadgeCheck className="w-6 h-6 text-primary-400" /> مستندات السائق
+          <BadgeCheck className="w-6 h-6 text-primary-400" /> {t('drivers.driverDocuments')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Home Pictures */}
           {Array.isArray(driver.homePicture) && driver.homePicture.length > 0 && (
             <div>
-              <div className="font-semibold mb-2">صور المنزل</div>
+              <div className="font-semibold mb-2">{t('drivers.homePictures')}</div>
               <div className="flex flex-wrap gap-2">
                 {driver.homePicture.map((pic: string, idx: number) => (
                   <img
@@ -172,7 +172,7 @@ const DriverDetailsPage: React.FC = () => {
           {/* Driving License */}
           {Array.isArray(driver.drivingLicense) && driver.drivingLicense.length > 0 && (
             <div>
-              <div className="font-semibold mb-2">رخص القيادة</div>
+              <div className="font-semibold mb-2">{t('drivers.drivingLicense')}</div>
               <div className="flex flex-wrap gap-2">
                 {driver.drivingLicense.map((pic: string, idx: number) => (
                   <img
@@ -189,7 +189,7 @@ const DriverDetailsPage: React.FC = () => {
           {/* Personal Card */}
           {Array.isArray(driver.personalCard) && driver.personalCard.length > 0 && (
             <div>
-              <div className="font-semibold mb-2">بطاقة الهوية الشخصية</div>
+              <div className="font-semibold mb-2">{t('drivers.personalCard')}</div>
               <div className="flex flex-wrap gap-2">
                 {driver.personalCard.map((pic: string, idx: number) => (
                   <img
@@ -224,7 +224,7 @@ const DriverDetailsPage: React.FC = () => {
           >›</button>
           <img
             src={modalImages[modalIndex].startsWith('/') ? `https://mahfouzapp.com${modalImages[modalIndex]}` : modalImages[modalIndex]}
-            alt="عرض الصورة"
+            alt={t('common.view')}
             className="max-h-[80vh] max-w-[90vw] rounded-lg shadow-lg"
           />
           <button

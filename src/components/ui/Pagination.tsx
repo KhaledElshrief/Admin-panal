@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDirection } from '../../hooks/useDirection';
 
 interface PaginationProps {
   currentPage: number;
@@ -9,6 +10,7 @@ interface PaginationProps {
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
   const { t } = useTranslation();
+  const { isRTL } = useDirection();
   
   if (totalPages <= 1) return null;
 
@@ -19,9 +21,9 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   };
 
   return (
-    <div className="flex flex-row-reverse justify-center items-center gap-2 mt-4">
+    <div className={`flex ${isRTL ? 'flex-row-reverse' : 'flex-row'} justify-center items-center gap-2 mt-4 pagination`}>
       <button
-        className="px-3 py-1 rounded bg-dark-200 text-white"
+        className="px-3 py-1 rounded bg-dark-200 text-white hover:bg-dark-100 disabled:opacity-50 transition-colors"
         onClick={() => handleClick(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
@@ -95,7 +97,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         </>
       )}
       <button
-        className="px-3 py-1 rounded bg-dark-200 text-white"
+        className="px-3 py-1 rounded bg-dark-200 text-white hover:bg-dark-100 disabled:opacity-50 transition-colors"
         onClick={() => handleClick(currentPage - 1)}
         disabled={currentPage === 1}
       >

@@ -96,8 +96,8 @@ const PaymentsTab: React.FC = () => {
       title: t('table.status'),
       sortable: true,
       render: (value) => {
-        const variant = value === 'ناجح' ? 'success' : 'warning';
-        return <StatusBadge status={value} variant={variant as any} />;
+        const variant = value === 'ناجح' || value === 'Success' ? 'success' : 'warning';
+        return <StatusBadge status={value} variant={variant as any} localize={true} />;
       }
     }
   ];
