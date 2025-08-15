@@ -100,7 +100,7 @@ const ContactUs: React.FC = () => {
       title: t('table.reason'),
       width: '150px',
       render: (value) => (
-        <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+        <span className=" text-white px-3 py-1 rounded-full text-xs font-medium">
           {value}
         </span>
       ),
