@@ -93,11 +93,11 @@ export const createNotification = createAsyncThunk(
 // Async thunk to fetch notifications (optional - for listing)
 export const fetchNotifications = createAsyncThunk(
   'notifications/fetchNotifications',
-  async (params: { page?: number; pageSize?: number } = {}, { rejectWithValue }) => {
+  async (params: { page?: number; pageSize?: number; type?: string } = {}, { rejectWithValue }) => {
     try {
-      const { page = 1, pageSize = 10 } = params;
+      const { page = 1, pageSize = 10, type } = params;
       const response = await api.get('/dashboard/notifications', {
-        params: { page, pageSize }
+        params: { page, pageSize, type }
       });
 
       return response.data;

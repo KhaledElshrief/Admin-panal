@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { fetchSchoolById, updateSchool, clearUpdateError } from '../store/slices/schoolSlices';
 import type { RootState, AppDispatch } from '../store';
 import DeleteSchoolModal from '../components/schools/DeleteSchoolModal';
 import { ArrowLeft, Edit, Save, X, Trash2 } from 'lucide-react';
 
 const SchoolDetails: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -102,7 +104,7 @@ const SchoolDetails: React.FC = () => {
   if (selectedSchoolError) return (
     <div className="p-6">
       <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6">
-        <p className="text-red-400">خطأ: {selectedSchoolError}</p>
+        <p className="text-red-400">{t('school.details.error')}: {selectedSchoolError}</p>
       </div>
     </div>
   );
@@ -110,7 +112,7 @@ const SchoolDetails: React.FC = () => {
   if (!selectedSchool) return (
     <div className="p-6">
       <div className="bg-dark-300 rounded-xl p-6 text-center">
-        <p className="text-gray-400">لا توجد بيانات لهذه المدرسة</p>
+        <p className="text-gray-400">{t('school.details.noData')}</p>
       </div>
     </div>
   );
@@ -124,7 +126,7 @@ const SchoolDetails: React.FC = () => {
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            العودة
+            {t('school.details.back')}
           </button>
           <h1 className="text-2xl font-bold text-white">{selectedSchool.name}</h1>
         </div>
@@ -136,14 +138,14 @@ const SchoolDetails: React.FC = () => {
                 className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
               >
                 <Edit className="w-4 h-4" />
-                تعديل
+                {t('school.details.edit')}
               </button>
               <button
                 onClick={handleDelete}
                 className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
-                حذف
+                {t('school.details.delete')}
               </button>
             </>
           )}
@@ -162,7 +164,7 @@ const SchoolDetails: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  اسم المدرسة (عربي)
+                  {t('school.form.nameAr')}
                 </label>
                 <input
                   type="text"
@@ -170,13 +172,13 @@ const SchoolDetails: React.FC = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-                  placeholder="أدخل اسم المدرسة بالعربية"
+                  placeholder={t('school.form.enterNameAr')}
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  اسم المدرسة (إنجليزي)
+                  {t('school.form.nameEn')}
                 </label>
                 <input
                   type="text"
@@ -184,13 +186,13 @@ const SchoolDetails: React.FC = () => {
                   value={formData.nameEn}
                   onChange={handleInputChange}
                   className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-                  placeholder="أدخل اسم المدرسة بالإنجليزية"
+                  placeholder={t('school.form.enterNameEn')}
                   required
                 />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  العنوان
+                  {t('school.form.address')}
                 </label>
                 <input
                   type="text"
@@ -198,13 +200,13 @@ const SchoolDetails: React.FC = () => {
                   value={formData.address}
                   onChange={handleInputChange}
                   className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-                  placeholder="أدخل عنوان المدرسة"
+                  placeholder={t('school.form.enterAddress')}
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  خط العرض
+                  {t('school.form.latitude')}
                 </label>
                 <input
                   type="number"
@@ -213,12 +215,12 @@ const SchoolDetails: React.FC = () => {
                   value={formData.latitude}
                   onChange={handleInputChange}
                   className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-                  placeholder="أدخل خط العرض"
+                  placeholder={t('school.form.enterLatitude')}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  خط الطول
+                  {t('school.form.longitude')}
                 </label>
                 <input
                   type="number"
@@ -227,12 +229,12 @@ const SchoolDetails: React.FC = () => {
                   value={formData.longitude}
                   onChange={handleInputChange}
                   className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-                  placeholder="أدخل خط الطول"
+                  placeholder={t('school.form.enterLongitude')}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  معرف المدينة
+                  {t('school.form.cityId')}
                 </label>
                 <input
                   type="text"
@@ -240,13 +242,13 @@ const SchoolDetails: React.FC = () => {
                   value={formData.cityId}
                   onChange={handleInputChange}
                   className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-                  placeholder="أدخل معرف المدينة"
+                  placeholder={t('school.form.enterCityId')}
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  معرف الدولة
+                  {t('school.form.countryId')}
                 </label>
                 <input
                   type="text"
@@ -254,7 +256,7 @@ const SchoolDetails: React.FC = () => {
                   value={formData.countryId}
                   onChange={handleInputChange}
                   className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-                  placeholder="أدخل معرف الدولة"
+                  placeholder={t('school.form.enterCountryId')}
                   required
                 />
               </div>
@@ -267,7 +269,7 @@ const SchoolDetails: React.FC = () => {
                 className="flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 disabled:opacity-50 transition-colors"
               >
                 <Save className="w-4 h-4" />
-                {updateLoading ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+                {updateLoading ? t('school.details.saving') : t('school.details.saveChanges')}
               </button>
               <button
                 type="button"
@@ -275,7 +277,7 @@ const SchoolDetails: React.FC = () => {
                 className="flex items-center gap-2 bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
               >
                 <X className="w-4 h-4" />
-                إلغاء
+                {t('school.details.cancel')}
               </button>
             </div>
           </form>
@@ -284,35 +286,35 @@ const SchoolDetails: React.FC = () => {
         <div className="bg-dark-300 rounded-xl p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-white">معلومات المدرسة</h3>
+              <h3 className="text-lg font-semibold mb-4 text-white">{t('school.details.schoolInfo')}</h3>
               <div className="space-y-4">
                 <div className="border-b border-dark-200 pb-3">
-                  <span className="text-sm text-gray-400 block mb-1">الاسم (عربي):</span>
+                  <span className="text-sm text-gray-400 block mb-1">{t('school.details.nameAr')}:</span>
                   <p className="font-medium text-white">{selectedSchool.name}</p>
                 </div>
                 <div className="border-b border-dark-200 pb-3">
-                  <span className="text-sm text-gray-400 block mb-1">الاسم (إنجليزي):</span>
+                  <span className="text-sm text-gray-400 block mb-1">{t('school.details.nameEn')}:</span>
                   <p className="font-medium text-white">{selectedSchool.nameEn}</p>
                 </div>
                 <div className="border-b border-dark-200 pb-3">
-                  <span className="text-sm text-gray-400 block mb-1">العنوان:</span>
+                  <span className="text-sm text-gray-400 block mb-1">{t('school.details.address')}:</span>
                   <p className="font-medium text-white">{selectedSchool.address}</p>
                 </div>
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-white">الموقع الجغرافي</h3>
+              <h3 className="text-lg font-semibold mb-4 text-white">{t('school.details.geographicLocation')}</h3>
               <div className="space-y-4">
                 <div className="border-b border-dark-200 pb-3">
-                  <span className="text-sm text-gray-400 block mb-1">خط العرض:</span>
+                  <span className="text-sm text-gray-400 block mb-1">{t('school.details.latitude')}:</span>
                   <p className="font-medium text-white">{selectedSchool.latitude}</p>
                 </div>
                 <div className="border-b border-dark-200 pb-3">
-                  <span className="text-sm text-gray-400 block mb-1">خط الطول:</span>
+                  <span className="text-sm text-gray-400 block mb-1">{t('school.details.longitude')}:</span>
                   <p className="font-medium text-white">{selectedSchool.longitude}</p>
                 </div>
                 <div className="border-b border-dark-200 pb-3">
-                  <span className="text-sm text-gray-400 block mb-1">معرف المكان:</span>
+                  <span className="text-sm text-gray-400 block mb-1">{t('school.details.placeId')}:</span>
                   <p className="font-medium text-gray-300 text-sm">{selectedSchool.placeId}</p>
                 </div>
               </div>
@@ -320,18 +322,18 @@ const SchoolDetails: React.FC = () => {
           </div>
           
           <div className="mt-8 pt-6 border-t border-dark-200">
-            <h3 className="text-lg font-semibold mb-4 text-white">معلومات إضافية</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white">{t('school.details.additionalInfo')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="border-b border-dark-200 pb-3">
-                <span className="text-sm text-gray-400 block mb-1">معرف المدينة:</span>
+                <span className="text-sm text-gray-400 block mb-1">{t('school.details.cityId')}:</span>
                 <p className="font-medium text-gray-300 text-sm">{selectedSchool.cityId}</p>
               </div>
               <div className="border-b border-dark-200 pb-3">
-                <span className="text-sm text-gray-400 block mb-1">معرف الدولة:</span>
+                <span className="text-sm text-gray-400 block mb-1">{t('school.details.countryId')}:</span>
                 <p className="font-medium text-gray-300 text-sm">{selectedSchool.countryId}</p>
               </div>
               <div className="border-b border-dark-200 pb-3">
-                <span className="text-sm text-gray-400 block mb-1">تاريخ الإنشاء:</span>
+                <span className="text-sm text-gray-400 block mb-1">{t('school.details.creationDate')}:</span>
                 <p className="font-medium text-gray-300 text-sm">{new Date(selectedSchool.createdAt).toLocaleDateString('ar-SA')}</p>
               </div>
             </div>

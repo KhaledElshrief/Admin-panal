@@ -267,13 +267,13 @@ const Drivers: React.FC = () => {
   const [selectedDriverId, setSelectedDriverId] = useState('');
 
   const menuItems = [
-    { icon: <FileText className="w-5 h-5" />, label: 'الموافقات', count: null },
-    { icon: <Users className="w-5 h-5" />, label: 'إدارة السائقين', count: null },
-    { icon: <BarChart2 className="w-5 h-5" />, label: 'التتبع', count: null },
-    { icon: <Settings className="w-5 h-5" />, label: 'التحكم', count: null },
-    { icon: <MessageSquare className="w-5 h-5" />, label: 'التقييمات', count: 3 },
-    { icon: <Bell className="w-5 h-5" />, label: 'الإشعارات', count: 5 },
-    { icon: <BarChart2 className="w-5 h-5" />, label: 'التقارير', count: null },
+    { icon: <FileText className="w-5 h-5" />, label: t('navigation.approvals'), count: null },
+    { icon: <Users className="w-5 h-5" />, label: t('navigation.driversManagement'), count: null },
+    { icon: <BarChart2 className="w-5 h-5" />, label: t('navigation.tracking'), count: null },
+    { icon: <Settings className="w-5 h-5" />, label: t('navigation.control'), count: null },
+    { icon: <MessageSquare className="w-5 h-5" />, label: t('navigation.ratings'), count: 3 },
+    { icon: <Bell className="w-5 h-5" />, label: t('navigation.notifications'), count: 5 },
+    { icon: <BarChart2 className="w-5 h-5" />, label: t('navigation.reports'), count: null },
   ];
 
   // Table columns for driver control

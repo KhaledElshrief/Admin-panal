@@ -97,11 +97,11 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
   const getPriorityText = (priority: string) => {
     switch (priority) {
       case 'high':
-        return t('notifications.priority.high', 'عالي');
+        return t('notifications.priority.high');
       case 'medium':
-        return t('notifications.priority.medium', 'متوسط');
+        return t('notifications.priority.medium');
       case 'low':
-        return t('notifications.priority.low', 'منخفض');
+        return t('notifications.priority.low');
       default:
         return priority;
     }
@@ -133,8 +133,8 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
             className="px-4 py-2 bg-dark-200 hover:bg-dark-100 text-white rounded-lg text-sm transition-colors"
           >
             {selectedNotifications.length === notifications.length 
-              ? t('notifications.unselectAll', 'إلغاء تحديد الكل') 
-              : t('notifications.selectAll', 'تحديد الكل')
+              ? t('notifications.unselectAll') 
+              : t('notifications.selectAll')
             }
           </button>
           
@@ -144,7 +144,7 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
               className="px-4 py-2 bg-error-600 hover:bg-error-700 text-white rounded-lg text-sm transition-colors flex items-center gap-2"
             >
               <Trash2 className="w-4 h-4" />
-              {t('notifications.deleteSelected', 'حذف المحدد')} ({selectedNotifications.length})
+              {t('notifications.deleteSelected')} ({selectedNotifications.length})
             </button>
           )}
         </div>
@@ -214,14 +214,14 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
                     <button
                       onClick={() => onView(notification.id)}
                       className="p-2 text-gray-400 hover:text-white hover:bg-dark-300 rounded-lg transition-colors"
-                      title={t('common.view', 'عرض')}
+                      title={t('common.view')}
                     >
                       <Eye className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => onEdit(notification.id)}
                       className="p-2 text-blue-400 hover:text-blue-300 hover:bg-dark-300 rounded-lg transition-colors"
-                      title={t('common.edit', 'تعديل')}
+                      title={t('common.edit')}
                     >
                       <Edit className="w-4 h-4" />
                     </button>
@@ -229,7 +229,7 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
                       <button
                         onClick={() => onMarkAsRead(notification.id)}
                         className="p-2 text-green-400 hover:text-green-300 hover:bg-dark-300 rounded-lg transition-colors"
-                        title={t('notifications.markAsRead', 'تحديد كمقروء')}
+                        title={t('notifications.markAsRead')}
                       >
                         <CheckCircle className="w-4 h-4" />
                       </button>
@@ -237,7 +237,7 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
                     <button
                       onClick={() => onDelete(notification.id)}
                       className="p-2 text-error-400 hover:text-error-300 hover:bg-dark-300 rounded-lg transition-colors"
-                      title={t('common.delete', 'حذف')}
+                      title={t('common.delete')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -252,12 +252,12 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
       {filteredNotifications.length === 0 && (
         <div className="text-center py-12">
           <Bell className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-400 mb-2">
-            {t('notifications.noNotifications', 'لا توجد إشعارات')}
-          </h3>
-          <p className="text-gray-500">
-            {t('notifications.noNotificationsFound', 'لم يتم العثور على إشعارات تطابق البحث')}
-          </p>
+                  <h3 className="text-lg font-medium text-gray-400 mb-2">
+          {t('notifications.noNotifications')}
+        </h3>
+        <p className="text-gray-500">
+          {t('notifications.noNotificationsFound')}
+        </p>
         </div>
       )}
     </div>

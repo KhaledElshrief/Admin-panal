@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { createSchool, clearCreateError } from '../../store/slices/schoolSlices';
 import { fetchCountries } from '../../store/slices/countriesSlice';
 import { fetchCities } from '../../store/slices/citySlice';
@@ -14,6 +15,7 @@ interface AddSchoolModalProps {
 }
 
 const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { createLoading, createError } = useSelector((state: RootState) => state.school);
   const { countries } = useSelector((state: RootState) => state.countries);
@@ -50,7 +52,7 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
     await dispatch(createSchool(formData));
     if (!createError) {
-      dispatch(showToast({ message: "تمت إضافة المدرسة بنجاح", type: "success" }));
+      dispatch(showToast({ message: t('notifications.schoolCreatedSuccess'), type: "success" }));
       setFormData({
         name: '',
         nameEn: '',
@@ -62,7 +64,7 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
       });
       onClose();
     } else {
-      dispatch(showToast({ message: "حدث خطأ أثناء إضافة المدرسة", type: "error" }));
+      dispatch(showToast({ message: t('notifications.schoolCreatedError'), type: "error" }));
     }
   };
 
@@ -83,7 +85,7 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="إضافة مدرسة جديدة">
+    <Modal isOpen={isOpen} onClose={handleClose} title={t('school.form.title')}>
       {createError && (
         <div className="mb-4 bg-red-500/10 border border-red-500/20 rounded-lg p-4">
           <p className="text-red-400">{createError}</p>
@@ -93,7 +95,7 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              اسم المدرسة (عربي) *
+              {t('school.form.nameAr')}
             </label>
             <input
               type="text"
@@ -101,13 +103,13 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
               value={formData.name}
               onChange={handleInputChange}
               className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-              placeholder="أدخل اسم المدرسة بالعربية"
+              placeholder={t('school.form.enterNameAr')}
               required
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              اسم المدرسة (إنجليزي) *
+              {t('school.form.nameEn')}
             </label>
             <input
               type="text"
@@ -115,13 +117,13 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
               value={formData.nameEn}
               onChange={handleInputChange}
               className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-              placeholder="أدخل اسم المدرسة بالإنجليزية"
+              placeholder={t('school.form.enterNameEn')}
               required
             />
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              العنوان *
+              {t('school.form.address')}
             </label>
             <input
               type="text"
@@ -129,13 +131,13 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
               value={formData.address}
               onChange={handleInputChange}
               className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-              placeholder="أدخل عنوان المدرسة"
+              placeholder={t('school.form.enterAddress')}
               required
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              خط العرض
+              {t('school.form.latitude')}
             </label>
             <input
               type="number"
@@ -144,12 +146,12 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
               value={formData.latitude}
               onChange={handleInputChange}
               className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-              placeholder="أدخل خط العرض"
+              placeholder={t('school.form.enterLatitude')}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              خط الطول
+              {t('school.form.longitude')}
             </label>
             <input
               type="number"
@@ -158,11 +160,11 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
               value={formData.longitude}
               onChange={handleInputChange}
               className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
-              placeholder="أدخل خط الطول"
+              placeholder={t('school.form.enterLongitude')}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">الدولة *</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">{t('school.form.countryId')}</label>
             <select
               name="countryId"
               value={formData.countryId}
@@ -170,14 +172,14 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
               className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white"
               required
             >
-              <option value="">اختر الدولة</option>
+              <option value="">{t('school.form.selectCountry')}</option>
               {countries.map(country => (
                 <option key={country.id} value={country.id}>{country.name}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">المدينة *</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">{t('school.form.cityId')}</label>
             <select
               name="cityId"
               value={formData.cityId}
@@ -185,7 +187,7 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
               className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white"
               required
             >
-              <option value="">اختر المدينة</option>
+              <option value="">{t('school.form.selectCity')}</option>
               {cities
                 .filter(city => !formData.countryId || city.countryId === formData.countryId)
                 .map(city => (
@@ -202,7 +204,7 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
             className="flex items-center gap-2 bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 disabled:opacity-50 transition-colors"
           >
             <Save className="w-4 h-4" />
-            {createLoading ? 'جاري الإضافة...' : 'إضافة المدرسة'}
+            {createLoading ? t('school.form.adding') : t('school.form.addSchool')}
           </button>
           <button
             type="button"
@@ -210,7 +212,7 @@ const AddSchoolModal: React.FC<AddSchoolModalProps> = ({ isOpen, onClose }) => {
             className="flex items-center gap-2 bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
           >
             <X className="w-4 h-4" />
-            إلغاء
+            {t('common.cancel')}
           </button>
         </div>
       </form>

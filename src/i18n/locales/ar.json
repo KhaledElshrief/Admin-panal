@@ -19,7 +19,10 @@
     "yes": "نعم",
     "no": "لا",
     "confirm": "تأكيد",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "creating": "جاري الإنشاء...",
+    "optional": "اختياري",
+    "retry": "إعادة المحاولة"
   },
   "table": {
     "actions": "الإجراءات",
@@ -181,7 +184,13 @@
     "content": "إدارة المحتوى",
     "ads": "إدارة الإعلانات",
     "roles": "الأدوار والصلاحيات",
-    "systemSettings": "إعدادات النظام"
+    "systemSettings": "إعدادات النظام",
+    "approvals": "الموافقات",
+    "driversManagement": "إدارة السائقين",
+    "tracking": "التتبع",
+    "control": "التحكم",
+    "ratings": "التقييمات",
+    "reports": "التقارير"
   },
   "pages": {
     "cityPage": "صفحة المدينة",
@@ -377,18 +386,6 @@
     "selectLanguage": "اختر اللغة"
   },
   "notifications": {
-    "userCreatedSuccess": "تمت إضافة المستخدم بنجاح",
-    "userCreatedError": "حدث خطأ أثناء إضافة المستخدم",
-    "schoolCreatedSuccess": "تمت إضافة المدرسة بنجاح",
-    "schoolCreatedError": "حدث خطأ أثناء إضافة المدرسة",
-    "cityCreatedSuccess": "تمت إضافة المدينة بنجاح",
-    "cityCreatedError": "حدث خطأ أثناء الإضافة",
-    "deleteSuccess": "تم الحذف بنجاح",
-    "deleteError": "حدث خطأ أثناء الحذف",
-    "updateSuccess": "تم التحديث بنجاح",
-    "updateError": "حدث خطأ أثناء التحديث"
-  },
-  "notifications": {
     "title": "إدارة الإشعارات",
     "subtitle": "إدارة وإرسال الإشعارات للمستخدمين",
     "addNew": "إضافة إشعار جديد",
@@ -404,12 +401,12 @@
     "type": "نوع الإشعار",
     "title": "العنوان",
     "description": "الوصف",
-    "titleArabic": "العنوان (عربي)",
-    "titleEnglish": "العنوان (إنجليزي)",
-    "titleKurdish": "العنوان (كردي)",
-    "descriptionArabic": "الوصف (عربي)",
-    "descriptionEnglish": "الوصف (إنجليزي)",
-    "descriptionKurdish": "الوصف (كردي)",
+    "titleArabic": "العنوان (عربي) *",
+    "titleEnglish": "العنوان (إنجليزي) *",
+    "titleKurdish": "العنوان (كردي) *",
+    "descriptionArabic": "الوصف (عربي) *",
+    "descriptionEnglish": "الوصف (إنجليزي) *",
+    "descriptionKurdish": "الوصف (كردي) *",
     "titleArabicPlaceholder": "أدخل العنوان بالعربية",
     "titleEnglishPlaceholder": "Enter title in English",
     "titleKurdishPlaceholder": "ناونیشان بە کوردی بنووسە",
@@ -423,6 +420,10 @@
     "send": "إرسال الإشعار",
     "sending": "جاري الإرسال...",
     "clearForm": "مسح النموذج",
+    "loading": "جاري تحميل الإشعارات...",
+    "error": "خطأ في تحميل الإشعارات",
+    "refresh": "تحديث",
+    "refreshButton": "تحديث",
     "types": {
       "appNotification": "إشعار التطبيق",
       "appAds": "إعلان التطبيق"
@@ -437,6 +438,175 @@
       "unread": "غير مقروءة",
       "highPriority": "عالية الأولوية",
       "system": "إشعارات النظام"
+    },
+    "validation": {
+      "titleRequired": "العنوان مطلوب بجميع اللغات",
+      "descriptionRequired": "الوصف مطلوب بجميع اللغات"
+    },
+    "success": {
+      "created": "تم إنشاء الإشعار بنجاح",
+      "updated": "تم تحديث الإشعار بنجاح",
+      "deleted": "تم حذف الإشعار بنجاح"
+    },
+    "error": {
+      "createFailed": "فشل في إنشاء الإشعار",
+      "updateFailed": "فشل في تحديث الإشعار",
+      "deleteFailed": "فشل في حذف الإشعار"
+    }
+  },
+  "school": {
+    "pageTitle": "صفحة المدرسة",
+    "table": {
+      "name": "اسم المدرسة",
+      "nameEn": "الاسم بالإنجليزية",
+      "address": "العنوان",
+      "actions": "الإجراءات"
+    },
+    "actions": {
+      "addSchool": "إضافة مدرسة",
+      "viewDetails": "عرض التفاصيل",
+      "deleteSchool": "حذف المدرسة"
+    },
+    "filters": {
+      "searchByName": "بحث بالاسم",
+      "searchByCityId": "بحث برقم المدينة",
+      "searchByCountryId": "بحث برقم الدولة"
+    },
+    "details": {
+      "back": "العودة",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "schoolInfo": "معلومات المدرسة",
+      "geographicLocation": "الموقع الجغرافي",
+      "additionalInfo": "معلومات إضافية",
+      "nameAr": "الاسم (عربي)",
+      "nameEn": "الاسم (إنجليزي)",
+      "address": "العنوان",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "placeId": "معرف المكان",
+      "cityId": "معرف المدينة",
+      "countryId": "معرف الدولة",
+      "creationDate": "تاريخ الإنشاء",
+      "noData": "لا توجد بيانات لهذه المدرسة",
+      "error": "خطأ",
+      "updateError": "خطأ في التحديث",
+      "saveChanges": "حفظ التغييرات",
+      "saving": "جاري الحفظ...",
+      "cancel": "إلغاء"
+    },
+    "form": {
+      "title": "إضافة مدرسة جديدة",
+      "editTitle": "تعديل المدرسة",
+      "nameAr": "اسم المدرسة (عربي) *",
+      "nameEn": "اسم المدرسة (إنجليزي) *",
+      "address": "العنوان *",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "cityId": "المدينة *",
+      "countryId": "الدولة *",
+      "selectCountry": "اختر الدولة",
+      "selectCity": "اختر المدينة",
+      "enterNameAr": "أدخل اسم المدرسة بالعربية",
+      "enterNameEn": "أدخل اسم المدرسة بالإنجليزية",
+      "enterAddress": "أدخل عنوان المدرسة",
+      "enterLatitude": "أدخل خط العرض",
+      "enterLongitude": "أدخل خط الطول",
+      "enterCityId": "أدخل معرف المدينة",
+      "enterCountryId": "أدخل معرف الدولة",
+      "addSchool": "إضافة المدرسة",
+      "adding": "جاري الإضافة...",
+      "saveChanges": "حفظ التغييرات",
+      "saving": "جاري الحفظ..."
+    },
+    "delete": {
+      "title": "حذف المدرسة",
+      "confirmTitle": "تأكيد الحذف",
+      "confirmMessage": "هل أنت متأكد من أنك تريد حذف المدرسة التالية؟ هذا الإجراء لا يمكن التراجع عنه.",
+      "nameAr": "الاسم (عربي)",
+      "nameEn": "الاسم (إنجليزي)",
+      "deleteSchool": "حذف المدرسة",
+      "deleting": "جاري الحذف..."
+    }
+  },
+  "pagination": {
+    "showing": "عرض",
+    "of": "من",
+    "results": "نتيجة",
+    "noData": "لا توجد بيانات متاحة"
+  },
+  "ads": {
+    "tableHeader": "جدول الإعلانات",
+    "actions": {
+      "addNew": "إضافة إعلان جديد"
+    },
+    "stats": {
+      "totalViews": "إجمالي المشاهدات",
+      "totalClicks": "إجمالي النقرات",
+      "activeAds": "نشط إعلاني",
+      "expiredAds": "منتهي إعلاني",
+      "totalAds": "إجمالي الإعلانات",
+      "scheduledAds": "الإعلانات المجدولة"
+    },
+    "table": {
+      "title": "العنوان",
+      "description": "الوصف",
+      "startDate": "تاريخ البداية",
+      "endDate": "تاريخ الانتهاء",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "active": "نشط",
+      "scheduled": "مجدول",
+      "expired": "منتهي",
+      "unknown": "غير معروف"
+    },
+    "filters": {
+      "all": "الكل",
+      "active": "نشط",
+      "scheduled": "مجدول",
+      "expired": "منتهي",
+      "searchPlaceholder": "البحث في الإعلانات...",
+      "reset": "إعادة تعيين"
+    },
+    "modal": {
+      "createTitle": "إنشاء إعلان جديد",
+      "title": "العنوان",
+      "titleAr": "العنوان (عربي)",
+      "titleEn": "العنوان (إنجليزي)",
+      "titleKu": "العنوان (كردي)",
+      "titleArPlaceholder": "أدخل العنوان بالعربية",
+      "titleEnPlaceholder": "أدخل العنوان بالإنجليزية",
+      "titleKuPlaceholder": "أدخل العنوان بالكردية",
+      "description": "الوصف",
+      "descriptionAr": "الوصف (عربي)",
+      "descriptionEn": "الوصف (إنجليزي)",
+      "descriptionKu": "الوصف (كردي)",
+      "descriptionArPlaceholder": "أدخل الوصف بالعربية",
+      "descriptionEnPlaceholder": "أدخل الوصف بالإنجليزية",
+      "descriptionKuPlaceholder": "أدخل الوصف بالكردية",
+      "image": "الصورة",
+      "imagePlaceholder": "أدخل رابط الصورة",
+      "upload": "رفع",
+      "startDate": "تاريخ البداية",
+      "endDate": "تاريخ الانتهاء",
+      "create": "إنشاء الإعلان"
+    },
+    "validation": {
+      "titleRequired": "العنوان مطلوب بجميع اللغات",
+      "descriptionRequired": "الوصف مطلوب بجميع اللغات",
+      "datesRequired": "تاريخي البداية والانتهاء مطلوبان"
+    },
+    "success": {
+      "created": "تم إنشاء الإعلان بنجاح",
+      "updated": "تم تحديث الإعلان بنجاح",
+      "deleted": "تم حذف الإعلان بنجاح"
+    },
+    "error": {
+      "createFailed": "فشل في إنشاء الإعلان",
+      "updateFailed": "فشل في تحديث الإعلان",
+      "deleteFailed": "فشل في حذف الإعلان"
     }
   }
 }

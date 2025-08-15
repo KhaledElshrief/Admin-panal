@@ -19,7 +19,10 @@
     "yes": "Yes",
     "no": "No",
     "confirm": "Confirm",
-    "close": "Close"
+    "close": "Close",
+    "creating": "Creating...",
+    "optional": "Optional",
+    "retry": "Retry"
   },
   "table": {
     "actions": "Actions",
@@ -179,7 +182,13 @@
     "content": "Content Management",
     "ads": "Ads Management",
     "roles": "Roles & Permissions",
-    "systemSettings": "System Settings"
+    "systemSettings": "System Settings",
+    "approvals": "Approvals",
+    "driversManagement": "Drivers Management",
+    "tracking": "Tracking",
+    "control": "Control",
+    "ratings": "Ratings",
+    "reports": "Reports"
   },
   "pages": {
     "cityPage": "City Page",
@@ -375,18 +384,6 @@
     "selectLanguage": "Select Language"
   },
   "notifications": {
-    "userCreatedSuccess": "User created successfully",
-    "userCreatedError": "Error occurred while creating user",
-    "schoolCreatedSuccess": "School created successfully",
-    "schoolCreatedError": "Error occurred while creating school",
-    "cityCreatedSuccess": "City created successfully",
-    "cityCreatedError": "Error occurred while creating city",
-    "deleteSuccess": "Deleted successfully",
-    "deleteError": "Error occurred while deleting",
-    "updateSuccess": "Updated successfully",
-    "updateError": "Error occurred while updating"
-  },
-  "notifications": {
     "title": "Notifications Management",
     "subtitle": "Manage and send notifications to users",
     "addNew": "Add New Notification",
@@ -402,12 +399,12 @@
     "type": "Notification Type",
     "title": "Title",
     "description": "Description",
-    "titleArabic": "Title (Arabic)",
-    "titleEnglish": "Title (English)",
-    "titleKurdish": "Title (Kurdish)",
-    "descriptionArabic": "Description (Arabic)",
-    "descriptionEnglish": "Description (English)",
-    "descriptionKurdish": "Description (Kurdish)",
+    "titleArabic": "Title (Arabic) *",
+    "titleEnglish": "Title (English) *",
+    "titleKurdish": "Title (Kurdish) *",
+    "descriptionArabic": "Description (Arabic) *",
+    "descriptionEnglish": "Description (English) *",
+    "descriptionKurdish": "Description (Kurdish) *",
     "titleArabicPlaceholder": "Enter title in Arabic",
     "titleEnglishPlaceholder": "Enter title in English",
     "titleKurdishPlaceholder": "Enter title in Kurdish",
@@ -421,6 +418,10 @@
     "send": "Send Notification",
     "sending": "Sending...",
     "clearForm": "Clear Form",
+    "loading": "Loading notifications...",
+    "error": "Error loading notifications",
+    "refresh": "Refresh",
+    "refreshButton": "Refresh",
     "types": {
       "appNotification": "App Notification",
       "appAds": "App Advertisement"
@@ -435,6 +436,175 @@
       "unread": "Unread",
       "highPriority": "High Priority",
       "system": "System Notifications"
+    },
+    "validation": {
+      "titleRequired": "Title is required in all languages",
+      "descriptionRequired": "Description is required in all languages"
+    },
+    "success": {
+      "created": "Notification created successfully",
+      "updated": "Notification updated successfully",
+      "deleted": "Notification deleted successfully"
+    },
+    "error": {
+      "createFailed": "Failed to create notification",
+      "updateFailed": "Failed to update notification",
+      "deleteFailed": "Failed to delete notification"
+    }
+  },
+  "school": {
+    "pageTitle": "School Page",
+    "table": {
+      "name": "School Name",
+      "nameEn": "Name in English",
+      "address": "Address",
+      "actions": "Actions"
+    },
+    "actions": {
+      "addSchool": "Add School",
+      "viewDetails": "View Details",
+      "deleteSchool": "Delete School"
+    },
+    "filters": {
+      "searchByName": "Search by name",
+      "searchByCityId": "Search by city ID",
+      "searchByCountryId": "Search by country ID"
+    },
+    "details": {
+      "back": "Back",
+      "edit": "Edit",
+      "delete": "Delete",
+      "schoolInfo": "School Information",
+      "geographicLocation": "Geographic Location",
+      "additionalInfo": "Additional Information",
+      "nameAr": "Name (Arabic)",
+      "nameEn": "Name (English)",
+      "address": "Address",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "placeId": "Place ID",
+      "cityId": "City ID",
+      "countryId": "Country ID",
+      "creationDate": "Creation Date",
+      "noData": "No data available for this school",
+      "error": "Error",
+      "updateError": "Update Error",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    },
+    "form": {
+      "title": "Add New School",
+      "editTitle": "Edit School",
+      "nameAr": "School Name (Arabic) *",
+      "nameEn": "School Name (English) *",
+      "address": "Address *",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "cityId": "City *",
+      "countryId": "Country *",
+      "selectCountry": "Select Country",
+      "selectCity": "Select City",
+      "enterNameAr": "Enter school name in Arabic",
+      "enterNameEn": "Enter school name in English",
+      "enterAddress": "Enter school address",
+      "enterLatitude": "Enter latitude",
+      "enterLongitude": "Enter longitude",
+      "enterCityId": "Enter city ID",
+      "enterCountryId": "Enter country ID",
+      "addSchool": "Add School",
+      "adding": "Adding...",
+      "saveChanges": "Save Changes",
+      "saving": "Saving..."
+    },
+    "delete": {
+      "title": "Delete School",
+      "confirmTitle": "Confirm Delete",
+      "confirmMessage": "Are you sure you want to delete the following school? This action cannot be undone.",
+      "nameAr": "Name (Arabic)",
+      "nameEn": "Name (English)",
+      "deleteSchool": "Delete School",
+      "deleting": "Deleting..."
+    }
+  },
+  "pagination": {
+    "showing": "Showing",
+    "of": "of",
+    "results": "results",
+    "noData": "No data available"
+  },
+  "ads": {
+    "tableHeader": "Ads Table",
+    "actions": {
+      "addNew": "Add New Ad"
+    },
+    "stats": {
+      "totalViews": "Total Views",
+      "totalClicks": "Total Cits",
+      "activeAds": "Active Ads",
+      "expiredAds": "Expired Ads",
+      "totalAds": "Total Ads",
+      "scheduledAds": "Scheduled Ads"
+    },
+    "table": {
+      "title": "Title",
+      "description": "Description",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "scheduled": "Scheduled",
+      "expired": "Expired",
+      "unknown": "Unknown"
+    },
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "scheduled": "Scheduled",
+      "expired": "Expired",
+      "searchPlaceholder": "Search ads...",
+      "reset": "Reset"
+    },
+    "modal": {
+      "createTitle": "Create New Ad",
+      "title": "Title",
+      "titleAr": "Title (Arabic)",
+      "titleEn": "Title (English)",
+      "titleKu": "Title (Kurdish)",
+      "titleArPlaceholder": "Enter title in Arabic",
+      "titleEnPlaceholder": "Enter title in English",
+      "titleKuPlaceholder": "Enter title in Kurdish",
+      "description": "Description",
+      "descriptionAr": "Description (Arabic)",
+      "descriptionEn": "Description (English)",
+      "descriptionKu": "Description (Kurdish)",
+      "descriptionArPlaceholder": "Enter description in Arabic",
+      "descriptionEnPlaceholder": "Enter description in English",
+      "descriptionKuPlaceholder": "Enter description in Kurdish",
+      "image": "Image",
+      "imagePlaceholder": "Enter image URL",
+      "upload": "Upload",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "create": "Create Ad"
+    },
+    "validation": {
+      "titleRequired": "Title is required in all languages",
+      "descriptionRequired": "Description is required in all languages",
+      "datesRequired": "Start and end dates are required"
+    },
+    "success": {
+      "created": "Ad created successfully",
+      "updated": "Ad updated successfully",
+      "deleted": "Ad deleted successfully"
+    },
+    "error": {
+      "createFailed": "Failed to create ad",
+      "updateFailed": "Failed to update ad",
+      "deleteFailed": "Failed to delete ad"
     }
   }
 }

@@ -1,304 +1,250 @@
-import React, { useState } from 'react';
-import { Plus, Search, Eye, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store';
+import { fetchAds } from '../store/slices/adsSlice';
+import {
+  AdsHeader,
+  AdsFilters,
+  AdsStats,
+  AddAdModal,
+} from '../components/ads';
 import Table, { TableColumn } from '../components/ui/Table';
-import StatusBadge from '../components/ui/StatusBadge';
-
-interface Ad {
-  id: string;
-  title: string;
-  targetAudience: string;
-  startDate: string;
-  endDate: string;
-  status: 'active' | 'inactive' | 'expired';
-  views: number;
-  clicks: number;
-}
-
-const adsData: Ad[] = [
-  {
-    id: '1',
-    title: 'عرض خاص للمدارس الجديدة',
-    targetAudience: 'المدارس',
-    startDate: '2025-04-01',
-    endDate: '2025-04-30',
-    status: 'active',
-    views: 1250,
-    clicks: 89
-  },
-  {
-    id: '2',
-    title: 'تحديث نظام إدارة الرحلات',
-    targetAudience: 'السائقين',
-    startDate: '2025-03-15',
-    endDate: '2025-05-15',
-    status: 'active',
-    views: 2100,
-    clicks: 156
-  },
-  {
-    id: '3',
-    title: 'دورة تدريبية للمعلمين',
-    targetAudience: 'المعلمين',
-    startDate: '2025-04-10',
-    endDate: '2025-04-20',
-    status: 'inactive',
-    views: 890,
-    clicks: 45
-  },
-  {
-    id: '4',
-    title: 'صيانة مجدولة للنظام',
-    targetAudience: 'الوكلاء',
-    startDate: '2025-04-05',
-    endDate: '2025-04-05',
-    status: 'active',
-    views: 3200,
-    clicks: 234
-  },
-  {
-    id: '5',
-    title: 'عرض ترويجي منتهي',
-    targetAudience: 'المدارس',
-    startDate: '2025-01-01',
-    endDate: '2025-03-01',
-    status: 'expired',
-    views: 5600,
-    clicks: 412
-  }
-];
+import Pagination from '../components/ui/Pagination';
+import { Ad } from '../types/ads';
+import { Eye, Trash2 } from 'lucide-react';
 
 const Ads: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { ads, loading, error, totalItems, totalPages } = useSelector(
+    (state: RootState) => state.ads
+  );
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('الكل');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const handleView = (id: string) => {
-    console.log('View ad:', id);
+  useEffect(() => {
+    dispatch(fetchAds({ page: currentPage, pageSize, type: 'APP_ADS' }));
+  }, [dispatch, currentPage, pageSize]);
+
+  const handleView = (id: string) => { console.log('View ad:', id); };
+  const handleDelete = (id: string) => { console.log('Delete ad:', id); };
+  const handleAddNew = () => { setIsAddModalOpen(true); };
+  const handleSearchChange = (value: string) => { setSearchTerm(value); setCurrentPage(1); };
+  const handleStatusChange = (value: string) => { setStatusFilter(value); setCurrentPage(1); };
+  const handleReset = () => { setSearchTerm(''); setStatusFilter('all'); setCurrentPage(1); };
+  const handlePageChange = (page: number) => { setCurrentPage(page); };
+
+  const filteredAds = ads.filter(ad => {
+    const matchesSearch =
+      ad.title.ar.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.title.en.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.title.ku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.description.ar.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.description.en.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.description.ku.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = (() => {
+      if (statusFilter === 'all') return true;
+
+      const now = new Date();
+      const start = ad.startDate ? new Date(ad.startDate) : null;
+      const end = ad.endDate ? new Date(ad.endDate) : null;
+
+      if (statusFilter === 'active') {
+        return start && end && now >= start && now <= end;
+      } else if (statusFilter === 'scheduled') {
+        return start && now < start;
+      } else if (statusFilter === 'expired') {
+        return end && now > end;
+      }
+      return true;
+    })();
+    return matchesSearch && matchesStatus;
+  });
+
+  const getStatusColor = (startDate?: string, endDate?: string) => {
+    const now = new Date();
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+
+    if (start && now < start) return 'bg-yellow-100 text-yellow-800';
+    if (end && now > end) return 'bg-red-100 text-red-800';
+    if (start && end && now >= start && now <= end) return 'bg-green-100 text-green-800';
+    return 'bg-gray-100 text-gray-800';
   };
 
-  const handleDelete = (id: string) => {
-    console.log('Delete ad:', id);
+  const getStatusText = (startDate?: string, endDate?: string) => {
+    const now = new Date();
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+
+    if (start && now < start) return t('ads.status.scheduled');
+    if (end && now > end) return t('ads.status.expired');
+    if (start && end && now >= start && now <= end) return t('ads.status.active');
+    return t('ads.status.unknown');
   };
 
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'success';
-      case 'inactive':
-        return 'warning';
-      case 'expired':
-        return 'error';
-      default:
-        return 'default';
-    }
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'N/A';
+    
+    // Always format as Gregorian date regardless of language
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'نشط';
-      case 'inactive':
-        return 'معطل';
-      case 'expired':
-        return 'منتهي';
-      default:
-        return status;
-    }
-  };
-
-  const columns: TableColumn<Ad>[] = [
+  const tableColumns: TableColumn<Ad>[] = [
     {
       key: 'title',
-      title: t('table.title'),
-      sortable: true,
-      render: (value) => (
-        <span className="font-medium text-white">{value}</span>
-      )
+      title: t('ads.table.title'),
+             render: (_, record) => {
+         const currentLanguage = i18n.language as 'ar' | 'en' | 'ku';
+         return (
+           <div className="text-sm font-medium text-white">
+             {record.title[currentLanguage] || record.title.en}
+           </div>
+         );
+       }
     },
     {
-      key: 'targetAudience',
-      title: t('table.targetAudience'),
-      sortable: true,
-      render: (value) => (
-        <span className="text-gray-300">{value}</span>
-      )
+      key: 'description',
+      title: t('ads.table.description'),
+             render: (_, record) => {
+         const currentLanguage = i18n.language as 'ar' | 'en' | 'ku';
+         return (
+           <div className="text-sm text-gray-300 max-w-xs truncate">
+             {record.description[currentLanguage] || record.description.en}
+           </div>
+         );
+       }
     },
     {
       key: 'startDate',
-      title: t('table.startDate'),
-      sortable: true,
-      render: (value) => (
-        <span className="text-gray-400 text-sm">{value}</span>
+      title: t('ads.table.startDate'),
+      render: (_, record) => (
+        <span className="text-sm text-gray-300">
+          {formatDate(record.startDate)}
+        </span>
       )
     },
     {
       key: 'endDate',
-      title: t('table.endDate'),
-      sortable: true,
-      render: (value) => (
-        <span className="text-gray-400 text-sm">{value}</span>
+      title: t('ads.table.endDate'),
+      render: (_, record) => (
+        <span className="text-sm text-gray-300">
+          {formatDate(record.endDate)}
+        </span>
       )
     },
     {
       key: 'status',
-      title: t('table.status'),
-      sortable: true,
-      render: (value) => (
-        <StatusBadge 
-          status={getStatusText(value)} 
-          variant={getStatusVariant(value) as any}
-        />
+      title: t('ads.table.status'),
+      render: (_, record) => (
+        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(record.startDate, record.endDate)}`}>
+          {getStatusText(record.startDate, record.endDate)}
+        </span>
       )
     },
     {
       key: 'actions',
-      title: t('table.actions'),
+      title: t('ads.table.actions'),
       render: (_, record) => (
-        <div className="flex items-center gap-2">
+        <div className="flex space-x-2 rtl:space-x-reverse">
           <button
             onClick={() => handleView(record.id)}
-            className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-600/20 rounded-lg transition-colors"
-            title="عرض"
+            className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50"
+            title={t('common.view')}
           >
             <Eye className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleDelete(record.id)}
-            className="p-2 text-error-400 hover:text-error-300 hover:bg-error-600/20 rounded-lg transition-colors"
-            title="حذف"
+            className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
+            title={t('common.delete')}
           >
             <Trash2 className="w-4 h-4" />
           </button>
         </div>
       )
-    }
+    },
   ];
 
-  const filteredAds = adsData.filter(ad => {
-    const matchesSearch = ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         ad.targetAudience.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = statusFilter === 'الكل' || 
-                         (statusFilter === 'نشط' && ad.status === 'active') ||
-                         (statusFilter === 'معطل' && ad.status === 'inactive') ||
-                         (statusFilter === 'منتهي' && ad.status === 'expired');
+  if (loading && ads.length === 0) {
+    return (
+      <div className="p-4 flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
 
-    return matchesSearch && matchesStatus;
-  });
+  if (error && ads.length === 0) {
+    return (
+      <div className="p-4 flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <button
+            onClick={() => dispatch(fetchAds({ page: 1, pageSize, type: 'APP_ADS' }))}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            {t('common.retry')}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t('pages.adsManagement')}</h1>
-          <p className="text-gray-400 mt-1">{t('pages.adsSubtitle')}</p>
-        </div>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors shadow-lg"
-        >
-          <Plus className="w-5 h-5" />
-          إضافة إعلان جديد
-        </motion.button>
-      </div>
-
-      <div className="bg-dark-300 rounded-xl p-6 space-y-6">
-        {/* Ads Table Header */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">جدول الإعلانات</h2>
-        </div>
-
-        {/* Search and Filters */}
-        <div className="flex items-center gap-4">
-          <div className="flex-1 relative max-w-md">
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder={t('filters.searchAds')}
-              className="w-full bg-dark-400 border border-dark-200 rounded-lg pr-10 pl-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <span className="text-gray-400 text-sm">{t('table.status')}</span>
-            <select
-              className="bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent min-w-[120px]"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="الكل">{t('filters.all')}</option>
-              <option value="نشط">{t('filters.active')}</option>
-              <option value="معطل">{t('filters.inactive')}</option>
-              <option value="منتهي">{t('filters.expired')}</option>
-            </select>
-          </div>
-
-          <button className="bg-dark-200 hover:bg-dark-100 text-white px-4 py-2 rounded-lg transition-colors">
-            {t('filters.reset')}
-          </button>
-        </div>
-
-        {/* Statistics Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-dark-200 rounded-lg">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-primary-400">
-              {adsData.reduce((sum, ad) => sum + ad.views, 0).toLocaleString()}
-            </div>
-            <div className="text-sm text-gray-400">إجمالي المشاهدات</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-success-400">
-              {adsData.reduce((sum, ad) => sum + ad.clicks, 0).toLocaleString()}
-            </div>
-            <div className="text-sm text-gray-400">إجمالي النقرات</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-warning-400">
-              {adsData.filter(ad => ad.status === 'active').length}
-            </div>
-            <div className="text-sm text-gray-400">نشط إعلاني</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-error-400">
-              {adsData.filter(ad => ad.status === 'expired').length}
-            </div>
-            <div className="text-sm text-gray-400">منتهي إعلاني</div>
-          </div>
-        </div>
-
-        {/* Table */}
-        <Table
-          columns={columns}
-          data={filteredAds}
-          rowKey="id"
-          hoverable={true}
-          emptyText={t('pagination.noData')}
+      <AdsHeader onAddNew={handleAddNew} />
+             <div className="bg-dark-300 rounded-xl p-6 space-y-6">
+         <div className="flex items-center justify-between">
+           <h2 className="text-xl font-semibold text-white">{t('ads.tableHeader')}</h2>
+         </div>
+        <AdsFilters
+          searchTerm={searchTerm}
+          statusFilter={statusFilter}
+          onSearchChange={handleSearchChange}
+          onStatusChange={handleStatusChange}
+          onReset={handleReset}
         />
-
-        {/* Results Summary */}
-        <div className="flex items-center justify-between pt-4 border-t border-dark-200">
-          <div className="text-sm text-gray-400">
-            {t('pagination.showing')} {filteredAds.length} {t('pagination.of')} {adsData.length} {t('pagination.results')}
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="px-3 py-1 bg-dark-200 hover:bg-dark-100 text-white rounded text-sm transition-colors">
-              {t('pagination.previous')}
-            </button>
-            <span className="px-3 py-1 bg-primary-600 text-white rounded text-sm">1</span>
-            <button className="px-3 py-1 bg-dark-200 hover:bg-dark-100 text-white rounded text-sm transition-colors">
-              {t('pagination.next')}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+        <AdsStats ads={ads} />
+        <Table
+          columns={tableColumns}
+          data={filteredAds}
+          loading={loading}
+          emptyText={t('pagination.noData')}
+          rowKey="id"
+        />
+                 <div className="flex items-center justify-between">
+           <div className="text-sm text-gray-300">
+             {t('pagination.showing')} {((currentPage - 1) * pageSize) + 1} - {Math.min(currentPage * pageSize, filteredAds.length)} {t('pagination.of')} {filteredAds.length} {t('pagination.results')}
+           </div>
+                     <Pagination
+             currentPage={currentPage}
+             totalPages={totalPages}
+             onPageChange={handlePageChange}
+           />
+         </div>
+       </div>
+       
+       <AddAdModal
+         isOpen={isAddModalOpen}
+         onClose={() => setIsAddModalOpen(false)}
+       />
+     </div>
+   );
+ };
 
 export default Ads;

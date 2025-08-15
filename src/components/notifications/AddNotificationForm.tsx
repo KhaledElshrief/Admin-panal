@@ -39,7 +39,7 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
     <div className="max-w-2xl mx-auto">
       <div className="bg-dark-200 rounded-xl p-6">
         <h2 className="text-xl font-bold mb-6">
-          {t('notifications.addNew', 'إضافة إشعار جديد')}
+          {t('notifications.addNew')}
         </h2>
         
         {/* Display errors */}
@@ -53,7 +53,7 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
           {/* Notification Type */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              {t('notifications.type', 'نوع الإشعار')}
+              {t('notifications.type')}
             </label>
             <select 
               value={formData.type}
@@ -61,10 +61,10 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
               className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
             >
               <option value="APP_NOTIFICATION">
-                {t('notifications.types.appNotification', 'إشعار التطبيق')}
+                {t('notifications.types.appNotification')}
               </option>
               <option value="APP_ADS">
-                {t('notifications.types.appAds', 'إعلان التطبيق')}
+                {t('notifications.types.appAds')}
               </option>
             </select>
           </div>
@@ -72,45 +72,45 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
           {/* Title Fields */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">
-              {t('notifications.title', 'العنوان')}
+              {t('notifications.title')}
             </h3>
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('notifications.titleArabic', 'العنوان (عربي)')} *
+                  {t('notifications.titleArabic')}
                 </label>
                 <input
                   type="text"
                   value={formData.titleAr}
                   onChange={(e) => onFormChange('titleAr', e.target.value)}
                   className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
-                  placeholder={t('notifications.titleArabicPlaceholder', 'أدخل العنوان بالعربية')}
+                  placeholder={t('notifications.titleArabicPlaceholder')}
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('notifications.titleEnglish', 'العنوان (إنجليزي)')} *
+                  {t('notifications.titleEnglish')}
                 </label>
                 <input
                   type="text"
                   value={formData.titleEn}
                   onChange={(e) => onFormChange('titleEn', e.target.value)}
                   className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
-                  placeholder={t('notifications.titleEnglishPlaceholder', 'Enter title in English')}
+                  placeholder={t('notifications.titleEnglishPlaceholder')}
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('notifications.titleKurdish', 'العنوان (كردي)')} *
+                  {t('notifications.titleKurdish')}
                 </label>
                 <input
                   type="text"
                   value={formData.titleKu}
                   onChange={(e) => onFormChange('titleKu', e.target.value)}
                   className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
-                  placeholder={t('notifications.titleKurdishPlaceholder', 'ناونیشان بە کوردی بنووسە')}
+                  placeholder={t('notifications.titleKurdishPlaceholder')}
                   required
                 />
               </div>
@@ -120,45 +120,45 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
           {/* Description Fields */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">
-              {t('notifications.description', 'الوصف')}
+              {t('notifications.description')}
             </h3>
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('notifications.descriptionArabic', 'الوصف (عربي)')} *
+                  {t('notifications.descriptionArabic')}
                 </label>
                 <textarea
                   rows={3}
                   value={formData.descriptionAr}
                   onChange={(e) => onFormChange('descriptionAr', e.target.value)}
                   className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent resize-none"
-                  placeholder={t('notifications.descriptionArabicPlaceholder', 'أدخل الوصف بالعربية')}
+                  placeholder={t('notifications.descriptionArabicPlaceholder')}
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('notifications.descriptionEnglish', 'الوصف (إنجليزي)')} *
+                  {t('notifications.descriptionEnglish')}
                 </label>
                 <textarea
                   rows={3}
                   value={formData.descriptionEn}
                   onChange={(e) => onFormChange('descriptionEn', e.target.value)}
                   className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent resize-none"
-                  placeholder={t('notifications.descriptionEnglishPlaceholder', 'Enter description in English')}
+                  placeholder={t('notifications.descriptionEnglishPlaceholder')}
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('notifications.descriptionKurdish', 'الوصف (كردي)')} *
+                  {t('notifications.descriptionKurdish')}
                 </label>
                 <textarea
                   rows={3}
                   value={formData.descriptionKu}
                   onChange={(e) => onFormChange('descriptionKu', e.target.value)}
                   className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent resize-none"
-                  placeholder={t('notifications.descriptionKurdishPlaceholder', 'وەسف بە کوردی بنووسە')}
+                  placeholder={t('notifications.descriptionKurdishPlaceholder')}
                   required
                 />
               </div>
@@ -168,14 +168,14 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
           {/* Optional Image */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              {t('notifications.imageUrl', 'رابط الصورة')} ({t('common.optional', 'اختياري')})
+              {t('notifications.imageUrl')} ({t('common.optional')})
             </label>
             <input
               type="text"
               value={formData.image}
               onChange={(e) => onFormChange('image', e.target.value)}
               className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
-              placeholder={t('notifications.imageUrlPlaceholder', 'https://example.com/image.jpg')}
+              placeholder={t('notifications.imageUrlPlaceholder')}
             />
           </div>
 
@@ -184,7 +184,7 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('notifications.startDate', 'تاريخ البدء')}
+                  {t('notifications.startDate')}
                 </label>
                 <input
                   type="datetime-local"
@@ -195,7 +195,7 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {t('notifications.endDate', 'تاريخ الانتهاء')}
+                  {t('notifications.endDate')}
                 </label>
                 <input
                   type="datetime-local"
@@ -216,12 +216,12 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
               {loading ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  {t('notifications.sending', 'جاري الإرسال...')}
+                  {t('notifications.sending')}
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4" />
-                  {t('notifications.send', 'إرسال الإشعار')}
+                  {t('notifications.send')}
                 </>
               )}
             </button>
@@ -231,7 +231,7 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
               onClick={onReset}
             >
               <RotateCcw className="w-4 h-4" />
-              {t('notifications.clearForm', 'مسح النموذج')}
+              {t('notifications.clearForm')}
             </button>
           </div>
         </form>

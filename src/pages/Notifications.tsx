@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNotifications } from '../hooks/useNotifications';
 import { showToast } from '../store/slices/toastSlice';
-import { useAppDispatch } from '../hooks/redux';
-import type { CreateNotificationRequest } from '../store/slices/notificationsSlice';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import type { CreateNotificationRequest, Notification } from '../store/slices/notificationsSlice';
+import { fetchNotifications } from '../store/slices/notificationsSlice';
 import { 
   NotificationsList, 
   AddNotificationForm, 
@@ -11,56 +12,10 @@ import {
   NotificationStats 
 } from '../components/notifications';
 
-interface Notification {
-  id: string;
-  title: string;
-  content: string;
-  type: 'system' | 'warning' | 'info';
-  date: string;
-  category: string;
-  status: 'read' | 'unread';
-  priority: 'high' | 'medium' | 'low';
-  recipient: string;
-}
 
-const notificationsData: Notification[] = [
-  {
-    id: '1',
-    title: 'تحديث هام في النظام',
-    content: 'تم تحديث نظام المدارس إلى الإصدار 2.5 والذي يتضمن تحسينات في أداء النظام وإصلاح المشكلات السابقة.',
-    type: 'system',
-    date: '8 أبريل 2025',
-    category: 'النظام',
-    status: 'unread',
-    priority: 'high',
-    recipient: 'جميع المستخدمين'
-  },
-  {
-    id: '2',
-    title: 'تنبيه أمان',
-    content: 'يرجى تغيير كلمة المرور الخاصة بك للحفاظ على أمان حسابك. يجب أن تتضمن كلمة المرور حروفاً وأرقاماً ورموزاً.',
-    type: 'warning',
-    date: '7 أبريل 2025',
-    category: 'تحذير',
-    status: 'read',
-    priority: 'medium',
-    recipient: 'المدراء'
-  },
-  {
-    id: '3',
-    title: 'إشعار النسخة التجريبية',
-    content: 'تم إطلاق النسخة التجريبية من تطبيق الهاتف المحمول. يمكنكم تجربته وإرسال ملاحظاتكم إلينا لتحسين التجربة.',
-    type: 'info',
-    date: '6 أبريل 2025',
-    category: 'معلومات',
-    status: 'unread',
-    priority: 'low',
-    recipient: 'المطورين'
-  }
-];
 
 const Notifications: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const { 
     createNewNotification, 
@@ -71,9 +26,33 @@ const Notifications: React.FC = () => {
     clearSuccess 
   } = useNotifications();
   
-  const [activeTab, setActiveTab] = useState(t('notifications.allNotifications', 'كل الإشعارات'));
+  // Redux state for notifications
+  const { notifications, loading, error } = useAppSelector((state) => state.notifications);
+  
+  const [activeTab, setActiveTab] = useState(t('notifications.allNotifications'));
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNotifications, setSelectedNotifications] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+
+  // Map API notifications to component expected format
+  const mappedNotifications = notifications.map(notification => ({
+    id: notification.id,
+    title: notification.title[i18n.language as keyof typeof notification.title] || notification.title.ar, // Use current language or fallback to Arabic
+    content: notification.description[i18n.language as keyof typeof notification.description] || notification.description.ar, // Use current language or fallback to Arabic
+    type: (notification.type === 'APP_NOTIFICATION' ? 'system' : 'info') as 'system' | 'warning' | 'info',
+    date: new Date(notification.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'ku' ? 'ku-IQ' : 'en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }),
+    category: notification.type === 'APP_NOTIFICATION' 
+      ? t('notifications.stats.system') 
+      : t('ads.tableHeader'),
+    status: 'unread' as const, // Default status since API doesn't provide it
+    priority: 'medium' as const, // Default priority since API doesn't provide it
+    recipient: t('notifications.stats.total') // Default recipient since API doesn't provide it
+  }));
   
   // Form state for creating notifications
   const [notificationForm, setNotificationForm] = useState({
@@ -131,7 +110,7 @@ const Notifications: React.FC = () => {
 
     try {
       await createNewNotification(requestData);
-      dispatch(showToast({ message: "تم إنشاء الإشعار بنجاح", type: "success" }));
+      dispatch(showToast({ message: t('notifications.success.created'), type: "success" }));
       // Reset form
       setNotificationForm({
         titleAr: '',
@@ -145,11 +124,26 @@ const Notifications: React.FC = () => {
         startDate: '',
         endDate: ''
       });
-      setActiveTab(t('notifications.allNotifications', 'كل الإشعارات'));
+      setActiveTab(t('notifications.allNotifications'));
+      // Refresh notifications list
+      dispatch(fetchNotifications({ 
+        page: currentPage, 
+        pageSize, 
+        type: 'APP_NOTIFICATION' 
+      }));
     } catch (error) {
-      dispatch(showToast({ message: "حدث خطأ أثناء إنشاء الإشعار", type: "error" }));
+      dispatch(showToast({ message: t('notifications.error.createFailed'), type: "error" }));
     }
   };
+
+  // Fetch notifications when component mounts or page changes
+  useEffect(() => {
+    dispatch(fetchNotifications({ 
+      page: currentPage, 
+      pageSize, 
+      type: 'APP_NOTIFICATION' 
+    }));
+  }, [dispatch, currentPage, pageSize]);
 
   // Clear errors when component unmounts or tab changes
   React.useEffect(() => {
@@ -167,17 +161,17 @@ const Notifications: React.FC = () => {
   }, [createSuccess, clearSuccess]);
 
   const tabs = [
-    { name: t('notifications.allNotifications', 'كل الإشعارات'), count: notificationsData.length },
-    { name: t('notifications.limitedNotifications', 'الإشعارات المحدودة'), count: 2 },
-    { name: t('notifications.addNew', 'إضافة إشعار'), count: null }
+    { name: t('notifications.allNotifications'), count: mappedNotifications.length },
+    { name: t('notifications.limitedNotifications'), count: 2 },
+    { name: t('notifications.addNew'), count: null }
   ];
 
   // Calculate stats for the stats component
   const notificationStats = {
-    totalNotifications: notificationsData.length,
-    unreadCount: notificationsData.filter(n => n.status === 'unread').length,
-    highPriorityCount: notificationsData.filter(n => n.priority === 'high').length,
-    systemNotifications: notificationsData.filter(n => n.type === 'system').length
+    totalNotifications: mappedNotifications.length,
+    unreadCount: mappedNotifications.filter(n => n.status === 'unread').length,
+    highPriorityCount: mappedNotifications.filter(n => n.priority === 'medium').length, // Since all are medium priority
+    systemNotifications: mappedNotifications.filter(n => n.type === 'system').length
   };
 
   const handleSelectNotification = (id: string) => {
@@ -189,10 +183,10 @@ const Notifications: React.FC = () => {
   };
 
   const handleSelectAll = () => {
-    if (selectedNotifications.length === notificationsData.length) {
+    if (selectedNotifications.length === mappedNotifications.length) {
       setSelectedNotifications([]);
     } else {
-      setSelectedNotifications(notificationsData.map(notif => notif.id));
+      setSelectedNotifications(mappedNotifications.map(notif => notif.id));
     }
   };
 
@@ -213,7 +207,7 @@ const Notifications: React.FC = () => {
     console.log('View notification:', id);
   };
 
-  const filteredNotifications = notificationsData.filter(notification =>
+  const filteredNotifications = mappedNotifications.filter(notification =>
     notification.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     notification.content.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -380,6 +374,24 @@ const Notifications: React.FC = () => {
           <h1 className="text-2xl font-bold">{t('notifications.title')}</h1>
           <p className="text-gray-400 mt-1">{t('notifications.subtitle')}</p>
         </div>
+        <button
+          onClick={() => dispatch(fetchNotifications({ 
+            page: currentPage, 
+            pageSize, 
+            type: 'APP_NOTIFICATION' 
+          }))}
+          disabled={loading}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+        >
+          {loading ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          ) : (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          )}
+          {t('notifications.refreshButton')}
+        </button>
       </div>
 
       <div className="bg-dark-300 rounded-xl p-6">
@@ -394,24 +406,41 @@ const Notifications: React.FC = () => {
         />
 
         {/* Content */}
-        {(activeTab === t('notifications.allNotifications', 'كل الإشعارات') || 
-          activeTab === t('notifications.limitedNotifications', 'الإشعارات المحدودة')) && (
-          <NotificationsList
-            notifications={notificationsData}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedNotifications={selectedNotifications}
-            onSelectNotification={handleSelectNotification}
-            onSelectAll={handleSelectAll}
-            onDeleteSelected={handleDeleteSelected}
-            onMarkAsRead={handleMarkAsRead}
-            onEdit={handleEdit}
-            onView={handleView}
-            onDelete={(id) => console.log('Delete', id)}
-          />
+        {(activeTab === t('notifications.allNotifications') || 
+          activeTab === t('notifications.limitedNotifications')) && (
+          <>
+            {loading && (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                <p className="text-gray-400 mt-2">{t('notifications.loading')}</p>
+              </div>
+            )}
+            
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-center">
+                <p className="text-red-400">{t('notifications.error')}: {error}</p>
+              </div>
+            )}
+            
+            {!loading && !error && (
+              <NotificationsList
+                notifications={filteredNotifications}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                selectedNotifications={selectedNotifications}
+                onSelectNotification={handleSelectNotification}
+                onSelectAll={handleSelectAll}
+                onDeleteSelected={handleDeleteSelected}
+                onMarkAsRead={handleMarkAsRead}
+                onEdit={handleEdit}
+                onView={handleView}
+                onDelete={(id) => console.log('Delete', id)}
+              />
+            )}
+          </>
         )}
         
-        {activeTab === t('notifications.addNew', 'إضافة إشعار') && (
+        {activeTab === t('notifications.addNew') && (
           <AddNotificationForm
             formData={notificationForm}
             onFormChange={handleFormChange}
