@@ -1,0 +1,36 @@
+.mapWrap {
+  width: 100%;
+  display: grid;
+}
+
+.mapCard {
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  background: #fff;
+}
+
+.mapContainer {
+  height: clamp(320px, 70vh, 85vh);
+}
+
+.mapLoading {
+  padding: 24px;
+  color: #666;
+  font-size: 14px;
+}
+
+.mapPlaceholder {
+  display: grid;
+  place-items: center;
+  height: clamp(320px, 70vh, 85vh);
+  color: #666;
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .mapContainer,
+  .mapPlaceholder {
+    height: 60svh;
+  }
+}
