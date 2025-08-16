@@ -7,12 +7,15 @@ import { showToast } from '../../store/slices/toastSlice';
 import type { RootState, AppDispatch } from '../../store';
 import DeleteSchoolModal from '../../components/schools/DeleteSchoolModal';
 import { ArrowLeft, Edit, Save, X, Trash2 } from 'lucide-react';
+import { fetchCountries } from '../../store/slices/countriesSlice';
+import { fetchCities } from '../../store/slices/citySlice';
 
 const SchoolDetails: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+
   const { selectedSchool, selectedSchoolLoading, selectedSchoolError, updateLoading, updateError } = useSelector(
     (state: RootState) => state.school
   );
@@ -30,6 +33,16 @@ const SchoolDetails: React.FC = () => {
     cityId: '',
     countryId: '',
   });
+
+useEffect(() => {
+  if (countries.length === 0) dispatch(fetchCountries());
+  if (cities.length === 0) dispatch(fetchCities({})); 
+}, [dispatch, countries.length, cities.length]);
+
+
+  // lookup country + city names safely
+  const country = countries.find(c => String(c.id) === String(selectedSchool?.countryId));
+  const city = cities.find(c => String(c.id) === String(selectedSchool?.cityId));
 
   useEffect(() => {
     if (id) dispatch(fetchSchoolById(id));
@@ -49,7 +62,7 @@ const SchoolDetails: React.FC = () => {
     }
   }, [selectedSchool]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -168,6 +181,7 @@ const SchoolDetails: React.FC = () => {
         <div className="bg-dark-300 rounded-xl p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* School Name AR */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   {t('schools.schoolNameAr')}
@@ -182,6 +196,8 @@ const SchoolDetails: React.FC = () => {
                   required
                 />
               </div>
+
+              {/* School Name EN */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   {t('schools.schoolNameEn')}
@@ -196,6 +212,8 @@ const SchoolDetails: React.FC = () => {
                   required
                 />
               </div>
+
+              {/* Address */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   {t('schools.address')}
@@ -210,6 +228,8 @@ const SchoolDetails: React.FC = () => {
                   required
                 />
               </div>
+
+              {/* Lat & Long */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   {t('schools.latitude')}
@@ -237,6 +257,44 @@ const SchoolDetails: React.FC = () => {
                   className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white placeholder-gray-500"
                   placeholder={t('schools.enterLongitude')}
                 />
+              </div>
+
+              {/* Country Select */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  {t('schools.country')}
+                </label>
+                <select
+                  name="countryId"
+                  value={formData.countryId}
+                  onChange={handleInputChange}
+                  className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white"
+                >
+                  <option value="">{t('common.selectCountry')}</option>
+                  {countries.map(country => (
+                    <option key={country.id} value={country.id}>{country.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* City Select */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  {t('schools.city')}
+                </label>
+                <select
+                  name="cityId"
+                  value={formData.cityId}
+                  onChange={handleInputChange}
+                  className="w-full p-3 bg-dark-400 border border-dark-200 rounded-lg text-white"
+                >
+                  <option value="">{t('common.selectCity')}</option>
+                  {cities
+                    .filter(c => !formData.countryId || String(c.countryId) === String(formData.countryId))
+                    .map(c => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                </select>
               </div>
             </div>
 
@@ -278,6 +336,14 @@ const SchoolDetails: React.FC = () => {
                   <span className="text-sm text-gray-400 block mb-1">{t('schools.address')}:</span>
                   <p className="font-medium text-white">{selectedSchool.address}</p>
                 </div>
+                <div className="border-b border-dark-200 pb-3">
+                  <span className="text-sm text-gray-400 block mb-1">{t('schools.country')}:</span>
+                  <p className="font-medium text-white">{country?.name || '—'}</p>
+                </div>
+                {/* <div className="border-b border-dark-200 pb-3">
+                  <span className="text-sm text-gray-400 block mb-1">{t('schools.city')}:</span>
+                  <p className="font-medium text-white">{city?.name || '—'}</p>
+                </div> */}
               </div>
             </div>
             

@@ -50,7 +50,9 @@
     "downloading": "Downloading...",
     "processing": "Processing...","saveChanges": "Save Changes",
   "updatedSuccessfully": "Data updated successfully",
-  "country": "Country"
+  "country": "Country",
+    "selectCity": "Select City",
+    "selectCountry": "Select Country"
   },
   "table": {
     "actions": "Actions",
@@ -371,7 +373,9 @@
     "enterLatitude": "Enter latitude",
     "enterLongitude": "Enter longitude",
     "selectCountry": "Select Country",
-    "selectCity": "Select City"
+    "selectCity": "Select City",
+      "country": "Country",
+      "city": "City"
   },
   "cities": {
     "title": "City Page",

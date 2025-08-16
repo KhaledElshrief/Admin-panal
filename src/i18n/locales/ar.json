@@ -51,7 +51,9 @@
     "processing": "جاري المعالجة...",
     "saveChanges": "حفظ التغييرات",
     "updatedSuccessfully": "تم تحديث البيانات بنجاح",
-    "country": "الدولة"
+    "country": "الدولة",
+    "selectCity": "اختر المدينة",
+    "selectCountry": "اختر الدولة"
   },
   "table": {
     "actions": "الإجراءات",
@@ -372,7 +374,9 @@
     "enterLatitude": "أدخل خط العرض",
     "enterLongitude": "أدخل خط الطول",
     "selectCountry": "اختر الدولة",
-    "selectCity": "اختر المدينة"
+    "selectCity": "اختر المدينة",
+      "country": "الدولة",
+      "city": "المدينة"
   },
   "cities": {
     "title": "صفحة المدينة",
@@ -573,7 +577,9 @@
       "updateError": "خطأ في التحديث",
       "saveChanges": "حفظ التغييرات",
       "saving": "جاري الحفظ...",
-      "cancel": "إلغاء"
+      "cancel": "إلغاء",
+      "country": "الدولة",  
+      "city": "المدينة"
     },
     "form": {
       "title": "إضافة مدرسة جديدة",

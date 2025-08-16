@@ -51,7 +51,9 @@
     "processing": "پرۆسێسکردن...",
     "saveChanges": "گۆڕانکارییەکان پاشەکەوت بکە",
     "updatedSuccessfully": "زانیارییەکان بەسەرکەوتوویی نوێکرانەوە",
-    "country": "وڵات"
+    "country": "وڵات",
+    "selectCity": "شار هەڵبژێرە",
+    "selectCountry": "وڵات هەڵبژێرە"
   },
   "table": {
     "actions": "کردارەکان",
@@ -372,7 +374,9 @@
     "enterLatitude": "پانی جوگرافی بنووسە",
     "enterLongitude": "درێژی جوگرافی بنووسە",
     "selectCountry": "وڵات هەڵبژێرە",
-    "selectCity": "شار هەڵبژێرە"
+    "selectCity": "شار هەڵبژێرە",
+      "country": "وڵات",
+      "city": "شار"
   },
   "cities": {
     "title": "پەڕەی شار",

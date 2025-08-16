@@ -43,11 +43,11 @@ export const useAds = () => {
     return dispatch(createAd(adData));
   };
 
-
   const getAdById = useCallback(
     (id: string) => dispatch(fetchAdById(id)),
     [dispatch]
   );
+
 
   const resendAdById = (id: string) => {
     return dispatch(resendAd(id));
