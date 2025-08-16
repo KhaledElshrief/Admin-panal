@@ -12,6 +12,7 @@ import {
   clearRemoveState
 } from '../store/slices/adsSlice';
 import type { CreateAd } from '../types/ads';
+import { useCallback } from 'react';
 
 export const useAds = () => {
   const dispatch = useAppDispatch();
@@ -42,9 +43,11 @@ export const useAds = () => {
     return dispatch(createAd(adData));
   };
 
-  const getAdById = (id: string) => {
-    return dispatch(fetchAdById(id));
-  };
+
+  const getAdById = useCallback(
+    (id: string) => dispatch(fetchAdById(id)),
+    [dispatch]
+  );
 
   const resendAdById = (id: string) => {
     return dispatch(resendAd(id));
