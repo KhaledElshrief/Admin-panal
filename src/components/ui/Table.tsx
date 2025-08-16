@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useDirection } from '../../hooks/useDirection';
 
 export interface TableColumn<T = any> {
   key: string;
@@ -36,7 +35,6 @@ const Table = <T extends Record<string, any>>({
   striped = false,
 }: TableProps<T>) => {
   const { t } = useTranslation();
-  const { isRTL } = useDirection();
   
   const getRowKey = (record: T, index: number): string => {
     if (typeof rowKey === 'function') {
@@ -79,20 +77,14 @@ const Table = <T extends Record<string, any>>({
   };
 
   const getTextAlign = (align?: string) => {
-    // If no specific alignment is provided, use default based on language direction
-    if (!align) {
-      return isRTL ? 'text-right' : 'text-left';
-    }
-    
     switch (align) {
       case 'left':
-        return isRTL ? 'text-left' : 'text-left';
+        return 'text-left';
       case 'center':
         return 'text-center';
       case 'right':
-        return isRTL ? 'text-right' : 'text-right';
       default:
-        return isRTL ? 'text-right' : 'text-left';
+        return 'text-right';
     }
   };
 
@@ -120,17 +112,10 @@ const Table = <T extends Record<string, any>>({
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className={`py-4 px-4 font-medium text-gray-300 ${getTextAlign(column.align)} ${
-                    isRTL ? 'first:rounded-r-lg last:rounded-l-lg' : 'first:rounded-l-lg last:rounded-r-lg'
-                  }`}
+                  className={`py-4 px-4 font-medium text-gray-300 ${getTextAlign(column.align)}`}
                   style={{ width: column.width }}
                 > 
-                  <div className={`flex items-center gap-2 ${
-                    column.align === 'center' ? 'justify-center' : 
-                    column.align === 'left' ? (isRTL ? 'justify-end' : 'justify-start') :
-                    column.align === 'right' ? (isRTL ? 'justify-start' : 'justify-end') :
-                    isRTL ? 'justify-end' : 'justify-start'
-                  }`}>
+                  <div className="flex items-center gap-2 ">
                     {column.title}
                     {column.sortable && (
                       <button className="text-gray-400 hover:text-white transition-colors">
@@ -168,9 +153,7 @@ const Table = <T extends Record<string, any>>({
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}
-                      className={`py-4 px-4 ${getTextAlign(column.align)} ${
-                        isRTL ? 'first:rounded-r-lg last:rounded-l-lg' : 'first:rounded-l-lg last:rounded-r-lg'
-                      }`}
+                      className={`py-4 px-4 ${getTextAlign(column.align)}`}
                     >
                       {renderCell(column, record, index)}
                     </td>

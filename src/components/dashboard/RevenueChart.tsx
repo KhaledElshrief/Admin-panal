@@ -18,7 +18,7 @@ type RevenueChartProps = {
 };
 
 const RevenueChart: React.FC<RevenueChartProps> = ({ activeTab, onTabChange }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { 
     monthlyUsers, 
     monthlyUsersLoading, 
@@ -32,11 +32,11 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ activeTab, onTabChange }) =
   const getChartData = () => {
     switch (activeTab) {
       case t('dashboard.users'):
-        return monthlyUsers.length > 0 ? formatMonthlyUsersForChart(monthlyUsers, i18n.language) : [];
+        return monthlyUsers.length > 0 ? formatMonthlyUsersForChart(monthlyUsers) : [];
       case t('dashboard.subscriptions'):
-        return monthlySubscriptions.length > 0 ? formatMonthlySubscriptionsForChart(monthlySubscriptions, i18n.language) : [];
+        return monthlySubscriptions.length > 0 ? formatMonthlySubscriptionsForChart(monthlySubscriptions) : [];
       default:
-        return monthlyUsers.length > 0 ? formatMonthlyUsersForChart(monthlyUsers, i18n.language) : [];
+        return monthlyUsers.length > 0 ? formatMonthlyUsersForChart(monthlyUsers) : [];
     }
   };
 

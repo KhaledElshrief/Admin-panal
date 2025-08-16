@@ -1,24 +1,16 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { getLocalizedStatus } from '../../utils/i18nUtils';
 
 interface StatusBadgeProps {
   status: string;
   variant?: 'success' | 'warning' | 'error' | 'info' | 'default';
   size?: 'sm' | 'md' | 'lg';
-  localize?: boolean;
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ 
   status, 
   variant = 'default',
-  size = 'md',
-  localize = true
+  size = 'md' 
 }) => {
-  const { t } = useTranslation();
-  
-  const displayStatus = localize ? getLocalizedStatus(status, t) : status;
-  
   const getVariantClasses = () => {
     const variants = {
       success: 'bg-success-600/20 text-success-400',
@@ -47,7 +39,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
       ${getVariantClasses()}
       ${getSizeClasses()}
     `}>
-      {displayStatus}
+      {status}
     </span>
   );
 };

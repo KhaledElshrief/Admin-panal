@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ChevronDown } from 'lucide-react';
 
 interface PaginatedDropdownProps<T> {
@@ -25,7 +24,6 @@ function PaginatedDropdown<T>({
   disabled = false,
   className = '',
 }: PaginatedDropdownProps<T>) {
-  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState<T[]>([]);
   const [page, setPage] = useState(1);

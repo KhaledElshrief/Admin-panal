@@ -7,7 +7,6 @@ import { ViewAction } from '../../components/ui/TableActions';
 import UserAvatar from '../../components/ui/UserAvatar';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { fetchAllUsers } from '../../store/slices/usersSlices';
-import { getLocalizedRole, getLocalizedGender } from '../../utils/i18nUtils';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Pagination from '../../components/ui/Pagination';
@@ -125,7 +124,7 @@ const Users: React.FC = () => {
       title: t('users.role'),
       sortable: true,
       render: (value) => (
-        <span className="text-gray-300">{getLocalizedRole(value, t)}</span>
+        <span className="text-gray-300">{value}</span>
       )
     },
     {
@@ -151,7 +150,7 @@ const Users: React.FC = () => {
     {
       key: 'gender',
       title: t('users.gender'),
-      render: (value) => <span className="text-gray-300">{value ? getLocalizedGender(value, t) : '-'}</span>
+      render: (value) => <span className="text-gray-300">{value === 'MALE' ? t('users.male') : value === 'FEMALE' ? t('users.female') : '-'}</span>
     },
     {
       key: 'actions',

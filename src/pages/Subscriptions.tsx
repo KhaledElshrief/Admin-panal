@@ -9,41 +9,60 @@ import {
 } from '../components/subscriptions';
 import { useAppDispatch } from '../hooks/redux';
 import { fetchUserSubscriptionsDashboard, fetchUserSubscriptionsStats } from '../store/slices/subscriptionSlice';
-import { useTranslation } from 'react-i18next';
 
 const Subscriptions: React.FC = () => {
-  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState('نظرة عامة');
+
   const dispatch = useAppDispatch();
-
-  const tabs = [
-    { key: 'overview', label: t('subscriptions.overview'), icon: <BarChart3 className="w-4 h-4" /> },
-    { key: 'subscriptionsList', label: t('subscriptions.subscriptionsList'), icon: <CreditCard className="w-4 h-4" /> },
-    { key: 'commissions', label: t('subscriptions.commissions'), icon: <DollarSign className="w-4 h-4" /> },
-    { key: 'payments', label: t('subscriptions.payments'), icon: <Settings className="w-4 h-4" /> },
-    { key: 'settings', label: t('subscriptions.settings'), icon: <Settings className="w-4 h-4" /> }
-  ];
-
-  const [activeTab, setActiveTab] = useState('overview');
+  // REMOVE: useAppSelector destructuring for subscription state
 
   useEffect(() => {
     dispatch(fetchUserSubscriptionsDashboard({ page: 1, pageSize: 20 }));
     dispatch(fetchUserSubscriptionsStats());
   }, [dispatch]);
 
+  const tabs = [
+    { name: 'نظرة عامة', icon: <BarChart3 className="w-4 h-4" /> },
+    { name: 'الاشتراكات', icon: <CreditCard className="w-4 h-4" /> },
+    { name: 'العمولات', icon: <DollarSign className="w-4 h-4" /> },
+    { name: 'المدفوعات', icon: <Settings className="w-4 h-4" /> },
+    { name: 'الإعدادات', icon: <Settings className="w-4 h-4" /> }
+  ];
+
+  const renderOverview = () => (
+    <OverviewTab />
+  );
+
+  const renderSubscriptions = () => (
+    <SubscriptionsTab />
+  );
+
+  const renderCommissions = () => (
+    <CommissionsTab />
+  );
+
+  const renderPayments = () => (
+    <PaymentsTab />
+  );
+
+  const renderSettings = () => (
+    <SettingsTab />
+  );
+
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'overview':
-        return <OverviewTab />;
-      case 'subscriptionsList':
-        return <SubscriptionsTab />;
-      case 'commissions':
-        return <CommissionsTab />;
-      case 'payments':
-        return <PaymentsTab />;
-      case 'settings':
-        return <SettingsTab />;
+      case 'نظرة عامة':
+        return renderOverview();
+      case 'الاشتراكات':
+        return renderSubscriptions();
+      case 'العمولات':
+        return renderCommissions();
+      case 'المدفوعات':
+        return renderPayments();
+      case 'الإعدادات':
+        return renderSettings();
       default:
-        return <OverviewTab />;
+        return renderOverview();
     }
   };
 
@@ -54,30 +73,30 @@ const Subscriptions: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <CreditCard className="w-6 h-6 text-primary-500" />
-            {t('subscriptions.title')}
+            إدارة الاشتراكات
           </h1>
-          <p className="text-gray-400 mt-1">{t('subscriptions.subtitle')}</p>
+          <p className="text-gray-400 mt-1">إدارة جميع اشتراكات المدارس والمستخدمين في النظام</p>
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="bg-dark-300 rounded-xl overflow-hidden">
+        {/* Tabs */}
         <div className="border-b border-dark-200">
           <div className="flex overflow-x-auto">
             {tabs.map((tab) => (
               <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                key={tab.name}
+                onClick={() => setActiveTab(tab.name)}
                 className={`
                   flex items-center gap-2 px-6 py-4 whitespace-nowrap font-medium transition-colors border-b-2
-                  ${activeTab === tab.key
+                  ${activeTab === tab.name
                     ? 'bg-dark-200 text-white border-primary-600'
                     : 'text-gray-400 hover:text-white hover:bg-dark-200/50 border-transparent'
                   }
                 `}
               >
                 {tab.icon}
-                <span>{tab.label}</span>
+                <span>{tab.name}</span>
               </button>
             ))}
           </div>

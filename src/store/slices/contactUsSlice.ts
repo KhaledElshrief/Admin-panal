@@ -21,7 +21,6 @@ export interface ContactUsItem {
   createdAt: string;
   updatedAt: string;
   User: ContactUsUser;
-    deleteError?: string;
 }
 
 export interface ContactUsResponse {
@@ -46,7 +45,6 @@ export interface ContactUsState {
     arabic: string;
     english: string;
   } | null;
-    deleteError?: string;
 }
 
 const initialState: ContactUsState = {

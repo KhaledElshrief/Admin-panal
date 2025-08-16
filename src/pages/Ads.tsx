@@ -93,9 +93,13 @@ const Ads: React.FC = () => {
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A';
     
-    // Format date according to current language
+    // Always format as Gregorian date regardless of language
     const date = new Date(dateString);
-    return date.toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'ku' ? 'ku-IQ' : 'en-US');
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
   };
 
   const tableColumns: TableColumn<Ad>[] = [

@@ -14,78 +14,22 @@ const arabicMonths = [
   'ديسمبر'
 ];
 
-// English month names
-const englishMonths = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-];
-
-// Kurdish month names
-const kurdishMonths = [
-  'کانوونی دووەم',
-  'شوبات',
-  'ئازار',
-  'نیسان',
-  'ئایار',
-  'حوزەیران',
-  'تەمووز',
-  'ئاب',
-  'ئەیلوول',
-  'تشرینی یەکەم',
-  'تشرینی دووەم',
-  'کانوونی یەکەم'
-];
-
 /**
- * Convert month number (1-12) to localized month name
- */
-export const getLocalizedMonthName = (monthNumber: number, language: string = 'ar'): string => {
-  if (monthNumber >= 1 && monthNumber <= 12) {
-    switch (language) {
-      case 'en':
-        return englishMonths[monthNumber - 1];
-      case 'ku':
-        return kurdishMonths[monthNumber - 1];
-      case 'ar':
-      default:
-        return arabicMonths[monthNumber - 1];
-    }
-  }
-  
-  switch (language) {
-    case 'en':
-      return 'Unknown';
-    case 'ku':
-      return 'نەناسراو';
-    case 'ar':
-    default:
-      return 'غير معروف';
-  }
-};
-
-/**
- * Convert month number (1-12) to Arabic month name (for backward compatibility)
+ * Convert month number (1-12) to Arabic month name
  */
 export const getArabicMonthName = (monthNumber: number): string => {
-  return getLocalizedMonthName(monthNumber, 'ar');
+  if (monthNumber >= 1 && monthNumber <= 12) {
+    return arabicMonths[monthNumber - 1];
+  }
+  return 'غير معروف';
 };
 
 /**
  * Convert monthly users data to chart format
  */
-export const formatMonthlyUsersForChart = (monthlyUsers: Array<{ month: number; count: number }>, language: string = 'ar') => {
+export const formatMonthlyUsersForChart = (monthlyUsers: Array<{ month: number; count: number }>) => {
   return monthlyUsers.map(item => ({
-    name: getLocalizedMonthName(item.month, language),
+    name: getArabicMonthName(item.month),
     value: item.count
   }));
 };
@@ -93,9 +37,9 @@ export const formatMonthlyUsersForChart = (monthlyUsers: Array<{ month: number; 
 /**
  * Convert monthly subscriptions data to chart format
  */
-export const formatMonthlySubscriptionsForChart = (monthlySubscriptions: Array<{ month: number; paid: number; pending: number }>, language: string = 'ar') => {
+export const formatMonthlySubscriptionsForChart = (monthlySubscriptions: Array<{ month: number; paid: number; pending: number }>) => {
   return monthlySubscriptions.map(item => ({
-    name: getLocalizedMonthName(item.month, language),
+    name: getArabicMonthName(item.month),
     paid: item.paid,
     pending: item.pending
   }));

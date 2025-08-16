@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Users, School, CreditCard, Clock } from 'lucide-react';
 import { useStats } from '../../hooks/useStats';
 
@@ -12,7 +11,6 @@ const StatsSummary: React.FC<StatsSummaryProps> = ({
   showTitle = true, 
   className = "" 
 }) => {
-  const { t } = useTranslation();
   const { dashboardStats, loading, error } = useStats();
 
   if (error) {
@@ -25,28 +23,28 @@ const StatsSummary: React.FC<StatsSummaryProps> = ({
 
   const stats = [
     {
-      title: t('dashboard.totalUsers'),
+      title: "المستخدمين",
       value: loading ? "..." : dashboardStats?.totalUsers?.toLocaleString() || "0",
       icon: <Users className="h-5 w-5" />,
       color: "text-blue-600",
       bgColor: "bg-blue-100"
     },
     {
-      title: t('dashboard.totalSchools'),
+      title: "المدارس",
       value: loading ? "..." : dashboardStats?.totalSchools?.toLocaleString() || "0",
       icon: <School className="h-5 w-5" />,
       color: "text-green-600",
       bgColor: "bg-green-100"
     },
     {
-      title: t('dashboard.activeSubscriptions'),
+      title: "الاشتراكات النشطة",
       value: loading ? "..." : dashboardStats?.subscriptions?.paid?.toLocaleString() || "0",
       icon: <CreditCard className="h-5 w-5" />,
       color: "text-purple-600",
       bgColor: "bg-purple-100"
     },
     {
-      title: t('dashboard.pendingSubscriptions'),
+      title: "الاشتراكات المعلقة",
       value: loading ? "..." : dashboardStats?.subscriptions?.pending?.toLocaleString() || "0",
       icon: <Clock className="h-5 w-5" />,
       color: "text-orange-600",
@@ -58,8 +56,8 @@ const StatsSummary: React.FC<StatsSummaryProps> = ({
     <div className={`space-y-4 ${className}`}>
       {showTitle && (
         <div className="text-center">
-          <h3 className="text-lg font-semibold text-gray-800">{t('dashboard.statistics')}</h3>
-          <p className="text-sm text-gray-600">{t('dashboard.overview')}</p>
+          <h3 className="text-lg font-semibold text-gray-800">إحصائيات النظام</h3>
+          <p className="text-sm text-gray-600">نظرة سريعة على إحصائيات النظام</p>
         </div>
       )}
       
