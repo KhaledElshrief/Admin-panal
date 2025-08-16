@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { fetchContactUs, deleteContactUs } from '../store/slices/contactUsSlice';
+import { fetchContactUs } from '../store/slices/contactUsSlice';
 import type { RootState, AppDispatch } from '../store';
 import { getLocalizedRole } from '../utils/i18nUtils';
 import { MessageCircle, User, Calendar, Phone, MapPin, Trash2, Eye } from 'lucide-react';
@@ -9,18 +9,26 @@ import { showToast } from '../store/slices/toastSlice';
 import Table, { TableColumn } from '../components/ui/Table';
 import Pagination from '../components/ui/Pagination';
 import type { ContactUsItem } from '../store/slices/contactUsSlice';
+import DeleteContactModal from '../components/contactUs/DeleteContactModal';
 
 const ContactUs: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
-  const { contacts, loading, deleteLoading, error, totalItems, totalPages, message } = useSelector(
-    (state: RootState) => state.contactUs
-  );
+  const {
+    contacts,
+    loading,
+    deleteLoading,
+    error,
+    totalItems,
+    totalPages,
+    message
+  } = useSelector((state: RootState) => state.contactUs);
 
   const [showStatusMessage, setShowStatusMessage] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
-  const [selectedContact, setSelectedContact] = useState<ContactUsItem | null>(null); // For modal
+  const [selectedContact, setSelectedContact] = useState<ContactUsItem | null>(null);
+  const [selectedContactToDelete, setSelectedContactToDelete] = useState<ContactUsItem | null>(null); // ✅
 
   useEffect(() => {
     dispatch(fetchContactUs({ page: currentPage, pageSize }));
@@ -42,15 +50,6 @@ const ContactUs: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-  };
-
-  const handleDelete = async (contactId: string) => {
-    if (window.confirm('هل أنت متأكد من حذف هذا التقرير؟')) {
-      const result = await dispatch(deleteContactUs(contactId));
-      if (deleteContactUs.fulfilled.match(result)) {
-        dispatch(showToast({ message: 'تم حذف التقرير بنجاح', type: 'success' }));
-      }
-    }
   };
 
   const columns: TableColumn<ContactUsItem>[] = [
@@ -102,7 +101,7 @@ const ContactUs: React.FC = () => {
       title: t('table.reason'),
       width: '150px',
       render: (value) => (
-        <span className=" text-white px-3 py-1 rounded-full text-xs font-medium">
+        <span className="text-white px-3 py-1 rounded-full text-xs font-medium">
           {value}
         </span>
       ),
@@ -116,14 +115,11 @@ const ContactUs: React.FC = () => {
         const preview = words.slice(0, 4).join(' ') + (words.length > 4 ? '...' : '');
         return (
           <div className="max-w-xs">
-            <p className="text-sm text-gray-300">
-              {preview}
-            </p>
+            <p className="text-sm text-gray-300">{preview}</p>
           </div>
         );
       },
     },
-
     {
       key: 'createdAt',
       title: t('table.date'),
@@ -155,7 +151,7 @@ const ContactUs: React.FC = () => {
             <Eye className="w-4 h-4" />
           </button>
           <button
-            onClick={() => handleDelete(record.id)}
+            onClick={() => setSelectedContactToDelete(record)}
             disabled={deleteLoading}
             className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
             title={t('common.delete')}
@@ -177,7 +173,6 @@ const ContactUs: React.FC = () => {
         </span>
       </div>
 
-      {/* Status Message */}
       {showStatusMessage && message && (
         <div className="bg-green-100 text-green-800 p-4 rounded-lg mb-6 shadow flex flex-col md:flex-row md:items-center md:gap-4 transition-opacity duration-500">
           <span className="font-bold">{message.arabic}</span>
@@ -185,7 +180,6 @@ const ContactUs: React.FC = () => {
         </div>
       )}
 
-      {/* Contact Us Table */}
       <Table
         columns={columns}
         data={contacts}
@@ -195,14 +189,13 @@ const ContactUs: React.FC = () => {
         striped={false}
       />
 
-      {/* Pagination */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
 
-      {/* View Modal */}
+      {/* View Contact Modal */}
       {selectedContact && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full text-gray-900 shadow-lg">
@@ -223,6 +216,12 @@ const ContactUs: React.FC = () => {
           </div>
         </div>
       )}
+
+      <DeleteContactModal
+        isOpen={!!selectedContactToDelete}
+        onClose={() => setSelectedContactToDelete(null)}
+        contact={selectedContactToDelete}
+      />
     </div>
   );
 };

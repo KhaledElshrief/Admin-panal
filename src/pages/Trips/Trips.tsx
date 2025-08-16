@@ -119,8 +119,7 @@ const Trips: React.FC = () => {
             className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]"
           >
             <option value="">{t('trips.filters.all')}</option>
-            <option value="starting">{t('trips.filters.starting')}</option>
-            <option value="pending">{t('trips.filters.pending')}</option>
+            <option value="Begin">{t('trips.filters.Begin')}</option>
             {statusOptions.map(option => (
               <option key={option} value={option}>
                 {option.charAt(0).toUpperCase() + option.slice(1).toLowerCase()}

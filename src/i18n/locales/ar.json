@@ -823,8 +823,7 @@
     "noStudents": "لا يوجد طلاب",
     "filters": {
       "all": "الكل",
-      "starting": "قيد البدء",
-      "pending": "قيد الانتظار"
+      "Begin": "قيد الانتظار"
     }
   },
   "plans": {

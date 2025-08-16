@@ -28,9 +28,9 @@ const Sidebar: React.FC = () => {
   
   const navItems = [
     { name: t('navigation.dashboard'), path: '/', icon: <LayoutDashboard className="w-5 h-5" />, isNew: false },
-    { name: t('navigation.home'), path: '/home', icon: <Home className="w-5 h-5" />, isNew: false },
-    { name: t('navigation.agents'), path: '/agents', icon: <UserSquare className="w-5 h-5" />, isNew: true },
-    { name: t('navigation.schools'), path: '/schools', icon: <School className="w-5 h-5" />, isNew: false },
+    //{ name: t('navigation.home'), path: '/home', icon: <Home className="w-5 h-5" />, isNew: false },
+ //   { name: t('navigation.agents'), path: '/agents', icon: <UserSquare className="w-5 h-5" />, isNew: true },
+   // { name: t('navigation.schools'), path: '/schools', icon: <School className="w-5 h-5" />, isNew: false },
     { name: t('navigation.school'), path: '/school', icon: <School className="w-5 h-5" />, isNew: false },
     { name: t('navigation.city'), path: '/city', icon: <MapPin className="w-5 h-5" />, isNew: false },
     { name: t('navigation.country'), path: '/country', icon: <Globe className="w-5 h-5" />, isNew: false },
@@ -44,7 +44,7 @@ const Sidebar: React.FC = () => {
     { name: t('navigation.contactUs'), path: '/contact-us', icon: <MessageCircle className="w-5 h-5" />, isNew: true },
     { name: t('navigation.content'), path: '/content', icon: <FileEdit className="w-5 h-5" />, isNew: true },
     { name: t('navigation.ads'), path: '/ads', icon: <FileText className="w-5 h-5" />, isNew: true },
-    { name: t('navigation.roles'), path: '/roles', icon: <ShieldCheck className="w-5 h-5" />, isNew: true },
+    //{ name: t('navigation.roles'), path: '/roles', icon: <ShieldCheck className="w-5 h-5" />, isNew: true },
     { name: t('navigation.systemSettings'), path: '/system-settings', icon: <Cog className="w-5 h-5" />, isNew: true },
   ];
 

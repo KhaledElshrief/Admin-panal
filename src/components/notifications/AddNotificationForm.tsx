@@ -51,7 +51,7 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
         
         <form onSubmit={onSubmit} className="space-y-6">
           {/* Notification Type */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               {t('notifications.type')}
             </label>
@@ -63,11 +63,11 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
               <option value="APP_NOTIFICATION">
                 {t('notifications.types.appNotification')}
               </option>
-              {/* <option value="APP_ADS">
+              <option value="APP_ADS">
                 {t('notifications.types.appAds')}
-              </option> */}
+              </option>
             </select>
-          </div>
+          </div> */}
 
           {/* Title Fields */}
           <div className="space-y-4">

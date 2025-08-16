@@ -25,6 +25,15 @@ const AddAdModal: React.FC<AddAdModalProps> = ({ isOpen, onClose }) => {
     startDate: '',
     endDate: '',
   });
+  // 👇 Updated helper function (at the top or where it's defined)
+  const formatToDatetimeLocal = (dateStr?: string) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+  };
+
 
   const currentLanguage = i18n.language as 'ar' | 'en' | 'ku';
 
@@ -47,20 +56,20 @@ const AddAdModal: React.FC<AddAdModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate required fields
     if (!formData.title.ar || !formData.title.en || !formData.title.ku) {
-      dispatch(showToast({ 
-        message: t('ads.validation.titleRequired'), 
-        type: 'error' 
+      dispatch(showToast({
+        message: t('ads.validation.titleRequired'),
+        type: 'error'
       }));
       return;
     }
-    
+
     if (!formData.description.ar || !formData.description.en || !formData.description.ku) {
-      dispatch(showToast({ 
-        message: t('ads.validation.descriptionRequired'), 
-        type: 'error' 
+      dispatch(showToast({
+        message: t('ads.validation.descriptionRequired'),
+        type: 'error'
       }));
       return;
     }
@@ -74,15 +83,15 @@ const AddAdModal: React.FC<AddAdModalProps> = ({ isOpen, onClose }) => {
         startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
         endDate: formData.endDate ? new Date(formData.endDate).toISOString() : undefined,
       };
-      
+
       await dispatch(createAd(adDataToSend)).unwrap();
-      
+
       // Show success toast
-      dispatch(showToast({ 
-        message: t('ads.success.created'), 
-        type: 'success' 
+      dispatch(showToast({
+        message: t('ads.success.created'),
+        type: 'success'
       }));
-      
+
       onClose();
       setFormData({
         title: { ar: '', en: '', ku: '' },
@@ -94,9 +103,9 @@ const AddAdModal: React.FC<AddAdModalProps> = ({ isOpen, onClose }) => {
       });
     } catch (error) {
       // Error is handled by Redux, but we can show a generic error toast
-      dispatch(showToast({ 
-        message: t('ads.error.createFailed'), 
-        type: 'error' 
+      dispatch(showToast({
+        message: t('ads.error.createFailed'),
+        type: 'error'
       }));
     }
   };
@@ -209,7 +218,7 @@ const AddAdModal: React.FC<AddAdModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Image Field */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               {t('ads.modal.image')}
             </label>
@@ -229,8 +238,7 @@ const AddAdModal: React.FC<AddAdModalProps> = ({ isOpen, onClose }) => {
                 {t('ads.modal.upload')}
               </button>
             </div>
-          </div>
-
+          </div> */}
           {/* Date Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -240,13 +248,19 @@ const AddAdModal: React.FC<AddAdModalProps> = ({ isOpen, onClose }) => {
               <div className="relative">
                 <input
                   type="datetime-local"
-                  value={formData.startDate}
-                  onChange={(e) => handleInputChange('startDate', undefined, e.target.value)}
+                  value={formatToDatetimeLocal(formData.startDate)}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      startDate: e.target.value,
+                    }))
+                  }
                   className="w-full px-3 py-2 border border-dark-200 rounded-lg bg-dark-200 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
               </div>
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 {t('ads.modal.endDate')}
@@ -254,11 +268,16 @@ const AddAdModal: React.FC<AddAdModalProps> = ({ isOpen, onClose }) => {
               <div className="relative">
                 <input
                   type="datetime-local"
-                  value={formData.endDate}
-                  onChange={(e) => handleInputChange('endDate', undefined, e.target.value)}
+                  value={formatToDatetimeLocal(formData.endDate)}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      endDate: e.target.value,
+                    }))
+                  }
                   className="w-full px-3 py-2 border border-dark-200 rounded-lg bg-dark-200 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
               </div>
             </div>
           </div>

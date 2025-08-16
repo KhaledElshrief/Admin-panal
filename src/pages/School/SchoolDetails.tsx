@@ -280,6 +280,7 @@ const SchoolDetails: React.FC = () => {
                 </div>
               </div>
             </div>
+            
             <div>
               <h3 className="text-lg font-semibold mb-4 text-white">{t('schools.geographicLocation')}</h3>
               <div className="space-y-4">
