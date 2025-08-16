@@ -28,14 +28,14 @@ const TripDetails: React.FC = () => {
     if (id) dispatch(fetchTripById(id));
   }, [dispatch, id]);
 
-  if (selectedTripLoading) return <div className="p-6">جاري التحميل...</div>;
+  if (selectedTripLoading) return <div className="p-6">{t('loading')}</div>;
   if (selectedTripError) return <div className="p-6 text-red-500">{selectedTripError}</div>;
-  if (!selectedTrip) return <div className="p-6">لا توجد بيانات</div>;
+  if (!selectedTrip) return <div className="p-6">{t('noData')}</div>;
 
   const studentColumns: TableColumn[] = [
     {
       key: 'student.user.image',
-      title: 'الصورة',
+      title: t('trips.image', 'الصورة'),
       render: (value, record) => (
         <img
           src={value ? (value.startsWith('http') ? value : `https://mahfouzapp.com${value}`) : '/default-avatar.png'}
@@ -47,53 +47,63 @@ const TripDetails: React.FC = () => {
       align: 'center',
       width: '60px',
     },
-    { key: 'student.user.userName', title: 'اسم الطالب' },
-    { key: 'student.user.phone', title: 'رقم الهاتف' },
-    { key: 'type', title: 'نوع الرحلة' },
-    { key: 'statusLog', title: 'سجل الحالة', render: (value) => (
-      <ul className="text-xs text-gray-300 space-y-1">
-        {Array.isArray(value) && value.length > 0 ? value.map((log, idx) => (
-          <li key={idx}>{log.status} - {formatDate(log.createdAt)}</li>
-        )) : <li>—</li>}
-      </ul>
-    ) },
+    { key: 'student.user.userName', title: t('groups.studentName') },
+    { key: 'student.user.phone', title: t('groups.phoneNumber') },
+    { key: 'type', title: t('trips.tripType') },
+    {
+      key: 'statusLog',
+      title: t('trips.statusLog'),
+      render: value => (
+        <ul className="text-xs text-gray-300 space-y-1">
+          {Array.isArray(value) && value.length > 0 ? (
+            value.map((log, idx) => (
+              <li key={idx}>
+                {log.status} - {formatDate(log.createdAt)}
+              </li>
+            ))
+          ) : (
+            <li>—</li>
+          )}
+        </ul>
+      ),
+    },
   ];
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <div className="bg-dark-300 rounded-2xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-6 text-primary-400">{t('pages.tripDetails')}</h1>
+        <h1 className="text-3xl font-bold mb-6 text-primary-400">{t('trips.tripDetails')}</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
-            <div className="mb-2 text-gray-400">اسم السائق</div>
+            <div className="mb-2 text-gray-400">{t('trips.driverName')}</div>
             <div className="font-semibold text-white">{selectedTrip.driver?.user?.userName}</div>
           </div>
           <div>
-            <div className="mb-2 text-gray-400">هاتف السائق</div>
+            <div className="mb-2 text-gray-400">{t('trips.driverPhone')}</div>
             <div className="font-semibold text-white">{selectedTrip.driver?.user?.phone}</div>
           </div>
           <div>
-            <div className="mb-2 text-gray-400">اسم المجموعة</div>
+            <div className="mb-2 text-gray-400">{t('trips.groupName')}</div>
             <div className="font-semibold text-white">{selectedTrip.tripGroup?.name}</div>
           </div>
           <div>
-            <div className="mb-2 text-gray-400">الحالة</div>
+            <div className="mb-2 text-gray-400">{t('trips.status')}</div>
             <div className="font-semibold text-white">{selectedTrip.status}</div>
           </div>
           <div>
-            <div className="mb-2 text-gray-400">نوع الرحلة</div>
+            <div className="mb-2 text-gray-400">{t('trips.tripType')}</div>
             <div className="font-semibold text-white">{selectedTrip.type}</div>
           </div>
           <div>
-            <div className="mb-2 text-gray-400">تاريخ الإنشاء</div>
+            <div className="mb-2 text-gray-400">{t('trips.creationDate')}</div>
             <div className="font-semibold text-white">{formatDate(selectedTrip.createdAt)}</div>
           </div>
         </div>
-        <h2 className="text-2xl font-semibold mt-8 mb-4 text-primary-400">الطلاب في الرحلة</h2>
+        <h2 className="text-2xl font-semibold mt-8 mb-4 text-primary-400">{t('trips.studentsInTrip')}</h2>
         <Table
           columns={studentColumns}
           data={selectedTrip.tripStudents || []}
-          emptyText="لا يوجد طلاب"
+          emptyText={t('trips.noStudents')}
           rowKey="id"
           striped
         />
@@ -102,4 +112,4 @@ const TripDetails: React.FC = () => {
   );
 };
 
-export default TripDetails; 
+export default TripDetails;

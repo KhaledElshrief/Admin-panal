@@ -38,10 +38,20 @@ const LanguageSwitcher: React.FC = () => {
       document.documentElement.setAttribute('lang', langCode);
       document.documentElement.setAttribute('dir', selectedLang.dir);
       
+      // Update body class for additional styling if needed
+      document.body.className = document.body.className.replace(/\b(rtl|ltr)\b/g, '');
+      document.body.classList.add(selectedLang.dir);
+      
       // Store language preference
       localStorage.setItem('i18nextLng', langCode);
       
       setIsOpen(false);
+      
+      // Force a re-render of the entire app by reloading
+      // This ensures all components pick up the new direction
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     }
   };
 

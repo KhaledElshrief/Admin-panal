@@ -260,20 +260,20 @@ export const store = configureStore({
 
 const Drivers: React.FC = () => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('الموافقات');
+  const [activeTab, setActiveTab] = useState('approvals');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('اختر...');
   const [dateRange, setDateRange] = useState('3/30/2025 - 3/1/2025');
   const [selectedDriverId, setSelectedDriverId] = useState('');
 
   const menuItems = [
-    { icon: <FileText className="w-5 h-5" />, label: t('navigation.approvals'), count: null },
-    { icon: <Users className="w-5 h-5" />, label: t('navigation.driversManagement'), count: null },
-    { icon: <BarChart2 className="w-5 h-5" />, label: t('navigation.tracking'), count: null },
-    { icon: <Settings className="w-5 h-5" />, label: t('navigation.control'), count: null },
-    { icon: <MessageSquare className="w-5 h-5" />, label: t('navigation.ratings'), count: 3 },
-    { icon: <Bell className="w-5 h-5" />, label: t('navigation.notifications'), count: 5 },
-    { icon: <BarChart2 className="w-5 h-5" />, label: t('navigation.reports'), count: null },
+    { icon: <FileText className="w-5 h-5" />, label: t('navigation.approvals'), key: 'approvals', count: null },
+    { icon: <Users className="w-5 h-5" />, label: t('navigation.driversManagement'), key: 'management', count: null },
+    { icon: <BarChart2 className="w-5 h-5" />, label: t('navigation.tracking'), key: 'tracking', count: null },
+    { icon: <Settings className="w-5 h-5" />, label: t('navigation.control'), key: 'control', count: null },
+    { icon: <MessageSquare className="w-5 h-5" />, label: t('navigation.ratings'), key: 'ratings', count: 3 },
+    { icon: <Bell className="w-5 h-5" />, label: t('navigation.notifications'), key: 'notifications', count: 5 },
+    { icon: <BarChart2 className="w-5 h-5" />, label: t('navigation.reports'), key: 'reports', count: null },
   ];
 
   // Table columns for driver control
@@ -453,7 +453,7 @@ const Drivers: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    if (activeTab === 'الموافقات') {
+    if (activeTab === 'approvals') {
       dispatch(fetchDrivers({}));    }
   }, [activeTab, dispatch]);
 
@@ -471,9 +471,9 @@ const Drivers: React.FC = () => {
           {menuItems.map((item, index) => (
             <button
               key={index}
-              onClick={() => setActiveTab(item.label)}
+              onClick={() => setActiveTab(item.key)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
-                activeTab === item.label 
+                activeTab === item.key 
                   ? 'bg-primary-600 text-white' 
                   : 'bg-dark-200 text-gray-300 hover:bg-dark-100'
               }`}
@@ -489,13 +489,13 @@ const Drivers: React.FC = () => {
           ))}
         </div>
 
-        {activeTab === 'الموافقات' && (
+        {activeTab === 'approvals' && (
           <DriversApprovalComponent/>
         )}
-        {activeTab === 'إدارة السائقين' && (
+        {activeTab === 'management' && (
           <DriversManagementComponent/>
         )}
-        {activeTab === 'التحكم' && (
+        {activeTab === 'control' && (
           <DriversControl
             driversData={driversData}
             driverControlColumns={driverControlColumns}
@@ -505,15 +505,15 @@ const Drivers: React.FC = () => {
             setStatusFilter={setStatusFilter}
           />
         )}
-        {activeTab === 'التتبع' && (
+        {activeTab === 'tracking' && (
           <div className="text-center py-12">
             <p className="text-gray-400">صفحة التتبع قيد التطوير</p>
           </div>
         )}
-        {activeTab === 'التقييمات' && (
+        {activeTab === 'ratings' && (
           <DriversRatingsComponent driverId="161914cb-37bc-4892-95f5-668c8282bf95" />
         )}
-        {activeTab === 'الإشعارات' && (
+        {activeTab === 'notifications' && (
           <DriversNotifications
             notificationsData={notificationsData}
             notificationsColumns={notificationsColumns}
@@ -521,7 +521,7 @@ const Drivers: React.FC = () => {
             setSearchTerm={setSearchTerm}
           />
         )}
-        {activeTab === 'التقارير' && (
+        {activeTab === 'reports' && (
           <DriversReports
             reportsData={reportsData}
             reportsColumns={reportsColumns}

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchDrivers } from '../../../store/slices/driversSlice';
 import { RootState } from '../../../store';
 import type { AppDispatch } from '../../../store';
+import { getLocalizedStatus, getLocalizedGender } from '../../../utils/i18nUtils';
 import DriversApprovals from './DriversApprovalsTab';
 import { TableColumn } from '../../ui/Table';
 import { useNavigate } from 'react-router-dom';

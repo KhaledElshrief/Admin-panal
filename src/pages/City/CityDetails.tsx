@@ -13,7 +13,7 @@ const CityDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { selectedCity, selectedCityLoading, selectedCityError} = useSelector((state: RootState) => state.city);
+  const { selectedCity, selectedCityLoading, selectedCityError } = useSelector((state: RootState) => state.city);
   const { countries } = useSelector((state: RootState) => state.countries);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -32,12 +32,12 @@ const CityDetails: React.FC = () => {
     const { name, value } = e.target;
     if (name.startsWith('lessPricePerKilometer.') || name.startsWith('lessStudentFee.')) {
       const [key, sub] = name.split('.') as ['lessPricePerKilometer' | 'lessStudentFee', 'min' | 'max'];
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
-        [key]: { ...prev[key], [sub]: Number(value) }
+        [key]: { ...prev[key], [sub]: Number(value) },
       }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
@@ -56,17 +56,15 @@ const CityDetails: React.FC = () => {
       };
       const result = await dispatch(updateCity({ id, data: payload }));
       if (updateCity.fulfilled.match(result)) {
-        dispatch(showToast({ message: 'تم تحديث بيانات المدينة بنجاح', type: 'success' }));
+        dispatch(showToast({ message: t('common.updatedSuccessfully'), type: 'success' }));
         setIsEditing(false);
       }
     }
   };
 
-  // Remove handleDelete, use modal instead
-
-  if (selectedCityLoading) return <div className="p-6">جاري التحميل...</div>;
+  if (selectedCityLoading) return <div className="p-6">{t('common.loading')}</div>;
   if (selectedCityError) return <div className="p-6 text-red-500">{selectedCityError}</div>;
-  if (!selectedCity) return <div className="p-6 text-gray-400">لا توجد بيانات لهذه المدينة</div>;
+  if (!selectedCity) return <div className="p-6 text-gray-400">{t('common.noData')}</div>;
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
@@ -75,37 +73,38 @@ const CityDetails: React.FC = () => {
         className="flex items-center gap-2 text-gray-400 hover:text-primary-500 transition-colors mb-6"
       >
         <ArrowLeft className="w-5 h-5" />
-        العودة
+        {t('common.back')}
       </button>
+
       <div className="bg-dark-300 rounded-xl shadow-lg p-6 mb-6">
         <h1 className="text-3xl font-bold mb-2 text-white flex items-center gap-2">
           {selectedCity.name}
           <span className="text-base font-normal text-gray-400">({selectedCity.nameEn})</span>
         </h1>
-        <div className="flex flex-wrap gap-4 mb-4">
-          <div className="bg-dark-400 rounded-lg px-4 py-2 text-sm text-gray-300">
-            <span className="font-semibold text-primary-400">الدولة:</span> {countries.find((c: {id: string; name: string}) => c.id === selectedCity.countryId)?.name || selectedCity.countryId}
-          </div>
-        </div>
+
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="bg-dark-400 rounded-lg p-4">
-            <div className="text-gray-400 mb-1 font-semibold">سعر/كم</div>
+            <div className="text-gray-400 mb-1 font-semibold">{t('cities.pricePerKm')}</div>
             <div className="text-white text-lg font-bold">
               {selectedCity.lessPricePerKilometer?.min} - {selectedCity.lessPricePerKilometer?.max}
             </div>
           </div>
           <div className="bg-dark-400 rounded-lg p-4">
-            <div className="text-gray-400 mb-1 font-semibold">رسوم طالب</div>
+            <div className="text-gray-400 mb-1 font-semibold">{t('cities.studentFee')}</div>
             <div className="text-white text-lg font-bold">
               {selectedCity.lessStudentFee?.min} - {selectedCity.lessStudentFee?.max}
             </div>
           </div>
         </div>
+
         {isEditing ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-dark-400 rounded-lg p-4">
-                <label className="block text-gray-400 mb-1 font-semibold">سعر/كم (أقل)</label>
+                <label className="block text-gray-400 mb-1 font-semibold">
+                  {t('cities.pricePerKm')} ({t('cities.min')})
+                </label>
                 <input
                   type="number"
                   name="lessPricePerKilometer.min"
@@ -115,7 +114,9 @@ const CityDetails: React.FC = () => {
                   step="any"
                   required
                 />
-                <label className="block text-gray-400 mb-1 font-semibold mt-2">سعر/كم (أعلى)</label>
+                <label className="block text-gray-400 mb-1 font-semibold mt-2">
+                  {t('cities.pricePerKm')} ({t('cities.max')})
+                </label>
                 <input
                   type="number"
                   name="lessPricePerKilometer.max"
@@ -126,8 +127,11 @@ const CityDetails: React.FC = () => {
                   required
                 />
               </div>
+
               <div className="bg-dark-400 rounded-lg p-4">
-                <label className="block text-gray-400 mb-1 font-semibold">رسوم طالب (أقل)</label>
+                <label className="block text-gray-400 mb-1 font-semibold">
+                  {t('cities.studentFee')} ({t('cities.min')})
+                </label>
                 <input
                   type="number"
                   name="lessStudentFee.min"
@@ -137,7 +141,9 @@ const CityDetails: React.FC = () => {
                   step="any"
                   required
                 />
-                <label className="block text-gray-400 mb-1 font-semibold mt-2">رسوم طالب (أعلى)</label>
+                <label className="block text-gray-400 mb-1 font-semibold mt-2">
+                  {t('cities.studentFee')} ({t('cities.max')})
+                </label>
                 <input
                   type="number"
                   name="lessStudentFee.max"
@@ -149,33 +155,44 @@ const CityDetails: React.FC = () => {
                 />
               </div>
             </div>
+
             <div className="flex gap-3 mt-6">
-              <button type="submit" className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg font-bold transition-colors">حفظ التغييرات</button>
-              <button type="button" onClick={() => setIsEditing(false)} className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-bold transition-colors">إلغاء</button>
+              <button
+                type="submit"
+                className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg font-bold transition-colors"
+              >
+                {t('common.saveChanges')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-bold transition-colors"
+              >
+                {t('common.cancel')}
+              </button>
             </div>
           </form>
         ) : (
-            <>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg font-bold transition-colors ml-3"
-              >
-                تعديل
-              </button>
-              <button
-                onClick={() => setIsDeleteModalOpen(true)}
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold transition-colors"
-              >
-                حذف
-              </button>
-            </>
-          )}
+          <>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg font-bold transition-colors m-3"
+            >
+              {t('common.edit')}
+            </button>
+            <button
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold transition-colors"
+            >
+              {t('cities.deleteCity')}
+            </button>
+          </>
+        )}
       </div>
+
       <DeleteCityModal
         isOpen={isDeleteModalOpen}
-        onClose={() => {
-          setIsDeleteModalOpen(false);
-        }}
+        onClose={() => setIsDeleteModalOpen(false)}
         city={selectedCity}
       />
     </div>

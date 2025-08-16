@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useDirection } from '../../hooks/useDirection';
 import {
   LayoutDashboard,
   School,
@@ -22,13 +23,14 @@ import {
 
 const Sidebar: React.FC = () => {
   const { t } = useTranslation();
+  const { isRTL } = useDirection();
   const [isExpanded, setIsExpanded] = useState(false);
   
   const navItems = [
     { name: t('navigation.dashboard'), path: '/', icon: <LayoutDashboard className="w-5 h-5" />, isNew: false },
-    { name: t('navigation.home'), path: '/home', icon: <Home className="w-5 h-5" />, isNew: false },
-    { name: t('navigation.agents'), path: '/agents', icon: <UserSquare className="w-5 h-5" />, isNew: true },
-    { name: t('navigation.schools'), path: '/schools', icon: <School className="w-5 h-5" />, isNew: false },
+    //{ name: t('navigation.home'), path: '/home', icon: <Home className="w-5 h-5" />, isNew: false },
+ //   { name: t('navigation.agents'), path: '/agents', icon: <UserSquare className="w-5 h-5" />, isNew: true },
+   // { name: t('navigation.schools'), path: '/schools', icon: <School className="w-5 h-5" />, isNew: false },
     { name: t('navigation.school'), path: '/school', icon: <School className="w-5 h-5" />, isNew: false },
     { name: t('navigation.city'), path: '/city', icon: <MapPin className="w-5 h-5" />, isNew: false },
     { name: t('navigation.country'), path: '/country', icon: <Globe className="w-5 h-5" />, isNew: false },
@@ -42,7 +44,7 @@ const Sidebar: React.FC = () => {
     { name: t('navigation.contactUs'), path: '/contact-us', icon: <MessageCircle className="w-5 h-5" />, isNew: true },
     { name: t('navigation.content'), path: '/content', icon: <FileEdit className="w-5 h-5" />, isNew: true },
     { name: t('navigation.ads'), path: '/ads', icon: <FileText className="w-5 h-5" />, isNew: true },
-    { name: t('navigation.roles'), path: '/roles', icon: <ShieldCheck className="w-5 h-5" />, isNew: true },
+    //{ name: t('navigation.roles'), path: '/roles', icon: <ShieldCheck className="w-5 h-5" />, isNew: true },
     { name: t('navigation.systemSettings'), path: '/system-settings', icon: <Cog className="w-5 h-5" />, isNew: true },
   ];
 
@@ -50,7 +52,7 @@ const Sidebar: React.FC = () => {
     <aside
       className={`bg-dark-300 h-full transition-all duration-300 ease-in-out ${
         isExpanded ? 'w-64' : 'w-16'
-      } relative`}
+      } relative ${isRTL ? 'border-l border-dark-200' : 'border-r border-dark-200'}`}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
@@ -69,7 +71,9 @@ const Sidebar: React.FC = () => {
               key={item.path}
               to={item.path}
               className={({ isActive }) => `
-                relative flex items-center px-3 py-2.5 rounded-lg gap-3
+                relative flex items-center px-3 py-2.5 rounded-lg gap-3 ${
+                  isRTL ? 'text-right' : 'text-left'
+                }
                 transition-all duration-200 ease-in-out
                 ${isActive ? 'bg-primary-600 text-white' : 'text-gray-300 hover:bg-dark-200'}
                 ${!isExpanded && 'justify-center'}

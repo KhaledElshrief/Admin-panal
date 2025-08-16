@@ -113,7 +113,7 @@ const School: React.FC = () => {
           className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
         >
           <Plus className="w-4 h-4" />
-          إضافة مدرسة
+  {t('schools.addSchool')}
         </button>
       </div>
       

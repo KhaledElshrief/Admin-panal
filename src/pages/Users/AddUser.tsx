@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Save, User, GraduationCap, Car, Users } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { createUser } from '../../store/slices/usersSlices';
@@ -174,7 +175,7 @@ const AddUser: React.FC = () => {
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            العودة
+            {t('common.back')}
           </button>
           <h1 className="text-2xl font-bold">{t('pages.addNewUser')}</h1>
         </div>
@@ -183,7 +184,7 @@ const AddUser: React.FC = () => {
       <div className="bg-dark-300 rounded-xl p-6">
         {/* User Type Selection */}
         <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-4">نوع المستخدم</h2>
+          <h2 className="text-lg font-semibold mb-4">{t('users.userType')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               type="button"
@@ -197,8 +198,8 @@ const AddUser: React.FC = () => {
               <div className="flex items-center gap-3">
                 <GraduationCap className="w-6 h-6" />
                 <div className="text-left">
-                  <div className="font-semibold">طالب</div>
-                  <div className="text-sm text-gray-400">Student</div>
+                  <div className="font-semibold">{t('users.student')}</div>
+                  <div className="text-sm text-gray-400">{t('common.student')}</div>
                 </div>
               </div>
             </button>
@@ -215,8 +216,8 @@ const AddUser: React.FC = () => {
               <div className="flex items-center gap-3">
                 <Users className="w-6 h-6" />
                 <div className="text-left">
-                  <div className="font-semibold">ولي أمر</div>
-                  <div className="text-sm text-gray-400">Parent</div>
+                  <div className="font-semibold">{t('users.parent')}</div>
+                  <div className="text-sm text-gray-400">{t('common.parent')}</div>
                 </div>
               </div>
             </button>
@@ -233,8 +234,8 @@ const AddUser: React.FC = () => {
               <div className="flex items-center gap-3">
                 <Car className="w-6 h-6" />
                 <div className="text-left">
-                  <div className="font-semibold">سائق</div>
-                  <div className="text-sm text-gray-400">Driver</div>
+                  <div className="font-semibold">{t('users.driver')}</div>
+                  <div className="text-sm text-gray-400">{t('common.driver')}</div>
                 </div>
               </div>
             </button>
@@ -254,12 +255,12 @@ const AddUser: React.FC = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <User className="w-5 h-5" />
-              المعلومات الأساسية
+              {t('users.basicInfo')}
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">اسم المستخدم *</label>
+                <label className="block text-sm font-medium mb-2">{t('users.userName')} *</label>
                 <input
                   type="text"
                   value={formData.userName}
@@ -267,13 +268,13 @@ const AddUser: React.FC = () => {
                   className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                     errors.userName ? 'border-red-500' : 'border-dark-200'
                   }`}
-                  placeholder="أدخل اسم المستخدم"
+                  placeholder={t('users.userName')}
                 />
                 {errors.userName && <p className="text-red-400 text-sm mt-1">{errors.userName}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">رقم الهاتف *</label>
+                <label className="block text-sm font-medium mb-2">{t('users.phoneNumber')} *</label>
                 <input
                   type="tel"
                   autoComplete="off"
@@ -282,13 +283,13 @@ const AddUser: React.FC = () => {
                   className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                     errors.phone ? 'border-red-500' : 'border-dark-200'
                   }`}
-                  placeholder="أدخل رقم الهاتف"
+                  placeholder={t('users.phoneNumber')}
                 />
                 {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">كلمة المرور *</label>
+                <label className="block text-sm font-medium mb-2">{t('auth.password')} *</label>
                 <input
                   type="password"
                   autoComplete="new-password"
@@ -297,13 +298,13 @@ const AddUser: React.FC = () => {
                   className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                     errors.password ? 'border-red-500' : 'border-dark-200'
                   }`}
-                  placeholder="أدخل كلمة المرور"
+                  placeholder={t('auth.password')}
                 />
                 {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">تاريخ الميلاد *</label>
+                <label className="block text-sm font-medium mb-2">{t('users.dateOfBirth')} *</label>
                 <input
                   type="date"
                   value={formData.dateOfBirth}
@@ -316,19 +317,19 @@ const AddUser: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">الجنس *</label>
+                <label className="block text-sm font-medium mb-2">{t('users.gender')} *</label>
                 <select
                   value={formData.gender}
                   onChange={(e) => handleInputChange('gender', e.target.value)}
                   className="w-full bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600"
                 >
-                  <option value="MALE">ذكر</option>
-                  <option value="FEMALE">أنثى</option>
+                  <option value="MALE">{t('users.male')}</option>
+                  <option value="FEMALE">{t('users.female')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">المنطقة *</label>
+                <label className="block text-sm font-medium mb-2">{t('users.region')} *</label>
                 <input
                   type="text"
                   value={formData.region}
@@ -336,13 +337,13 @@ const AddUser: React.FC = () => {
                   className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                     errors.region ? 'border-red-500' : 'border-dark-200'
                   }`}
-                  placeholder="أدخل المنطقة"
+                  placeholder={t('users.region')}
                 />
                 {errors.region && <p className="text-red-400 text-sm mt-1">{errors.region}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">المدينة *</label>
+                <label className="block text-sm font-medium mb-2">{t('users.city')} *</label>
                 <select
                   value={formData.cityId}
                   onChange={(e) => handleInputChange('cityId', e.target.value)}
@@ -351,7 +352,7 @@ const AddUser: React.FC = () => {
                     errors.cityId ? 'border-red-500' : 'border-dark-200'
                   }`}
                 >
-                  <option value="">{citiesLoading ? 'جاري التحميل...' : 'اختر المدينة'}</option>
+                  <option value="">{citiesLoading ? t('common.loading') : t('filters.selectCity')}</option>
                   {cities.map(city => (
                     <option key={city.id} value={city.id}>{city.name}</option>
                   ))}
@@ -360,7 +361,7 @@ const AddUser: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">الدولة *</label>
+                <label className="block text-sm font-medium mb-2">{t('users.country')} *</label>
                 <select
                   value={formData.countryId}
                   onChange={(e) => handleInputChange('countryId', e.target.value)}
@@ -369,7 +370,7 @@ const AddUser: React.FC = () => {
                     errors.countryId ? 'border-red-500' : 'border-dark-200'
                   }`}
                 >
-                  <option value="">{countriesLoading ? 'جاري التحميل...' : 'اختر الدولة'}</option>
+                  <option value="">{countriesLoading ? t('common.loading') : t('filters.selectCountry')}</option>
                   {countries.map(country => (
                     <option key={country.id} value={country.id}>{country.name}</option>
                   ))}
@@ -384,25 +385,25 @@ const AddUser: React.FC = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold flex items-center gap-2">
                 <GraduationCap className="w-5 h-5" />
-                معلومات الطالب
+                {t('users.studentInfo')}
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">المستوى الأكاديمي</label>
+                  <label className="block text-sm font-medium mb-2">{t('users.academicLevel')}</label>
                   <select
                     value={studentData.AcademicLevel}
                     onChange={(e) => handleStudentDataChange('AcademicLevel', e.target.value)}
                     className="w-full bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600"
                   >
-                    <option value="PRIMARY">ابتدائي</option>
-                    <option value="SECONDARY">إعدادي</option>
-                    <option value="UNIVERSITY">جامعي</option>
+                    <option value="PRIMARY">{t('users.primary')}</option>
+                    <option value="SECONDARY">{t('users.secondary')}</option>
+                    <option value="UNIVERSITY">{t('users.university')}</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">السنة الدراسية *</label>
+                  <label className="block text-sm font-medium mb-2">{t('users.academicYear')} *</label>
                   <input
                     type="text"
                     value={studentData.AcademicYear}
@@ -410,13 +411,13 @@ const AddUser: React.FC = () => {
                     className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                       errors.AcademicYear ? 'border-red-500' : 'border-dark-200'
                     }`}
-                    placeholder="مثال: 2025"
+                    placeholder="2025"
                   />
                   {errors.AcademicYear && <p className="text-red-400 text-sm mt-1">{errors.AcademicYear}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">المدرسة *</label>
+                  <label className="block text-sm font-medium mb-2">{t('users.school')} *</label>
                   <PaginatedDropdown
                     fetchOptions={fetchPaginatedSchools}
                     value={schools.find(s => s.id === studentData.schoolId) || null}
@@ -426,7 +427,7 @@ const AddUser: React.FC = () => {
                     renderOption={(school, isSelected) => (
                       <span className={isSelected ? 'font-bold text-primary-600' : ''}>{school.name}</span>
                     )}
-                    placeholder={schoolsLoading ? 'جاري التحميل...' : 'اختر المدرسة'}
+                    placeholder={schoolsLoading ? t('common.loading') : t('users.selectSchool')}
                     disabled={schoolsLoading}
                     className={errors.schoolId ? 'border-red-500' : ''}
                   />
@@ -441,12 +442,12 @@ const AddUser: React.FC = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold flex items-center gap-2">
                 <Car className="w-5 h-5" />
-                معلومات السائق
+                {t('users.driverInfo')}
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">خط العرض *</label>
+                  <label className="block text-sm font-medium mb-2">{t('table.latitude')} *</label>
                   <input
                     type="number"
                     step="any"
@@ -455,13 +456,13 @@ const AddUser: React.FC = () => {
                     className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                       errors.latitude ? 'border-red-500' : 'border-dark-200'
                     }`}
-                    placeholder="مثال: 30.0444"
+                    placeholder="30.0444"
                   />
                   {errors.latitude && <p className="text-red-400 text-sm mt-1">{errors.latitude}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">خط الطول *</label>
+                  <label className="block text-sm font-medium mb-2">{t('table.longitude')} *</label>
                   <input
                     type="number"
                     step="any"
@@ -470,13 +471,13 @@ const AddUser: React.FC = () => {
                     className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                       errors.longitude ? 'border-red-500' : 'border-dark-200'
                     }`}
-                    placeholder="مثال: 31.2357"
+                    placeholder="31.2357"
                   />
                   {errors.longitude && <p className="text-red-400 text-sm mt-1">{errors.longitude}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">رمز التحقق *</label>
+                  <label className="block text-sm font-medium mb-2">{t('users.verificationCode')} *</label>
                   <input
                     type="number"
                     value={formData.verifyCode || ''}
@@ -484,24 +485,24 @@ const AddUser: React.FC = () => {
                     className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                       errors.verifyCode ? 'border-red-500' : 'border-dark-200'
                     }`}
-                    placeholder="مثال: 1234"
+                    placeholder="1234"
                   />
                   {errors.verifyCode && <p className="text-red-400 text-sm mt-1">{errors.verifyCode}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">سنة الموديل</label>
+                  <label className="block text-sm font-medium mb-2">{t('table.date')}</label>
                   <input
                     type="number"
                     value={driverData.modelYear}
                     onChange={(e) => handleDriverDataChange('modelYear', parseInt(e.target.value))}
                     className="w-full bg-dark-400 border border-dark-200 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600"
-                    placeholder="مثال: 2020"
+                    placeholder="2020"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">موديل السيارة *</label>
+                  <label className="block text-sm font-medium mb-2">{t('users.vehicleModel')} *</label>
                   <input
                     type="text"
                     value={driverData.carModel}
@@ -509,13 +510,13 @@ const AddUser: React.FC = () => {
                     className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                       errors.carModel ? 'border-red-500' : 'border-dark-200'
                     }`}
-                    placeholder="مثال: Hyundai Elantra"
+                    placeholder="Hyundai Elantra"
                   />
                   {errors.carModel && <p className="text-red-400 text-sm mt-1">{errors.carModel}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">المركبة *</label>
+                  <label className="block text-sm font-medium mb-2">{t('table.type')} *</label>
                   <select
                     value={driverData.vehicleId}
                     onChange={(e) => handleDriverDataChange('vehicleId', e.target.value)}
@@ -524,7 +525,7 @@ const AddUser: React.FC = () => {
                       errors.vehicleId ? 'border-red-500' : 'border-dark-200'
                     }`}
                   >
-                    <option value="">{vehiclesLoading ? 'جاري التحميل...' : 'اختر المركبة'}</option>
+                    <option value="">{vehiclesLoading ? t('common.loading') : t('users.selectVehicle')}</option>
                     {vehicles.map(vehicle => (
                       <option key={vehicle.id} value={vehicle.id}>{vehicle.vehicleType}</option>
                     ))}
@@ -533,7 +534,7 @@ const AddUser: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">لون السيارة *</label>
+                  <label className="block text-sm font-medium mb-2">{t('users.vehicleColor')} *</label>
                   <input
                     type="text"
                     value={driverData.color}
@@ -541,13 +542,13 @@ const AddUser: React.FC = () => {
                     className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                       errors.color ? 'border-red-500' : 'border-dark-200'
                     }`}
-                    placeholder="مثال: أبيض"
+                    placeholder={t('common.white', 'أبيض')}
                   />
                   {errors.color && <p className="text-red-400 text-sm mt-1">{errors.color}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">رقم المفتاح *</label>
+                  <label className="block text-sm font-medium mb-2">{t('users.keyNumber')} *</label>
                   <input
                     type="text"
                     value={driverData.keyNumber}
@@ -555,7 +556,7 @@ const AddUser: React.FC = () => {
                     className={`w-full bg-dark-400 border rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 ${
                       errors.keyNumber ? 'border-red-500' : 'border-dark-200'
                     }`}
-                    placeholder="مثال: KEY1234"
+                    placeholder="KEY1234"
                   />
                   {errors.keyNumber && <p className="text-red-400 text-sm mt-1">{errors.keyNumber}</p>}
                 </div>
@@ -570,7 +571,7 @@ const AddUser: React.FC = () => {
               onClick={() => navigate('/users')}
               className="px-6 py-2 text-gray-400 hover:text-white transition-colors"
             >
-              إلغاء
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
@@ -578,7 +579,7 @@ const AddUser: React.FC = () => {
               className="bg-primary-600 hover:bg-primary-700 disabled:bg-primary-600/50 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors"
             >
               <Save className="w-4 h-4" />
-              {createLoading ? 'جاري الحفظ...' : 'حفظ المستخدم'}
+              {createLoading ? t('common.saving') : t('common.save')}
             </button>
           </div>
         </form>

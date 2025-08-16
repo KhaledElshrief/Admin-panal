@@ -92,8 +92,9 @@ const SubscriptionsTab: React.FC = () => {
       title: t('table.status'),
       sortable: true,
       render: (value) => {
-        const variant = value === 'نشط' ? 'success' : value === 'منتهي' ? 'error' : 'warning';
-        return <StatusBadge status={value} variant={variant as any} />;
+        const variant = value === 'نشط' || value === 'Active' ? 'success' : 
+                       value === 'منتهي' || value === 'Expired' ? 'error' : 'warning';
+        return <StatusBadge status={value} variant={variant as any} localize={true} />;
       }
     },
     {

@@ -113,13 +113,22 @@ const Trips: React.FC = () => {
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.status')}</label>
-          <select value={status} onChange={e => setStatus(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]">
-            <option value="">{t('filters.all')}</option>
+          <select
+            value={status}
+            onChange={e => setStatus(e.target.value)}
+            className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]"
+          >
+            <option value="">{t('trips.filters.all')}</option>
+            <option value="Begin">{t('trips.filters.Begin')}</option>
             {statusOptions.map(option => (
-              <option key={option} value={option}>{option}</option>
+              <option key={option} value={option}>
+                {option.charAt(0).toUpperCase() + option.slice(1).toLowerCase()}
+              </option>
             ))}
+
           </select>
         </div>
+
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.date')}</label>
           <input type="date" value={date} onChange={e => setDate(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[150px]" />
