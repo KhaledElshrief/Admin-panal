@@ -92,12 +92,19 @@ const Groups: React.FC = () => {
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.groupType')}</label>
-          <select value={groupType} onChange={e => setGroupType(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]">
+          <select
+            value={groupType}
+            onChange={e => setGroupType(e.target.value)}
+            className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]"
+          >
             <option value="">{t('filters.all')}</option>
             {groupTypeOptions.map(type => (
-              <option key={type} value={type}>{type}</option>
+              <option key={type} value={type}>
+                {t(`groups.filters.${type === 'PUBLIC_STUDENT' ? 'publicStudent' : 'privateStudent'}`)}
+              </option>
             ))}
           </select>
+
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.isCompleted')}</label>

@@ -48,7 +48,10 @@
     "sending": "ناردن...",
     "uploading": "بارکردن...",
     "downloading": "داگرتن...",
-    "processing": "پرۆسێسکردن..."
+    "processing": "پرۆسێسکردن...",
+    "saveChanges": "گۆڕانکارییەکان پاشەکەوت بکە",
+    "updatedSuccessfully": "زانیارییەکان بەسەرکەوتوویی نوێکرانەوە",
+    "country": "وڵات"
   },
   "table": {
     "actions": "کردارەکان",
@@ -795,7 +798,13 @@
     "studentName": "ناوی قوتابی",
     "phoneNumber": "ژمارەی تەلەفۆن",
     "school": "قوتابخانە",
-    "noStudents": "هیچ قوتابییەک نییە"
+    "noStudents": "هیچ قوتابییەک نییە",
+    "filters": {
+      "all": "هەموو",
+      "publicStudent": "خوێندکاری گشتی",
+      "privateStudent": "خوێندکاری تایبەتی"
+    },
+    "image": "وێنەی گروپ"
   },
   "trips": {
     "title": "بەڕێوەبردنی گەشتەکان",
@@ -809,7 +818,12 @@
     "creationDate": "ڕێکەوتی دروستکردن",
     "studentsInTrip": "قوتابیان لە گەشت",
     "statusLog": "تۆماری دۆخ",
-    "noStudents": "هیچ قوتابییەک نییە"
+    "noStudents": "هیچ قوتابییەک نییە",
+    "filters": {
+      "all": "هەموو",
+      "starting": "لە دەستپێکردن",
+      "pending": "چاوەڕوان"
+    }
   },
   "plans": {
     "title": "پلانەکانی ئابونەیی",

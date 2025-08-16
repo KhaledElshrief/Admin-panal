@@ -48,7 +48,10 @@
     "sending": "جاري الإرسال...",
     "uploading": "جاري الرفع...",
     "downloading": "جاري التحميل...",
-    "processing": "جاري المعالجة..."
+    "processing": "جاري المعالجة...",
+    "saveChanges": "حفظ التغييرات",
+    "updatedSuccessfully": "تم تحديث البيانات بنجاح",
+    "country": "الدولة"
   },
   "table": {
     "actions": "الإجراءات",
@@ -797,7 +800,13 @@
     "studentName": "اسم الطالب",
     "phoneNumber": "رقم الهاتف",
     "school": "المدرسة",
-    "noStudents": "لا يوجد طلاب"
+    "noStudents": "لا يوجد طلاب",
+    "filters": {
+      "all": "الكل",
+      "publicStudent": "طالب حكومي",
+      "privateStudent": "طالب خاص"
+    },
+    "image": "صورة"
   },
   "trips": {
     "title": "إدارة الرحلات",
@@ -811,7 +820,12 @@
     "creationDate": "تاريخ الإنشاء",
     "studentsInTrip": "الطلاب في الرحلة",
     "statusLog": "سجل الحالة",
-    "noStudents": "لا يوجد طلاب"
+    "noStudents": "لا يوجد طلاب",
+    "filters": {
+      "all": "الكل",
+      "starting": "قيد البدء",
+      "pending": "قيد الانتظار"
+    }
   },
   "plans": {
     "title": "خطط الاشتراكات",

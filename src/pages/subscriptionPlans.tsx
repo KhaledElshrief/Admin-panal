@@ -88,7 +88,7 @@ const SubscriptionPlans = () => {
           onClick={() => setShowModal(true)}
         >
           <Plus className="w-5 h-5 mr-2" />
-          إضافة خطة جديدة
+          {t('plans.addNewPlan')} 
         </button>
       </div>
 
