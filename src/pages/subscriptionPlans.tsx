@@ -55,18 +55,28 @@ const SubscriptionPlans = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleAddPlan = (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(createSubscription({
+const handleAddPlan = async (e: React.FormEvent): Promise<boolean> => {
+  e.preventDefault();
+
+  try {
+    await dispatch(createSubscription({
       description: form.description,
       amount: parseFloat(form.amount),
       currency: form.currency,
       type: form.type,
       duration: form.duration,
-    }));
+    })).unwrap(); // unwrap throws error if rejected
+
     setShowModal(false);
     setForm({ description: '', amount: '', currency: 'USD', type: '', duration: 'MONTHLY' });
-  };
+
+    return true;
+  } catch (error) {
+    console.error('Failed to create plan:', error);
+    return false;
+  }
+};
+
 
   if (loading) {
     return (
