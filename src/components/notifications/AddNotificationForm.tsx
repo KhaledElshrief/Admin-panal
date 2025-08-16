@@ -63,9 +63,9 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
               <option value="APP_NOTIFICATION">
                 {t('notifications.types.appNotification')}
               </option>
-              <option value="APP_ADS">
+              {/* <option value="APP_ADS">
                 {t('notifications.types.appAds')}
-              </option>
+              </option> */}
             </select>
           </div>
 
@@ -166,7 +166,7 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
           </div>
 
           {/* Optional Image */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               {t('notifications.imageUrl')} ({t('common.optional')})
             </label>
@@ -177,7 +177,7 @@ const AddNotificationForm: React.FC<AddNotificationFormProps> = ({
               className="w-full bg-dark-400 border border-dark-300 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
               placeholder={t('notifications.imageUrlPlaceholder')}
             />
-          </div>
+          </div> */}
 
           {/* Date fields for APP_ADS */}
           {formData.type === 'APP_ADS' && (
