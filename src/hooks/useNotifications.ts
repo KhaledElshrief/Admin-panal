@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './redux';
 import { 
   createNotification,
@@ -58,17 +58,23 @@ export const useNotifications = () => {
     dispatch(fetchNotifications(params));
   };
 
-  const getNotificationById = (id: string) => {
-    return dispatch(fetchNotificationById(id));
-  };
+  const getNotificationById = useCallback(
+    (id: string) => dispatch(fetchNotificationById(id)),
+    [dispatch]
+  );
 
   const resendNotificationById = (id: string) => {
     return dispatch(resendNotification(id));
   };
 
-  const removeNotificationById = (id: string) => {
-    return dispatch(removeNotification(id));
-  };
+const removeNotificationById = async (id: string, params?: { page?: number; pageSize?: number; type?: string }) => {
+  const result = await dispatch(removeNotification(id));
+  if (removeNotification.fulfilled.match(result) && params) {
+    dispatch(fetchNotifications(params));
+  }
+  return result;
+};
+
 
   const clearErrors = () => {
     dispatch(clearCreateError());

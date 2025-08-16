@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Eye, Send, Trash2 } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
 import { showToast } from '../../store/slices/toastSlice';
 import { useAppDispatch } from '../../hooks/redux';
+import DeleteNotificationModal from './DeleteNotificationModal'; // ✅ import modal
 
 interface NotificationActionsProps {
   notificationId: string;
   onView?: (id: string) => void;
-  onDelete?: (id: string) => void;   // ✅ NEW: let parent handle modal
+  currentPage: number;
+  pageSize: number;
   showViewButton?: boolean;
   showResendButton?: boolean;
   showRemoveButton?: boolean;
@@ -18,7 +20,8 @@ interface NotificationActionsProps {
 const NotificationActions: React.FC<NotificationActionsProps> = ({
   notificationId,
   onView,
-  onDelete,
+  currentPage,
+  pageSize,
   showViewButton = true,
   showResendButton = true,
   showRemoveButton = true,
@@ -33,6 +36,8 @@ const NotificationActions: React.FC<NotificationActionsProps> = ({
     resendSuccess,
     clearResendData,
   } = useNotifications();
+
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const getSizeClasses = () => {
     const sizes = { sm: 'p-1', md: 'p-2', lg: 'p-3' };
@@ -66,49 +71,54 @@ const NotificationActions: React.FC<NotificationActionsProps> = ({
     }
   };
 
-  const handleRemoveClick = () => {
-    if (onDelete) {
-      onDelete(notificationId); // ✅ trigger parent modal
-    }
-  };
-
   return (
-    <div className="flex items-center gap-1">
-      {showViewButton && (
-        <button
-          onClick={handleView}
-          className={`${getSizeClasses()} text-blue-400 hover:text-blue-300 hover:bg-blue-600/20 rounded-lg transition-colors`}
-          title={t('common.view')}
-        >
-          <Eye className={getIconSize()} />
-        </button>
-      )}
+    <>
+      <div className="flex items-center gap-1">
+        {showViewButton && (
+          <button
+            onClick={handleView}
+            className={`${getSizeClasses()} text-blue-400 hover:text-blue-300 hover:bg-blue-600/20 rounded-lg transition-colors`}
+            title={t('common.view')}
+          >
+            <Eye className={getIconSize()} />
+          </button>
+        )}
 
-      {showResendButton && (
-        <button
-          onClick={handleResend}
-          disabled={resendLoading}
-          className={`${getSizeClasses()} text-green-400 hover:text-green-300 hover:bg-green-600/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
-          title={t('notifications.resend', 'إعادة إرسال')}
-        >
-          {resendLoading ? (
-            <div className={`${getIconSize()} animate-spin rounded-full border-b-2 border-green-400`}></div>
-          ) : (
-            <Send className={getIconSize()} />
-          )}
-        </button>
-      )}
+        {showResendButton && (
+          <button
+            onClick={handleResend}
+            disabled={resendLoading}
+            className={`${getSizeClasses()} text-green-400 hover:text-green-300 hover:bg-green-600/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+            title={t('notifications.resend', 'إعادة إرسال')}
+          >
+            {resendLoading ? (
+              <div className={`${getIconSize()} animate-spin rounded-full border-b-2 border-green-400`}></div>
+            ) : (
+              <Send className={getIconSize()} />
+            )}
+          </button>
+        )}
 
-      {showRemoveButton && (
-        <button
-          onClick={handleRemoveClick}
-          className={`${getSizeClasses()} text-red-400 hover:text-red-300 hover:bg-red-600/20 rounded-lg transition-colors`}
-          title={t('common.delete')}
-        >
-          <Trash2 className={getIconSize()} />
-        </button>
-      )}
-    </div>
+        {showRemoveButton && (
+          <button
+            onClick={() => setDeleteModalOpen(true)} // ✅ open modal
+            className={`${getSizeClasses()} text-red-400 hover:text-red-300 hover:bg-red-600/20 rounded-lg transition-colors`}
+            title={t('common.delete')}
+          >
+            <Trash2 className={getIconSize()} />
+          </button>
+        )}
+      </div>
+
+      {/* ✅ Attach Delete Modal */}
+      <DeleteNotificationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        notificationId={notificationId}
+        currentPage={currentPage}
+        pageSize={pageSize}
+      />
+    </>
   );
 };
 
