@@ -7,6 +7,7 @@ import Table, { TableColumn } from '../../components/ui/Table';
 import Pagination from '../../components/ui/Pagination';
 import { Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import useDebounce from '../../hooks/useDebounce';   // ✅ import debounce hook
 
 const Groups: React.FC = () => {
   const { t } = useTranslation();
@@ -24,8 +25,17 @@ const Groups: React.FC = () => {
   const [isCompleted, setIsCompleted] = useState('');
   const [gender, setGender] = useState('');
 
-  // Get unique groupType values from tripGroups
-  const groupTypeOptions = Array.from(new Set(tripGroups.map(g => g.groupType))).filter(Boolean);
+  // ✅ Debounced values
+  const debouncedDriverName = useDebounce(driverName, 600);
+  const debouncedGroupName = useDebounce(name, 600);
+
+  // Static groupType options (to always display full list)
+  const groupTypeOptions = ['PUBLIC_STUDENT', 'PRIVATE_STUDENT'];
+
+  const groupTypeLabels: Record<string, string> = {
+    PUBLIC_STUDENT: t('groups.filters.publicStudent'),
+    PRIVATE_STUDENT: t('groups.filters.privateStudent'),
+  };
 
   const columns: TableColumn[] = [
     { key: 'name', title: t('table.name') },
@@ -35,14 +45,18 @@ const Groups: React.FC = () => {
     { key: 'NextTripType', title: t('table.nextTripType') },
     { key: 'gender', title: t('table.gender') },
     { key: 'academicLevel', title: t('table.academicLevel') },
-    { key: 'isCompleted', title: t('table.isCompleted'), render: (value) => value ? t('common.yes') : t('common.no') },
+    {
+      key: 'isCompleted',
+      title: t('table.isCompleted'),
+      render: (value) => value ? t('common.yes') : t('common.no'),
+    },
     { key: 'remainingSeats', title: t('table.remainingSeats') },
     {
       key: 'actions',
       title: t('table.actions'),
       render: (_, record) => (
         <button
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation();
             navigate(`/groups/${record.id}`);
           }}
@@ -57,17 +71,18 @@ const Groups: React.FC = () => {
     },
   ];
 
+  // ✅ Fetch groups with debounced filters
   useEffect(() => {
     dispatch(fetchTripGroups({
       page: currentPage,
       pageSize: PAGE_SIZE,
-      driverName: driverName || undefined,
+      driverName: debouncedDriverName || undefined,
       groupType: groupType || undefined,
-      name: name || undefined,
+      name: debouncedGroupName || undefined,
       isCompleted: isCompleted !== '' ? isCompleted : undefined,
       gender: gender || undefined,
     }));
-  }, [dispatch, currentPage, driverName, groupType, name, isCompleted, gender]);
+  }, [dispatch, currentPage, debouncedDriverName, groupType, debouncedGroupName, isCompleted, gender]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -76,7 +91,7 @@ const Groups: React.FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [driverName, groupType, name, isCompleted, gender]);
+  }, [debouncedDriverName, groupType, debouncedGroupName, isCompleted, gender]);
 
   return (
     <div className="p-6">
@@ -84,11 +99,23 @@ const Groups: React.FC = () => {
       <div className="mb-4 flex flex-wrap gap-4 items-end">
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.driverName')}</label>
-          <input type="text" value={driverName} onChange={e => setDriverName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder={t('table.driverName')} />
+          <input
+            type="text"
+            value={driverName}
+            onChange={e => setDriverName(e.target.value)}
+            className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]"
+            placeholder={t('table.driverName')}
+          />
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.groupName')}</label>
-          <input type="text" value={name} onChange={e => setName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder={t('table.groupName')} />
+          <input
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]"
+            placeholder={t('table.groupName')}
+          />
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.groupType')}</label>
@@ -100,15 +127,18 @@ const Groups: React.FC = () => {
             <option value="">{t('filters.all')}</option>
             {groupTypeOptions.map(type => (
               <option key={type} value={type}>
-                {t(`groups.filters.${type === 'PUBLIC_STUDENT' ? 'publicStudent' : 'privateStudent'}`)}
+                {groupTypeLabels[type] || type}
               </option>
             ))}
           </select>
-
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.isCompleted')}</label>
-          <select value={isCompleted} onChange={e => setIsCompleted(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]">
+          <select
+            value={isCompleted}
+            onChange={e => setIsCompleted(e.target.value)}
+            className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]"
+          >
             <option value="">{t('filters.all')}</option>
             <option value="true">{t('common.yes')}</option>
             <option value="false">{t('common.no')}</option>
@@ -116,7 +146,11 @@ const Groups: React.FC = () => {
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.gender')}</label>
-          <select value={gender} onChange={e => setGender(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]">
+          <select
+            value={gender}
+            onChange={e => setGender(e.target.value)}
+            className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]"
+          >
             <option value="">{t('filters.all')}</option>
             <option value="MALE">{t('filters.male')}</option>
             <option value="FEMALE">{t('filters.female')}</option>
@@ -153,4 +187,4 @@ const Groups: React.FC = () => {
   );
 };
 
-export default Groups; 
+export default Groups;

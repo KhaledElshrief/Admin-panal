@@ -8,6 +8,7 @@ import { fetchAllUsers } from '../store/slices/usersSlices';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Pagination from '../components/ui/Pagination';
+import useDebounce from '../hooks/useDebounce';   // ✅ Import debounce hook
 
 const Users: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,25 +19,27 @@ const Users: React.FC = () => {
   const [page, setPage] = useState(1);
   const pageSize = 10; 
 
+  // ✅ Debounced searchTerm
+  const debouncedSearchTerm = useDebounce(searchTerm, 600);
+
   useEffect(() => {
     dispatch(fetchAllUsers({
       role: roleFilter || undefined,
-      userName: searchTerm || undefined,
+      userName: debouncedSearchTerm || undefined,
       page,
       pageSize,
     }));
-  }, [dispatch, roleFilter, searchTerm, page, pageSize]);
+  }, [dispatch, roleFilter, debouncedSearchTerm, page, pageSize]);
 
   useEffect(() => {
     setPage(1);
-  }, [roleFilter, searchTerm]);
+  }, [roleFilter, debouncedSearchTerm]);
 
   const handleViewDetails = (userId: string) => {
     console.log('View details:', userId);
   };
 
   const handleExportExcel = () => {
-    // Prepare data (flatten nested objects if needed)
     const exportData = users.map(user => ({
       id: user.id,
       userName: user.userName,
@@ -49,15 +52,10 @@ const Users: React.FC = () => {
       gender: user.gender,
     }));
 
-    // Create worksheet and workbook
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Users');
-
-    // Generate buffer
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-
-    // Save file
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(data, 'users.xlsx');
   };
@@ -134,9 +132,7 @@ const Users: React.FC = () => {
           <h1 className="text-2xl font-bold">إدارة المستخدمين</h1>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-gray-400 text-sm">
-            قائمة المستخدمين
-          </span>
+          <span className="text-gray-400 text-sm">قائمة المستخدمين</span>
           <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm">
             إجمالي المستخدمين: {totalItems}
           </span>

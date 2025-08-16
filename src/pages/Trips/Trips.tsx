@@ -7,6 +7,7 @@ import Table, { TableColumn } from '../../components/ui/Table';
 import Pagination from '../../components/ui/Pagination';
 import { Eye } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import useDebounce from '../../hooks/useDebounce';   // ✅ Import debounce hook
 
 function formatDate(dateString: string) {
   if (!dateString) return '';
@@ -36,6 +37,11 @@ const Trips: React.FC = () => {
   const [status, setStatus] = useState('');
   const [date, setDate] = useState('');
   const [driverName, setDriverName] = useState('');
+
+  // ✅ Debounced values
+  const debouncedDriverName = useDebounce(driverName, 600);
+  const debouncedGroupName = useDebounce(groupName, 600);
+
   // Get unique status values from trips
   const statusOptions = Array.from(new Set(trips.map(t => t.status))).filter(Boolean);
 
@@ -66,16 +72,17 @@ const Trips: React.FC = () => {
     },
   ];
 
+  // ✅ Fetch trips with debounced values
   useEffect(() => {
     dispatch(fetchTrips({
       page: currentPage,
       pageSize: PAGE_SIZE,
-      groupName: groupName || undefined,
+      groupName: debouncedGroupName || undefined,
       status: status || undefined,
       date: date || undefined,
-      driverName: driverName || undefined,
+      driverName: debouncedDriverName || undefined,
     }));
-  }, [dispatch, currentPage, groupName, status, date, driverName]);
+  }, [dispatch, currentPage, debouncedGroupName, status, date, debouncedDriverName]);
 
   // Update currentPage when URL search params change
   useEffect(() => {
@@ -93,7 +100,7 @@ const Trips: React.FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setSearchParams({ page: "1" });
-  }, [groupName, status, date, driverName]);
+  }, [debouncedGroupName, status, date, debouncedDriverName]);
 
   const handlePageChange = (page: number) => {
     setSearchParams({ page: page.toString() });
@@ -105,11 +112,23 @@ const Trips: React.FC = () => {
       <div className="mb-4 flex flex-wrap gap-4 items-end">
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.driverName')}</label>
-          <input type="text" value={driverName} onChange={e => setDriverName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder={t('table.driverName')} />
+          <input
+            type="text"
+            value={driverName}
+            onChange={e => setDriverName(e.target.value)}
+            className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]"
+            placeholder={t('table.driverName')}
+          />
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.groupName')}</label>
-          <input type="text" value={groupName} onChange={e => setGroupName(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]" placeholder={t('table.groupName')} />
+          <input
+            type="text"
+            value={groupName}
+            onChange={e => setGroupName(e.target.value)}
+            className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]"
+            placeholder={t('table.groupName')}
+          />
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.status')}</label>
@@ -119,19 +138,21 @@ const Trips: React.FC = () => {
             className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]"
           >
             <option value="">{t('trips.filters.all')}</option>
-            <option value="Begin">{t('trips.filters.Begin')}</option>
-            {statusOptions.map(option => (
+            {['BEGIN', ...statusOptions].map(option => (
               <option key={option} value={option}>
-                {option.charAt(0).toUpperCase() + option.slice(1).toLowerCase()}
+                {t(`trips.filters.${option}`)}
               </option>
             ))}
-
           </select>
         </div>
-
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.date')}</label>
-          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[150px]" />
+          <input
+            type="date"
+            value={date}
+            onChange={e => setDate(e.target.value)}
+            className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[150px]"
+          />
         </div>
         <button
           type="button"

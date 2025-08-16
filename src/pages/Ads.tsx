@@ -8,15 +8,19 @@ import {
   AdsFilters,
   AdsStats,
   AddAdModal,
+  AdActions,
 } from '../components/ads';
+import ViewAdModal from '../components/ads/ViewAdModal';
 import Table, { TableColumn } from '../components/ui/Table';
 import Pagination from '../components/ui/Pagination';
 import { Ad } from '../types/ads';
-import { Eye, Trash2 } from 'lucide-react';
+import { useAds } from '../hooks/useAds';
+import DeleteAdModal from '../components/ads/removeAd';
 
 const Ads: React.FC = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  const { getAdById } = useAds();
 
   const { ads, loading, error, totalItems, totalPages } = useSelector(
     (state: RootState) => state.ads
@@ -27,13 +31,24 @@ const Ads: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // ✅ delete modal state
+  const [selectedAdId, setSelectedAdId] = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(fetchAds({ page: currentPage, pageSize, type: 'APP_ADS' }));
   }, [dispatch, currentPage, pageSize]);
 
-  const handleView = (id: string) => { console.log('View ad:', id); };
-  const handleDelete = (id: string) => { console.log('Delete ad:', id); };
+  const handleView = async (id: string) => {
+    setSelectedAdId(id);
+    setIsViewModalOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
+    setSelectedAdId(id);
+    setIsDeleteModalOpen(true);
+  };
+
   const handleAddNew = () => { setIsAddModalOpen(true); };
   const handleSearchChange = (value: string) => { setSearchTerm(value); setCurrentPage(1); };
   const handleStatusChange = (value: string) => { setStatusFilter(value); setCurrentPage(1); };
@@ -92,53 +107,49 @@ const Ads: React.FC = () => {
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A';
-    
-    // Format date according to current language
     const date = new Date(dateString);
-    return date.toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'ku' ? 'ku-IQ' : 'en-US');
+    return date.toLocaleDateString(
+      i18n.language === 'ar' ? 'ar-EG' : i18n.language === 'ku' ? 'ku-IQ' : 'en-US'
+    );
   };
 
   const tableColumns: TableColumn<Ad>[] = [
     {
       key: 'title',
       title: t('ads.table.title'),
-             render: (_, record) => {
-         const currentLanguage = i18n.language as 'ar' | 'en' | 'ku';
-         return (
-           <div className="text-sm font-medium text-white">
-             {record.title[currentLanguage] || record.title.en}
-           </div>
-         );
-       }
+      render: (_, record) => {
+        const currentLanguage = i18n.language as 'ar' | 'en' | 'ku';
+        return (
+          <div className="text-sm font-medium text-white">
+            {record.title[currentLanguage] || record.title.en}
+          </div>
+        );
+      }
     },
     {
       key: 'description',
       title: t('ads.table.description'),
-             render: (_, record) => {
-         const currentLanguage = i18n.language as 'ar' | 'en' | 'ku';
-         return (
-           <div className="text-sm text-gray-300 max-w-xs truncate">
-             {record.description[currentLanguage] || record.description.en}
-           </div>
-         );
-       }
+      render: (_, record) => {
+        const currentLanguage = i18n.language as 'ar' | 'en' | 'ku';
+        return (
+          <div className="text-sm text-gray-300 max-w-xs truncate">
+            {record.description[currentLanguage] || record.description.en}
+          </div>
+        );
+      }
     },
     {
       key: 'startDate',
       title: t('ads.table.startDate'),
       render: (_, record) => (
-        <span className="text-sm text-gray-300">
-          {formatDate(record.startDate)}
-        </span>
+        <span className="text-sm text-gray-300">{formatDate(record.startDate)}</span>
       )
     },
     {
       key: 'endDate',
       title: t('ads.table.endDate'),
       render: (_, record) => (
-        <span className="text-sm text-gray-300">
-          {formatDate(record.endDate)}
-        </span>
+        <span className="text-sm text-gray-300">{formatDate(record.endDate)}</span>
       )
     },
     {
@@ -154,22 +165,12 @@ const Ads: React.FC = () => {
       key: 'actions',
       title: t('ads.table.actions'),
       render: (_, record) => (
-        <div className="flex space-x-2 rtl:space-x-reverse">
-          <button
-            onClick={() => handleView(record.id)}
-            className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50"
-            title={t('common.view')}
-          >
-            <Eye className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => handleDelete(record.id)}
-            className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
-            title={t('common.delete')}
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
+        <AdActions
+          adId={record.id}
+          onView={handleView}
+          onDelete={handleDelete} 
+          size="sm"
+        />
       )
     },
   ];
@@ -204,10 +205,10 @@ const Ads: React.FC = () => {
   return (
     <div className="p-4 space-y-6">
       <AdsHeader onAddNew={handleAddNew} />
-             <div className="bg-dark-300 rounded-xl p-6 space-y-6">
-         <div className="flex items-center justify-between">
-           <h2 className="text-xl font-semibold text-white">{t('ads.tableHeader')}</h2>
-         </div>
+      <div className="bg-dark-300 rounded-xl p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-white">{t('ads.tableHeader')}</h2>
+        </div>
         <AdsFilters
           searchTerm={searchTerm}
           statusFilter={statusFilter}
@@ -223,24 +224,42 @@ const Ads: React.FC = () => {
           emptyText={t('pagination.noData')}
           rowKey="id"
         />
-                 <div className="flex items-center justify-between">
-           <div className="text-sm text-gray-300">
-             {t('pagination.showing')} {((currentPage - 1) * pageSize) + 1} - {Math.min(currentPage * pageSize, filteredAds.length)} {t('pagination.of')} {filteredAds.length} {t('pagination.results')}
-           </div>
-                     <Pagination
-             currentPage={currentPage}
-             totalPages={totalPages}
-             onPageChange={handlePageChange}
-           />
-         </div>
-       </div>
-       
-       <AddAdModal
-         isOpen={isAddModalOpen}
-         onClose={() => setIsAddModalOpen(false)}
-       />
-     </div>
-   );
- };
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-gray-300">
+            {t('pagination.showing')} {((currentPage - 1) * pageSize) + 1} - {Math.min(currentPage * pageSize, filteredAds.length)} {t('pagination.of')} {filteredAds.length} {t('pagination.results')}
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      </div>
+      
+      <AddAdModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+      />
+
+      <ViewAdModal
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false);
+          setSelectedAdId(null);
+        }}
+        adId={selectedAdId}
+      />
+
+      <DeleteAdModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setSelectedAdId(null);
+        }}
+        adId={selectedAdId}
+      />
+    </div>
+  );
+};
 
 export default Ads;

@@ -12,6 +12,7 @@ import DeleteSchoolModal from '../../components/schools/DeleteSchoolModal';
 import { Eye, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import useDebounce from '../../hooks/useDebounce';   // ✅ import
 
 const School: React.FC = () => {
   const { t } = useTranslation();
@@ -23,25 +24,33 @@ const School: React.FC = () => {
   const currentPageParam = searchParams.get('page');
   const page = currentPageParam ? parseInt(currentPageParam, 10) : 1;
   const pageSize = 10;
+
   const [nameFilter, setNameFilter] = useState('');
   const [cityIdFilter, setCityIdFilter] = useState('');
   const [countryIdFilter, setCountryIdFilter] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedSchoolForDelete, setSelectedSchoolForDelete] = useState<SchoolType | null>(null);
+
   const navigate = useNavigate();
+
+  // ✅ debounce the name filter (1s delay)
+  const debouncedName = useDebounce(nameFilter, 1000);
 
   useEffect(() => {
     dispatch(fetchCountries());
     dispatch(fetchCities({ page: 1, pageSize: 1000 }));
+  }, [dispatch]);
+
+  useEffect(() => {
     dispatch(fetchSchools({
       page,
       pageSize,
-      name: nameFilter || undefined,
+      name: debouncedName || undefined,  // ✅ use debounced value
       cityId: cityIdFilter || undefined,
       countryId: countryIdFilter || undefined,
     }));
-  }, [dispatch, page, pageSize, nameFilter, cityIdFilter, countryIdFilter]);
+  }, [dispatch, page, pageSize, debouncedName, cityIdFilter, countryIdFilter]);
 
   const handleViewSchool = (school: SchoolType) => {
     navigate(`/school/${school.id}`);
@@ -97,11 +106,10 @@ const School: React.FC = () => {
     },
   ];
 
-  // Map unique country IDs from schools to their names
   const countryOptions = Array.from(new Set(schools.map(s => s.countryId)))
     .map(id => countries.find((c: typeof countries[number]) => c.id === id))
     .filter((country): country is typeof countries[number] => Boolean(country));
-  // Use all available cities from the backend for the city dropdown
+
   const cityOptions = cities;
 
   return (
@@ -113,11 +121,12 @@ const School: React.FC = () => {
           className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
         >
           <Plus className="w-4 h-4" />
-  {t('schools.addSchool')}
+          {t('schools.addSchool')}
         </button>
       </div>
       
       <div className="flex gap-4 mb-6">
+        {/* ✅ Input updates immediately, but API only fires after debounce */}
         <input
           type="text"
           placeholder={t('filters.searchByName')}
@@ -182,4 +191,4 @@ const School: React.FC = () => {
   );
 };
 
-export default School; 
+export default School;

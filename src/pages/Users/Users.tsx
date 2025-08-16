@@ -11,6 +11,7 @@ import { getLocalizedRole, getLocalizedGender } from '../../utils/i18nUtils';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Pagination from '../../components/ui/Pagination';
+import useDebounce from '../../hooks/useDebounce';   // ✅ import hook
 
 const Users: React.FC = () => {
   const { t } = useTranslation();
@@ -21,44 +22,26 @@ const Users: React.FC = () => {
   const currentPageParam = searchParams.get("page");
   const currentPage = currentPageParam ? parseInt(currentPageParam) : 1;
 
-  const [roleFilter, setRoleFilter] = useState(''); 
+  const [roleFilter, setRoleFilter] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(currentPage);
-  const pageSize = 10; 
+  const debouncedSearchTerm = useDebounce(searchTerm, 500); // ✅ debounce here
+  const pageSize = 10;
 
+  // ✅ Single fetch effect (no manual debounce logic)
   useEffect(() => {
     dispatch(fetchAllUsers({
       role: roleFilter || undefined,
-      userName: searchTerm || undefined,
+      userName: debouncedSearchTerm || undefined,
       page: currentPage,
       pageSize,
     }));
-  }, [dispatch, roleFilter, searchTerm, currentPage, pageSize]);
-
-  // Update page when URL search params change
-  useEffect(() => {
-    const pageParam = searchParams.get("page");
-    if (pageParam) {
-      const pageNum = parseInt(pageParam);
-      if (pageNum !== page) {
-        setPage(pageNum);
-      }
-    } else if (page !== 1) {
-      setPage(1);
-    }
-  }, [searchParams, page]);
-
-  // Remove this effect:
-  // useEffect(() => {
-  //   setSearchParams({ page: "1" });
-  // }, [roleFilter, searchTerm]);
+  }, [dispatch, roleFilter, debouncedSearchTerm, currentPage, pageSize]);
 
   const handleViewDetails = (userId: string) => {
     navigate(`/users/${userId}`);
   };
 
   const handleExportExcel = () => {
-    // Prepare data (flatten nested objects if needed)
     const exportData = users.map(user => ({
       id: user.id,
       userName: user.userName,
@@ -71,15 +54,10 @@ const Users: React.FC = () => {
       gender: user.gender,
     }));
 
-    // Create worksheet and workbook
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Users');
-
-    // Generate buffer
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-
-    // Save file
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(data, 'users.xlsx');
   };
@@ -88,7 +66,6 @@ const Users: React.FC = () => {
     navigate('/users/add');
   };
 
-  // Reset page to 1 when filter changes
   const handleRoleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRoleFilter(e.target.value);
     setSearchParams({ page: "1" });
@@ -188,7 +165,7 @@ const Users: React.FC = () => {
         {/* Action Buttons */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
               onClick={handleAddUser}
             >
