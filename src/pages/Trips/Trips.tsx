@@ -7,7 +7,7 @@ import Table, { TableColumn } from '../../components/ui/Table';
 import Pagination from '../../components/ui/Pagination';
 import { Eye } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import useDebounce from '../../hooks/useDebounce';   // ✅ Import debounce hook
+import useDebounce from '../../hooks/useDebounce';   
 
 function formatDate(dateString: string) {
   if (!dateString) return '';
@@ -38,12 +38,13 @@ const Trips: React.FC = () => {
   const [date, setDate] = useState('');
   const [driverName, setDriverName] = useState('');
 
-  // ✅ Debounced values
+  // Debounced values
   const debouncedDriverName = useDebounce(driverName, 600);
   const debouncedGroupName = useDebounce(groupName, 600);
 
   // Get unique status values from trips
   const statusOptions = Array.from(new Set(trips.map(t => t.status))).filter(Boolean);
+  const allStatusOptions = Array.from(new Set(['BEGIN', ...statusOptions]));
 
   const columns: TableColumn[] = [
     { key: 'driver.user.userName', title: t('table.driverName') },
@@ -72,7 +73,7 @@ const Trips: React.FC = () => {
     },
   ];
 
-  // ✅ Fetch trips with debounced values
+  // Fetch trips with debounced values
   useEffect(() => {
     dispatch(fetchTrips({
       page: currentPage,
@@ -110,7 +111,7 @@ const Trips: React.FC = () => {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">{t('pages.tripsManagement')}</h1>
       <div className="mb-4 flex flex-wrap gap-4 items-end">
-        <div>
+        {/* <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.driverName')}</label>
           <input
             type="text"
@@ -119,7 +120,7 @@ const Trips: React.FC = () => {
             className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[160px]"
             placeholder={t('table.driverName')}
           />
-        </div>
+        </div> */}
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.groupName')}</label>
           <input
@@ -138,12 +139,13 @@ const Trips: React.FC = () => {
             className="bg-dark-200 text-white border border-dark-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 min-w-[120px]"
           >
             <option value="">{t('trips.filters.all')}</option>
-            {['BEGIN', ...statusOptions].map(option => (
+            {allStatusOptions.map(option => (
               <option key={option} value={option}>
                 {t(`trips.filters.${option}`)}
               </option>
             ))}
           </select>
+
         </div>
         <div>
           <label className="block text-sm mb-1 text-gray-300">{t('table.date')}</label>

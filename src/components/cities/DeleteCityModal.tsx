@@ -14,9 +14,10 @@ interface DeleteCityModalProps {
     name: string;
     nameEn: string;
   } | null;
+  onDeleteSuccess?: () => void; 
 }
 
-const DeleteCityModal: React.FC<DeleteCityModalProps> = ({ isOpen, onClose, city }) => {
+const DeleteCityModal: React.FC<DeleteCityModalProps> = ({ isOpen, onClose, city, onDeleteSuccess }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { deleteLoading, deleteError } = useSelector((state: RootState) => state.city);
 
@@ -26,6 +27,9 @@ const DeleteCityModal: React.FC<DeleteCityModalProps> = ({ isOpen, onClose, city
       if (deleteCity.fulfilled.match(resultAction)) {
         dispatch(showToast({ message: "تم حذف المدينة بنجاح", type: "success" }));
         onClose();
+        if (onDeleteSuccess) {
+          onDeleteSuccess();
+        }
       } else {
         dispatch(showToast({ message: "حدث خطأ أثناء الحذف", type: "error" }));
       }

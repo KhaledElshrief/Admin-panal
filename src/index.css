@@ -22,30 +22,6 @@ body {
   direction: ltr;
 }
 
-/* Table direction fixes */
-[dir="rtl"] table {
-  text-align: right;
-}
-
-[dir="ltr"] table {
-  text-align: left;
-}
-
-[dir="rtl"] th,
-[dir="rtl"] td {
-  text-align: right;
-}
-
-[dir="ltr"] th,
-[dir="ltr"] td {
-  text-align: left;
-}
-
-/* Center aligned cells should remain centered regardless of direction */
-.text-center {
-  text-align: center !important;
-}
-
 /* Language-specific font families */
 [lang="ar"] {
   font-family: 'Tajawal', sans-serif;
@@ -68,6 +44,29 @@ body {
     )
     fixed;
   min-height: 100vh;
+}
+
+/* Table RTL/LTR direction fixes */
+[dir="rtl"] .table-header-content {
+  justify-content: flex-end;
+}
+
+[dir="ltr"] .table-header-content {
+  justify-content: flex-start;
+}
+
+/* Center aligned content should remain centered regardless of direction */
+.table-header-center {
+  justify-content: center !important;
+}
+
+/* Specific alignment overrides */
+.table-header-left {
+  justify-content: flex-start !important;
+}
+
+.table-header-right {
+  justify-content: flex-end !important;
 }
 
 /* RTL-specific adjustments */

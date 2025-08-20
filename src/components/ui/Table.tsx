@@ -37,7 +37,7 @@ const Table = <T extends Record<string, any>>({
 }: TableProps<T>) => {
   const { t } = useTranslation();
   const { isRTL } = useDirection();
-  
+
   const getRowKey = (record: T, index: number): string => {
     if (typeof rowKey === 'function') {
       return rowKey(record);
@@ -48,21 +48,21 @@ const Table = <T extends Record<string, any>>({
   const getCellValue = (record: T, column: TableColumn<T>) => {
     const keys = column.key.split('.');
     let value = record;
-    
+
     for (const key of keys) {
       value = value?.[key];
     }
-    
+
     return value;
   };
 
   const renderCell = (column: TableColumn<T>, record: T, index: number) => {
     const value = getCellValue(record, column);
-    
+
     if (column.render) {
       return column.render(value, record, index);
     }
-    
+
     // Only return value if it's a valid ReactNode (not a plain object/array)
     if (
       value === null ||
@@ -74,28 +74,24 @@ const Table = <T extends Record<string, any>>({
     ) {
       return value;
     }
-    
+
     return ''; // fallback for objects/arrays
   };
 
   const getTextAlign = (align?: string) => {
-    // If no specific alignment is provided, use default based on language direction
-    if (!align) {
-      return isRTL ? 'text-right' : 'text-left';
-    }
-    
-    switch (align) {
-      case 'left':
-        return isRTL ? 'text-left' : 'text-left';
-      case 'center':
-        return 'text-center';
-      case 'right':
-        return isRTL ? 'text-right' : 'text-right';
-      default:
-        return isRTL ? 'text-right' : 'text-left';
-    }
+    if (align === 'center') return 'text-center';
+    if (align === 'left') return 'text-left';
+    if (align === 'right') return 'text-right';
+    // Default alignment based on language direction
+    return isRTL ? 'text-right' : 'text-left';
   };
-
+  const getHeaderAlign = (align?: string) => {
+    if (align === 'center') return 'justify-center';
+    if (align === 'left') return isRTL ? 'justify-start' : 'justify-start';
+    if (align === 'right') return isRTL ? 'justify-start' : 'justify-start';
+    // Default alignment for headers based on language direction
+    return isRTL ? 'justify-start' : 'justify-start';
+  };
   if (loading) {
     return (
       <div className={`bg-dark-300 rounded-xl p-6 ${className}`}>
@@ -114,31 +110,25 @@ const Table = <T extends Record<string, any>>({
   return (
     <div className={`bg-dark-300 rounded-xl overflow-hidden ${className}`}>
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table
+          dir={isRTL ? "rtl" : "ltr"}
+          className="w-full"
+        >
           <thead>
             <tr className="border-b border-dark-200 bg-dark-200/50">
               {columns.map((column, index) => (
                 <th
                   key={index}
-                  className={`py-4 px-4 font-medium text-gray-300 ${getTextAlign(column.align)} ${
-                    isRTL ? 'first:rounded-r-lg last:rounded-l-lg' : 'first:rounded-l-lg last:rounded-r-lg'
-                  }`}
+                  className={`py-4 px-4 font-medium text-gray-300 ${isRTL
+                      ? "first:rounded-r-lg last:rounded-l-lg"
+                      : "first:rounded-l-lg last:rounded-r-lg"
+                    }`}
                   style={{ width: column.width }}
-                > 
-                  <div className={`flex items-center gap-2 ${
-                    column.align === 'center' ? 'justify-center' : 
-                    column.align === 'left' ? (isRTL ? 'justify-end' : 'justify-start') :
-                    column.align === 'right' ? (isRTL ? 'justify-start' : 'justify-end') :
-                    isRTL ? 'justify-end' : 'justify-start'
-                  }`}>
+                >
+                  <div
+                    className={`flex items-center gap-2 ${getHeaderAlign(column.align)}`}
+                  >
                     {column.title}
-                    {column.sortable && (
-                      <button className="text-gray-400 hover:text-white transition-colors">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                        </svg>
-                      </button>
-                    )}
                   </div>
                 </th>
               ))}
@@ -168,9 +158,8 @@ const Table = <T extends Record<string, any>>({
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}
-                      className={`py-4 px-4 ${getTextAlign(column.align)} ${
-                        isRTL ? 'first:rounded-r-lg last:rounded-l-lg' : 'first:rounded-l-lg last:rounded-r-lg'
-                      }`}
+                      className={`py-4 px-4 ${getTextAlign(column.align)} ${isRTL ? 'first:rounded-r-lg last:rounded-l-lg' : 'first:rounded-l-lg last:rounded-r-lg'
+                        }`}
                     >
                       {renderCell(column, record, index)}
                     </td>

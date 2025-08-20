@@ -191,10 +191,14 @@ const CityDetails: React.FC = () => {
       </div>
 
       <DeleteCityModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        city={selectedCity}
-      />
+  isOpen={isDeleteModalOpen}
+  onClose={() => setIsDeleteModalOpen(false)}
+  city={selectedCity}
+  onDeleteSuccess={() => {
+    navigate('/city'); // 👈 redirect after delete
+  }}
+/>
+
     </div>
   );
 };
